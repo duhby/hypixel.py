@@ -45,7 +45,7 @@ setup(
     description='A Python wrapper for the Hypixel API',
     long_description=readme,
     long_description_content_type="text/markdown",
-    imstall_requires=requirements,
+    install_requires=requirements,
     # extras_require=extras_require,
     python_requires='>=3.6',
     classifiers=classifiers,
