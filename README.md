@@ -1,5 +1,5 @@
 <h1 align="center">
-    Hypixel API (Python)
+    hypixel.py
 </h1>
 
 <h4 align="center">
