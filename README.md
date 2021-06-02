@@ -3,7 +3,7 @@
 </h1>
 
 <h4 align="center">
-    A fully asynchronous Hypixel API wrapper inspired by obsidion-dev and myerfire
+    A fully asynchronous feature rich Hypixel API wrapper inspired by obsidion-dev and myerfire
 </h4>
 
 <div align="center">
