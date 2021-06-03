@@ -3,6 +3,9 @@ version: 2
 build:
   image: latest
 
+formats:
+  - pdf
+
 sphinx:
   fail_on_warning: false
   configuration: docs/conf.py
