@@ -37,12 +37,12 @@ extensions = [
 autodoc_member_order = 'bysource'
 autodoc_typehints = 'none'
 
-templates_path = ['_templates']
+# templates_path = ['_templates']
 source_suffix = '.rst'
 master_doc = 'index'
 branch = 'master'
 language = 'en'
-exclude_patterns = ['_build']
+exclude_patterns = ['_build', '_templates']
 pygments_style = 'friendly'
 
 # -- Options for HTML output ----------------------------------------------
