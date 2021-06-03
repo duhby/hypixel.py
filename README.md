@@ -19,6 +19,6 @@
     <img src='https://readthedocs.org/projects/hypixelpy/badge/?version=latest&style=flat-square' alt='Documentation Status'>
 </a>
 
-<h1>Soon™</h1>
+<h2>Soon™</h2>
 
 <img src='https://github-readme-stats.vercel.app/api?username=duhby&count_private=true&theme=tokyonight&show_icons=true'>
