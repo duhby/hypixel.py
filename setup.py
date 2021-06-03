@@ -10,13 +10,6 @@ with open('README.md') as f:
 with open('requirements.txt') as f:
   requirements = f.read().splitlines()
 
-# extras_require = {
-#     'docs': [
-#         'sphinx==4.0.2',
-#         'sphinxcontrib_trio==1.1.2',
-#     ]
-# }
-
 classifiers = [
     # 'Development Status :: 5 - Production/Stable',
     'Natural Language :: English',
@@ -46,7 +39,6 @@ setup(
     long_description=readme,
     long_description_content_type="text/markdown",
     install_requires=requirements,
-    # extras_require=extras_require,
     python_requires='>=3.6',
     classifiers=classifiers,
 )
