@@ -48,6 +48,8 @@ pygments_style = 'friendly'
 
 html_theme = 'basic'
 
+html_favicon = './images/icon.png'
+
 html_js_files = [
   'copy.js',
   'custom.js',
