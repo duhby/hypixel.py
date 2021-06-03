@@ -36,10 +36,6 @@ extensions = [
 autodoc_member_order = 'bysource'
 autodoc_typehints = 'none'
 
-extlinks = {
-    'issue': ('https://github.com/Rapptz/discord.py/issues/%s', 'GH-'),
-}
-
 templates_path = ['_templates']
 source_suffix = '.rst'
 master_doc = 'index'
