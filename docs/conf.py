@@ -24,14 +24,14 @@ release = "0.0.1"
 # -- General configuration ---------------------------------------------------
 
 extensions = [
-    'builder',
+#     'builder',
     'sphinx.ext.autodoc',
     'sphinx.ext.extlinks',
     'sphinx.ext.intersphinx',
     'sphinx.ext.napoleon',
     'sphinxcontrib_trio',
-    'details',
-    'attributetable',
+#     'details',
+#     'attributetable',
 ]
 
 autodoc_member_order = 'bysource'
