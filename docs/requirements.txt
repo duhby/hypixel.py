@@ -1,3 +1,0 @@
-sphinx==4.0.2
-sphinxcontrib_trio==1.1.2
-sphinx-rtd-theme==0.5.2
