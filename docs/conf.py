@@ -8,9 +8,9 @@
 import os
 import sys
 from datetime import datetime
-from extensions import *
 
 sys.path.insert(0, os.path.abspath(".."))
+sys.path.append(os.path.abspath('extensions'))
 
 
 # -- Project information -----------------------------------------------------
