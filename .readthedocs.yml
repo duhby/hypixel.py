@@ -3,16 +3,16 @@ version: 2
 build:
   image: latest
 
-# sphinx:
-#   fail_on_warning: false
-#   configuration: docs/conf.py
-#   builder: html
+sphinx:
+  fail_on_warning: false
+  configuration: docs/conf.py
+  builder: html
 
-# python:
-#   version: 3.8
-#   install:
-#   - requirements: docs/requirements.txt
-#   - method: pip
-#     path: .
-#     extra_requirements:
-#     - docs
+python:
+  version: 3.8
+  install:
+  - requirements: docs/requirements.txt
+  - method: pip
+    path: .
+    extra_requirements:
+    - docs
