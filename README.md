@@ -13,7 +13,7 @@
     <img src='https://img.shields.io/discord/719949131497603123.svg?color=%237289da&label=discord&logo=discord&style=flat-square' alt='Discord Server'>
 </a>
 <a href='#'>
-    <img src='https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fduhby%2Fhypixel-api-py&count_bg=%2344cc11&icon=&icon_color=%23555555&title=hits&edge_flat=true' alt='Hit Counter'>
+    <img src='https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fduhby%2Fhypixel.py&count_bg=%2344cc11&icon=&icon_color=%23555555&title=hits&edge_flat=true' alt='Hit Counter'>
 </a>
 <a href='https://docs.dubs.rip/en/latest/'>
     <img src='https://readthedocs.org/projects/hypixelpy/badge/?version=latest&style=flat-square' alt='Documentation Status'>
