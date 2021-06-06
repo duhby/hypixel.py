@@ -19,7 +19,7 @@
     <img src='https://readthedocs.org/projects/hypixelpy/badge/?version=latest&style=flat-square' alt='Documentation Status'>
 </a>
 <a href='https://github.com/duhby/hypixel.py/blob/master/LICENSE'>
-    <img src='https://img.shields.io/github/license/duhby/hypixel.py?style=flat-square' alt='License'>
+    <img src='https://img.shields.io/github/license/duhby/hypixel.py?style=flat-square&color=bright-green' alt='License'>
 </a>
 
 <h2>Soon™</h2>
