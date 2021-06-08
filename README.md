@@ -23,5 +23,4 @@
 </a>
 
 <h2>Soon™</h2>
-
-<img src='https://github-readme-stats.vercel.app/api?username=duhby&count_private=true&theme=tokyonight&show_icons=true'>
+<p>Coming soon ok be patient</p>
