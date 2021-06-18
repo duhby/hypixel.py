@@ -22,6 +22,9 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 """
 
+import uuid
+import .client import Client
+
 __all__ = (
     'HypixelException',
     'InvalidApiKey',
@@ -35,10 +38,27 @@ class HypixelException(Exception):
     pass
 
 class InvalidApiKey(HypixelException):
-    """An exception that is raised when an invalid API key is passed into the client
+    """An exception that is raised when an invalid API key is passed into :class:`Client`
 
-    This will not be raised until a request is made if the API key is properly formatted.
+    .. note::
+
+        Will not be raised until a request is made if the key is invalid
+        and properly formatted.
+
+    Attributes
+    ----------
+    keys: List[:class:`uuid.UUID`]
+        The key(s) that caused the error to be raised.
+
+    .. note::
+
+        If multiple keys are invalid, ``keys`` will only contain
+        all the invalid keys if any of the following are true:
+            - the keys are malformed
+            - :meth:`Client.validate_keys` is called
+        Otherwise, only the key that caused the error will be included.
     """
-    def __init__(self, message: str = "Invalid API Key") -> None:
+    def __init__(self, message: str = "Invalid API Key", keys: List[uuid.UUID]) -> None:
         self.message = message
+        self.keys = keys
         super().__init__(self.message)
