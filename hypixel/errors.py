@@ -24,6 +24,7 @@ DEALINGS IN THE SOFTWARE.
 
 __all__ = (
     'HypixelException',
+    'InvalidApiKey',
 )
 
 class HypixelException(Exception):
