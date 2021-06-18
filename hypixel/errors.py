@@ -39,5 +39,6 @@ class InvalidApiKey(HypixelException):
 
     This will not be raised until a request is made if the API key is properly formatted.
     """
-    def __init__(self, message: str = "Passed API key is not valid.") -> None:
+    def __init__(self, message: str = "Invalid API Key") -> None:
         self.message = message
+        super().__init__(self.message)
