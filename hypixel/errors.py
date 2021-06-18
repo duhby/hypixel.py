@@ -32,3 +32,11 @@ class HypixelException(Exception):
     Theoretically, this can be used to catch all errors from this library.
     """
     pass
+
+class InvalidApiKey(HypixelException):
+    """An exception that is raised when an invalid API key is passed into the client
+
+    This will not be raised until a request is made if the API key is properly formatted.
+    """
+    def __init__(self, message: str = "Passed API key is not valid.") -> None:
+        self.message = message
