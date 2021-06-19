@@ -23,7 +23,7 @@ DEALINGS IN THE SOFTWARE.
 """
 
 import uuid
-from client import Client
+from .client import Client
 from typing import List
 
 __all__ = (
