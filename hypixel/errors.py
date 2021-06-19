@@ -23,7 +23,8 @@ DEALINGS IN THE SOFTWARE.
 """
 
 import uuid
-import .client import Client
+from client import Client
+from typing import List
 
 __all__ = (
     'HypixelException',
@@ -58,7 +59,7 @@ class InvalidApiKey(HypixelException):
             - :meth:`Client.validate_keys` is called
         Otherwise, only the key that caused the error will be included.
     """
-    def __init__(self, message: str = "Invalid API Key", keys: List[uuid.UUID]) -> None:
+    def __init__(self, keys: List[uuid.UUID], message: str = "Invalid API Key") -> None:
         self.message = message
         self.keys = keys
         super().__init__(self.message)
