@@ -29,21 +29,49 @@ from typing import Optional
 
 import aiohttp
 
+from .errors import *
+
 __all__ = (
     'Client',
 )
 
 class Client:
-    def __init__(
-        self,
-        key: Optional[Union[str, uuid.UUID]] = None,
-        loop: Optional[asyncio.AbstractEventLoop] = None,
-    ) -> None:
-        self.key = key
+    """Main client object; used to interact with the API.
+    
+    .. todo::
+    
+        Finish documentation for :class:`Client`.
+    """
+    def __init__(self, keys=None, *, loop=None, **options):
+        self.keys = keys
+        if self.keys:
+            await self._validate_keys(self.keys)
         self.loop = asyncio.get_event_loop() if loop is None else loop
+        self.autoclose = options.get('autoclose', True)
+        self.autoverify = options.get('autoverify', False)
+
+        # internal
         self._session = aiohttp.ClientSession(loop=self.loop)
 
     # internal
+
+    async def _validate_keys(keys, request=False):
+        # check for malformed UUID
+        for key in keys:
+            try:
+                uuid.UUID(key)
+            except ValueError:
+                raise(MalformedApiKey())
+#     async def _validate_keys(keys, request=False):
+#         invalid_keys = []
+#         for key in keys:
+#             try: 
+#                 uuid.UUID(key)
+#             except ValueError:
+#                 invalid_keys.append(key)
+#         # if request, await _request('key', raise=False)
+#         if invalid_keys:
+#             raise InvalidApiKey
 
     async def _close(self):
         await self._session.close()
