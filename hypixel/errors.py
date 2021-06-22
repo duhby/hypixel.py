@@ -23,7 +23,6 @@ DEALINGS IN THE SOFTWARE.
 """
 
 import uuid
-from .client import Client
 from typing import List
 
 __all__ = (
@@ -39,27 +38,42 @@ class HypixelException(Exception):
     pass
 
 class InvalidApiKey(HypixelException):
-    """An exception that is raised when an invalid API key is passed into :class:`Client`
+    """Base exception for invalid API key exceptions.
 
     .. note::
 
-        Will not be raised until a request is made if the key is invalid
-        and properly formatted.
+        Will not be raised until a request is made unless the key is malformed or 
+        :meth:`Client.validate_keys` is called.
+
+    .. warning::
+
+        If multiple API keys are invalid, only the first key will be included.
 
     Attributes
     ----------
-    keys: List[:class:`uuid.UUID`]
+    key: str
         The key(s) that caused the error to be raised.
-
-    .. note::
-
-        If multiple keys are invalid, ``keys`` will only contain
-        all the invalid keys if any of the following are true:
-            - the keys are malformed
-            - :meth:`Client.validate_keys` is called
-        Otherwise, only the key that caused the error will be included.
+    text: str
+        
     """
-    def __init__(self, keys: List[uuid.UUID], message: str = "Invalid API Key") -> None:
-        self.message = message
-        self.keys = keys
-        super().__init__(self.message)
+    def __init__(self, key, message=None):
+        if message is None:
+            message = "API key is not valid"
+        self.text = message
+        self.key = key
+        super().__init__(self.text)
+
+class MalformedApiKey(InvalidApiKey, ValueError):
+    """Exception that is raised when a passed API key is not in valid UUID format.
+
+    Subclass of :exc:`InvalidApiKey`
+
+    .. todo::
+
+        Finish documentation for :class:`MalformedApiKey`.
+    """
+    def __init__(self, key: str, message: str = None) -> None:
+        if message is None:
+            message = "API key is not a valid uuid string"
+        self.text = message
+        super().__init__(key, self.text)
