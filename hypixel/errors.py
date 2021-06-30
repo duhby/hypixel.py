@@ -24,8 +24,10 @@ DEALINGS IN THE SOFTWARE.
 
 __all__ = (
     'HypixelException',
+    'RateLimitError',
     'InvalidApiKey',
     'MalformedApiKey',
+    'KeyRequired',
 )
 
 class HypixelException(Exception):
