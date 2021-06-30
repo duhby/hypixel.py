@@ -24,6 +24,7 @@ DEALINGS IN THE SOFTWARE.
 
 import asyncio
 import uuid
+import atexit
 from typing import Union
 from typing import Optional
 
@@ -47,38 +48,42 @@ class Client:
         if self.keys:
             await self._validate_keys(self.keys)
         self.loop = asyncio.get_event_loop() if loop is None else loop
+        # self.loop = options.get('loop', asyncio.get_event_loop())
         self.autoclose = options.get('autoclose', True)
         self.autoverify = options.get('autoverify', False)
+        self.handle_429 = options.get('handle_429', True)
+
+        # handle options
+        if self.autoclose:
+            atexit.register(self.close)
+        if self.autoverify:
+            self._run(self._validate_keys())
 
         # internal
         self._session = aiohttp.ClientSession(loop=self.loop)
 
     # internal
 
-    async def _validate_keys(keys, request=False):
+    def _run(self, future):
+        self.loop.run_until_complete(future)
+
+    async def _validate_keys(self, request=False):
         # check for malformed UUID
-        for key in keys:
+        for key in self.keys:
             try:
                 uuid.UUID(key)
             except ValueError:
-                raise(MalformedApiKey())
-#     async def _validate_keys(keys, request=False):
-#         invalid_keys = []
-#         for key in keys:
-#             try: 
-#                 uuid.UUID(key)
-#             except ValueError:
-#                 invalid_keys.append(key)
-#         # if request, await _request('key', raise=False)
-#         if invalid_keys:
-#             raise InvalidApiKey
+                raise(MalformedApiKey(key))
+        if request:
+            for key in self.keys:
+                await self._get('key', key=key)
 
     async def _close(self):
         await self._session.close()
 
-    async def _request(self):
+    async def _get(self, path, *, key=None):
         pass
 
     def close(self):
         """Used for safely closing the aiohttp session."""
-        self.loop.run_until_complete(self._close())
+        self._run(self._close())
