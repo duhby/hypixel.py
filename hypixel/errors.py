@@ -22,12 +22,10 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 """
 
-import uuid
-from typing import List
-
 __all__ = (
     'HypixelException',
     'InvalidApiKey',
+    'MalformedApiKey',
 )
 
 class HypixelException(Exception):
@@ -35,26 +33,49 @@ class HypixelException(Exception):
 
     Theoretically, this can be used to catch all errors from this library.
     """
-    pass
+
+class RateLimitError(HypixelException):
+    """Exception raised when the rate limit is reached.
+    
+    .. note::
+
+        Will not be raised if :attr:`Client.handle_429` is ``True`` (default).
+
+    Attributes
+    ----------
+    retry_after: datetime.datetime
+        The time to wait until to retry a request.
+    text: str
+        The text of the error.
+    """
+    def __init__(self, retry_after):
+        self.retry_after = retry_after
+        self.text = (
+            "You are being rate limited, "
+            f"try again at {self.retry_after.strftime('%H:%M:%S')}"
+            )
+        super().__init__(self.text)
 
 class InvalidApiKey(HypixelException):
     """Base exception for invalid API key exceptions.
 
     .. note::
 
-        Will not be raised until a request is made unless the key is malformed or 
-        :meth:`Client.validate_keys` is called.
+        Will not be raised until a request is made unless the key is malformed
+        or :meth:`Client.validate_keys` is called.
 
     .. warning::
 
-        If multiple API keys are invalid, only the first key will be included.
+        For simplicity, if multiple API keys are invalid, only the first one
+        will be included, even if :meth:`Client.validate_keys` is called
+        multiple times with the same keys.
 
     Attributes
     ----------
     key: str
-        The key(s) that caused the error to be raised.
+        The key that caused the error to be raised.
     text: str
-        
+        The text of the error.
     """
     def __init__(self, key, message=None):
         if message is None:
@@ -66,14 +87,32 @@ class InvalidApiKey(HypixelException):
 class MalformedApiKey(InvalidApiKey, ValueError):
     """Exception that is raised when a passed API key is not in valid UUID format.
 
-    Subclass of :exc:`InvalidApiKey`
+    Inherits from :exc:`InvalidApiKey` and :exc:`ValueError`
 
-    .. todo::
-
-        Finish documentation for :class:`MalformedApiKey`.
+    Attributes
+    ----------
+    key: str
+        The key that caused the error to be raised. See :exc:`InvalidApiKey` for details.
+    text: str
+        The text of the error.
     """
-    def __init__(self, key: str, message: str = None) -> None:
-        if message is None:
-            message = "API key is not a valid uuid string"
-        self.text = message
+    def __init__(self, key):
+        self.text = "API key is not a valid uuid string"
         super().__init__(key, self.text)
+
+class KeyRequired(InvalidApiKey, TypeError):
+    """Exception that is raised when an API key is required but none were passed.
+
+    Inherits from :exc:`InvalidApiKey` and :exc:`TypeError`
+
+    Attributes
+    ----------
+    path: str
+        The path that caused the error.
+    text: str
+        The text of the error.
+    """
+    def __init__(self, path):
+        self.path = path
+        self.text = f"{self.path} requires an API key to be used"
+        super().__init__(None, self.text)
