@@ -16,3 +16,4 @@ __version__ = 'dev'
 
 from .client import *
 from .errors import *
+from .models import *
