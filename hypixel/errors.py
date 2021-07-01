@@ -36,9 +36,29 @@ class HypixelException(Exception):
     Theoretically, this can be used to catch all errors from this library.
     """
 
-class RateLimitError(HypixelException):
+class ApiError(HypixelException):
+    """Base exception for when an API request fails.
+
+    Attributes
+    ----------
+    response: aiohttp.ClientResponse
+        The client response object that was received.
+    text: str
+        The text of the error.
+    """
+    def __init__(self, response, message=None):
+        if message is None:
+            message = "An unknown error occured with the API"
+        self.text = message
+        self.response = response
+        super().__init__(self.text)
+        
+
+class RateLimitError(ApiError):
     """Exception raised when the rate limit is reached.
-    
+
+    Inherits from :exc:`ApiError`
+
     .. note::
 
         Will not be raised if :attr:`Client.handle_429` is ``True`` (default).
@@ -50,13 +70,13 @@ class RateLimitError(HypixelException):
     text: str
         The text of the error.
     """
-    def __init__(self, retry_after):
+    def __init__(self, retry_after, response):
         self.retry_after = retry_after
         self.text = (
             "You are being rate limited, "
             f"try again at {self.retry_after.strftime('%H:%M:%S')}"
             )
-        super().__init__(self.text)
+        super().__init__(response, self.text)
 
 class InvalidApiKey(HypixelException):
     """Base exception for invalid API key exceptions.
