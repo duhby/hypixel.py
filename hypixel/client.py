@@ -32,6 +32,7 @@ import aiohttp
 
 from .errors import *
 from .models import *
+from . import utils
 
 __all__ = (
     'Client',
@@ -82,7 +83,9 @@ class Client:
     async def _close(self):
         await self._session.close()
 
-    async def _get(self, path, *, key=None):
+    async def _get(self, path, *, params=None, key=None):
+        if params is None:
+            params = {}
         pass
 
     def close(self):
