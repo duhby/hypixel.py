@@ -31,6 +31,7 @@ from typing import Optional
 import aiohttp
 
 from .errors import *
+from .models import *
 
 __all__ = (
     'Client',
