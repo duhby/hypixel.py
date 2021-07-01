@@ -24,42 +24,6 @@ DEALINGS IN THE SOFTWARE.
 
 from typing import Dict
 
-class Constants:
-    ALIASES = {
-        '_id': 'id',
-        # 'uuid': 'uuid',
-        'playername': 'name',
-        'firstLogin': 'first_login',
-        'lastLogin': 'last_login',
-        'lastLogout': 'last_logout',
-        # 'displayname': 'name', # redundant, same as playername
-        'knownAliases': 'known_aliases',
-        # 'knownAliasesLower'
-        # 'achievementsOneTime'
-        # 'mcVersionRp'
-        'network_level': 'level',
-        'networkExp': 'network_exp',
-        # 'karma': 'karma'
-        # 'lastAdsenseGenerateTime'
-        # 'lastClaimedReward'
-        # 'totalRewards'
-        # 'totalDailyRewards'
-        # 'rewardStreak'
-        # 'rewardScore'
-        # 'rewardHighScore'
-        # 'friendRequestsUuid': 'friend_requests_uuid'
-        # 'achievementTracking'
-        'achievementPoints': 'achievement_points',
-        'currentGadget': 'current_gadget',
-        'channel': 'channel',
-        # 'mostRecentGameType'
-    }
-#     BEDWARS_ALIASES = {
-#     }
-#     GAMEMODES = {
-#         'bedwars': BEDWARS_ALIASES,
-#     }
-
 def _clean(data: Dict, mode=None) -> Dict:
     if mode is None:
         aliases = Constants.ALIASES
