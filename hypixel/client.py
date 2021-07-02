@@ -68,7 +68,7 @@ class Client:
         if self.autoclose:
             atexit.register(self.close)
         if self.autoverify and self.keys:
-            self._run(self._validate_keys())
+            self.validate_keys()
 
         # internal
         self._session = aiohttp.ClientSession(loop=self.loop)
@@ -87,16 +87,16 @@ class Client:
             itr = iter(self.keys)
             return next(self.itr)
 
-    async def _validate_keys(self, request=False):
+    async def _validate_keys(self):
         # check for malformed UUID
         for key in self.keys:
             try:
                 uuid.UUID(key)
             except ValueError:
                 raise(MalformedApiKey(key))
-        if request:
-            for key in self.keys:
-                await self._get('key', key_required=False, key=key)
+        # check for invalid keys
+        for key in self.keys:
+            await self._get('key', key_required=False, key=key)
 
     async def _close(self):
         await self._session.close()
@@ -150,5 +150,22 @@ class Client:
             raise ApiError(response)
 
     def close(self):
-        """Used for safely closing the aiohttp session."""
+        """Used for safely closing the aiohttp session.
+
+        .. note::
+
+            This is here for if you want to handle the closing of the
+            ClientSession by yourself if you are done using the object.
+            By default, this will be called when the script exits.
+        """
         self._run(self._close())
+
+    def validate_keys(self):
+        """Validates the keys entered into the client.
+
+        .. note::
+
+            This first checks for malformed UUIDs, and then requests a
+            key object from the API to check if the key is valid.
+        """
+        self._run(self._validate_keys())
