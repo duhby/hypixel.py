@@ -25,8 +25,12 @@ DEALINGS IN THE SOFTWARE.
 import asyncio
 import uuid
 import atexit
+import json
+from datetime import datetime
+from datetime import timedelta
 from typing import Union
 from typing import Optional
+from typing import Dict
 
 import aiohttp
 
@@ -47,8 +51,13 @@ class Client:
     """
     def __init__(self, keys=None, *, loop=None, **options):
         self.keys = keys
+        self.itr = None
         if self.keys:
-            await self._validate_keys(self.keys)
+            if isinstance(self.keys, str):
+                self.keys = [self.keys]
+            elif not isinstance(self.keys, list):
+                raise MalformedApiKey(self.keys)
+            self.itr = iter(self.keys)
         self.loop = asyncio.get_event_loop() if loop is None else loop
         # self.loop = options.get('loop', asyncio.get_event_loop())
         self.autoclose = options.get('autoclose', True)
@@ -58,7 +67,7 @@ class Client:
         # handle options
         if self.autoclose:
             atexit.register(self.close)
-        if self.autoverify:
+        if self.autoverify and self.keys:
             self._run(self._validate_keys())
 
         # internal
@@ -69,6 +78,15 @@ class Client:
     def _run(self, future):
         self.loop.run_until_complete(future)
 
+    def _next_key(self):
+        if self.itr is None:
+            raise KeyRequired('_next_key()')
+        try:
+            return next(self.itr)
+        except StopIteration:
+            itr = iter(self.keys)
+            return next(self.itr)
+
     async def _validate_keys(self, request=False):
         # check for malformed UUID
         for key in self.keys:
@@ -78,15 +96,58 @@ class Client:
                 raise(MalformedApiKey(key))
         if request:
             for key in self.keys:
-                await self._get('key', key=key)
+                await self._get('key', key_required=False, key=key)
 
     async def _close(self):
         await self._session.close()
 
-    async def _get(self, path, *, params=None, key=None):
+    async def _get(
+        self,
+        path: str,
+        *,
+        params: Optional[Dict] = None,
+        key_required: Optional[bool] = True,
+        key: Optional[str] = None,
+    ) -> Dict:
+        """Retrieves raw data from hypixel.
+
+        .. todo::
+
+            Finish documentation for :meth:`._get`
+        """
+        # TODO: handle 429
         if params is None:
             params = {}
-        pass
+
+        if key_required:
+            if self.keys is None:
+                raise KeyRequired(path)
+            params['key'] = self._next_key()
+
+        response = await self._session.get(
+            f'https://api.hypixel.net/{path}',
+            params=params,
+        )
+
+        if response.status == 200:
+            data = await response.json()
+            return {
+                'data': data,
+                'response': response,
+            }
+
+        elif response.status == 429:
+            # TODO: handle 429
+            retry_after = datetime.now() + timedelta(seconds=int(response.headers['Retry-After']))
+            raise RateLimitError(retry_after, response)
+
+        elif response.status == 403:
+            if params.get('key') is None:
+                raise KeyRequired(path)
+            raise InvalidApiKey(params['key'])
+
+        else:
+            raise ApiError(response)
 
     def close(self):
         """Used for safely closing the aiohttp session."""
