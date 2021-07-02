@@ -24,6 +24,8 @@ DEALINGS IN THE SOFTWARE.
 
 __all__ = (
     'HypixelException',
+    'PlayerNotFound',
+    'ApiError',
     'RateLimitError',
     'InvalidApiKey',
     'MalformedApiKey',
@@ -35,6 +37,20 @@ class HypixelException(Exception):
 
     Theoretically, this can be used to catch all errors from this library.
     """
+
+class PlayerNotFound(HypixelException):
+    """Exception raised when a requested player does not exist.
+
+    Attributes
+    ----------
+    player: str
+        The player requested. Could be a UUID or a username.
+    text: str
+        The text of the error.
+    """
+    def __init__(self, player):
+        self.player = player
+        self.text = f"Player '{self.player}' did not return a response."
 
 class ApiError(HypixelException):
     """Base exception for when an API request fails.
@@ -52,7 +68,6 @@ class ApiError(HypixelException):
         self.text = message
         self.response = response
         super().__init__(self.text)
-        
 
 class RateLimitError(ApiError):
     """Exception raised when the rate limit is reached.
