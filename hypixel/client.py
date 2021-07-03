@@ -79,8 +79,6 @@ class Client:
         self.loop.run_until_complete(future)
 
     def _next_key(self):
-        if self.itr is None:
-            raise KeyRequired('_next_key()')
         try:
             return next(self.itr)
         except StopIteration:
