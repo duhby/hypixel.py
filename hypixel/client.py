@@ -44,20 +44,25 @@ __all__ = (
 
 class Client:
     """Main client object; used to interact with the API.
-    
+
+    .. note::
+
+        :attr:`.keys` should not be modified directly due to internal
+        errors that can occur. :meth:`.add_key` and :meth:`.remove_key`
+        should be called instead.
+
     .. todo::
-    
+
         Finish documentation for :class:`Client`.
     """
     def __init__(self, keys=None, *, loop=None, **options):
         self.keys = keys
-        self.itr = None
         if self.keys:
             if isinstance(self.keys, str):
                 self.keys = [self.keys]
             elif not isinstance(self.keys, list):
                 raise MalformedApiKey(self.keys)
-            self.itr = iter(self.keys)
+            self._itr = iter(self.keys)
         self.loop = asyncio.get_event_loop() if loop is None else loop
         # self.loop = options.get('loop', asyncio.get_event_loop())
         self.autoclose = options.get('autoclose', True)
@@ -72,6 +77,7 @@ class Client:
 
         # internal
         self._session = aiohttp.ClientSession(loop=self.loop)
+        self._itr = None
 
     # internal
 
@@ -79,11 +85,13 @@ class Client:
         self.loop.run_until_complete(future)
 
     def _next_key(self):
+        if not self.keys
+            raise KeyRequired('_next_key()')
         try:
-            return next(self.itr)
+            return next(self._itr)
         except StopIteration:
             itr = iter(self.keys)
-            return next(self.itr)
+            return next(self._itr)
 
     async def _validate_keys(self):
         # check for malformed UUID
@@ -136,7 +144,10 @@ class Client:
 
         elif response.status == 429:
             # TODO: handle 429
-            retry_after = datetime.now() + timedelta(seconds=int(response.headers['Retry-After']))
+            retry_after = (
+                datetime.now() +
+                timedelta(seconds=int(response.headers['Retry-After']))
+            )
             raise RateLimitError(retry_after, response)
 
         elif response.status == 403:
@@ -147,7 +158,7 @@ class Client:
         else:
             raise ApiError(response)
 
-    def close(self):
+    def close(self) -> None:
         """Used for safely closing the aiohttp session.
 
         .. note::
@@ -158,12 +169,25 @@ class Client:
         """
         self._run(self._close())
 
-    def validate_keys(self):
+    def validate_keys(self) -> None:
         """Validates the keys entered into the client.
 
         .. note::
 
-            This first checks for malformed UUIDs, and then requests a
-            key object from the API to check if the key is valid.
+            This first checks for malformed UUIDs, and then requests
+            key objects from the API to check if the keys are valid.
         """
         self._run(self._validate_keys())
+
+    def add_key(self, key: str) -> None:
+        """Adds a key to :attr:`.keys` and updates internal attributes.
+        """
+
+    def remove_key(self, key: str) -> None:
+        """Removes a key from :attr:`.keys` and updates internal attributes.
+        """
+        pass
+
+    def player(self, id: str) -> None:
+        """Creates a :class:`Player` object based off of an api response.
+        """
