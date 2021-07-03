@@ -32,8 +32,8 @@ PLAYER = {
     'lastLogout': 'last_logout',
     'knownAliases': 'known_aliases',
     # 'knownAliasesLower'
-    # 'achievementsOneTime'
-    # 'mcVersionRp'
+    'achievementsOneTime': 'achievements',
+    'mcVersionRp': 'version',
     'networkExp': 'network_exp',
     # 'karma': 'karma'
     # 'lastAdsenseGenerateTime'
@@ -47,6 +47,6 @@ PLAYER = {
     # 'achievementTracking'
     'achievementPoints': 'achievement_points',
     'currentGadget': 'current_gadget',
-    'channel': 'channel',
-    # 'mostRecentGameType'
+    # 'channel': 'channel',
+    'mostRecentGameType': 'most_recent_game',
 }
