@@ -31,7 +31,7 @@ from typing import Any
 
 from .. import utils
 
-from . import Stats
+from .games import *
 from . import Socials
 from . import Achievement
 from . import Game
@@ -62,10 +62,10 @@ class Player:
     most_recent_game: Game = None
 
     def __post_init__(self):
-        # stats
-        stats = utils._clean(self._data, mode='stats')
-        stats['_data'] = self._data
-        self.stats: Stats = Stats(**stats)
+        # stats - use individual games instead of one stats class
+        # stats = utils._clean(self._data, mode='stats')
+        # stats['_data'] = self._data
+        # self.stats: Stats = Stats(**stats)
 
         # level
         self.level: float = utils.get_level(self.network_exp)
