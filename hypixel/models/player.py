@@ -35,6 +35,7 @@ from . import Stats
 from . import Socials
 from . import Achievement
 from . import Game
+from . import Parkour
 
 __all__ = (
     Player,
@@ -72,3 +73,7 @@ class Player:
         # socials
         socials = utils._clean(self._data, mode='socials')
         self.socials: Socials = Socials(**socials)
+
+        # parkour
+        parkour = utils._clean(self._data, mode='parkour')
+        self.parkour: Parkour = Parkour(**parkour)
