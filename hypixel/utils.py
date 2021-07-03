@@ -31,3 +31,6 @@ def _clean(data: Dict, mode=None) -> Dict:
         aliases = Constants.GAMEMODES[mode]
     # replaces the keys in the data with their equivalent alias
     return {aliases.get(k, k): v for k, v in data.items()}
+
+def get_level(network_exp: int) -> float:
+    return 1 + (-8750.0 + (8750 ** 2 + 5000 * network_exp) ** 0.5) / 2500
