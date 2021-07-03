@@ -67,7 +67,7 @@ class Player:
         self.stats: Stats = Stats(**stats)
 
         # level
-        self.level: int = utils.get_level(self.network_exp)
+        self.level: float = utils.get_level(self.network_exp)
 
         # socials
         socials = utils._clean(self._data, mode='socials')
