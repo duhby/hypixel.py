@@ -28,6 +28,7 @@ from typing import Optional
 from typing import List
 from typing import Dict
 from typing import Any
+from aiohttp import ClientResponse
 
 from .. import utils
 
@@ -45,6 +46,7 @@ __all__ = (
 class Player:
     _data: Dict[str, Any]
     raw: Dict[str, Any]
+    response: ClientResponse
     id: str
     uuid: str
     first_login: datetime
