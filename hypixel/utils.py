@@ -32,7 +32,7 @@ def _clean(data: Dict, mode=None) -> Dict:
     # replaces the keys in the data with their equivalent alias
     replaced_data = {aliases.get(k, k): v for k, v in data.items()}
     # removes unused keys
-    return {key: replaced_data[key] for key in aliases.keys()}
+    return dict((key, replaced_data[key]) for key in [k for k in aliases.keys() if k in replaced_data])
 
 def get_level(network_exp: int) -> float:
     return 1 + (-8750.0 + (8750 ** 2 + 5000 * network_exp) ** 0.5) / 2500
