@@ -39,6 +39,8 @@ from . import Achievement
 from . import Game
 from . import Parkour
 
+from . import Bedwars
+
 __all__ = (
     Player,
 )
@@ -101,8 +103,9 @@ class Player:
         A :class:`Socials` object of the player's linked social accounts.
     parkour: Parkour
         A :class:`Parkour` object of the player's parkour times.
+    bedwars: Bedwars
+        A :class:`Bedwars` object of the player's bedwars stats.
     """
-    _data: Dict[str, Any]
     raw: Dict[str, Any]
     response: ClientResponse
     id: str
@@ -122,10 +125,13 @@ class Player:
     most_recent_game: Game = None
 
     def __post_init__(self):
-        # todo: use individual games instead of one stats class
-        # stats = utils._clean(self._data, mode='stats')
-        # stats['_data'] = self._data
-        # self.stats: Stats = Stats(**stats)
+        player_data = self.raw['player']
+        stats = player_data.get('stats')
+        if stats:
+            if stats.get('Bedwars'):
+                input_data = utils._clean(stats['bedwars'], 'bedwars')
+                input_data['raw'] = self.raw
+                self.bedwars = Bedwars(**input_data)
 
         # level
         self.level: float = utils.get_level(self.network_exp)
