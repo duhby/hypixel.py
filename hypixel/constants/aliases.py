@@ -50,3 +50,10 @@ PLAYER = {
     'channel': 'channel',
     'mostRecentGameType': 'most_recent_game',
 }
+
+BEDWARS = {
+}
+
+GAMEMODES = {
+    'bedwars': BEDWARS,
+}
