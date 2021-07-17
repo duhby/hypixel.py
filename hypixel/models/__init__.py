@@ -8,5 +8,4 @@ A module used for internally creating models.
 MIT License, see LICENSE for more details.
 """
 
-__all__ = (
-)
+from .player import Player
