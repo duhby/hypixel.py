@@ -138,7 +138,7 @@ class Client:
         if response.status == 200:
             data = await response.json()
             return {
-                'data': data,
+                'raw': data,
                 'response': response,
             }
 
@@ -182,12 +182,48 @@ class Client:
     def add_key(self, key: str) -> None:
         """Adds a key to :attr:`.keys` and updates internal attributes.
         """
+        if isinstance(key, str):
+            self.keys.append(key)
+            self._itr = iter(self.keys)
+        else:
+            raise MalformedApiKey(key)
 
     def remove_key(self, key: str) -> None:
         """Removes a key from :attr:`.keys` and updates internal attributes.
         """
-        pass
+        if isinstance(key, str):
+            self.keys.append(key)
+            self._itr = iter(self.keys)
+        else:
+            raise MalformedApiKey(key)
 
-    def player(self, id: str) -> None:
-        """Creates a :class:`Player` object based off of an api response.
+    def player(self, id: str) -> Player:
+        """Creates a :class:`Player` object based off an api response.
         """
+        if not isinstance(id: str):
+            raise TypeError("Given username or uuid is not a string.")
+        try:
+            uuid.UUID(id)
+        except ValueError:
+            try:
+                uuid = utils.getUUID(name=id)
+            except ValueError:
+                raise ValueError(f"Invalid username or uuid: {id}")                
+        else:
+            uuid = id
+
+        params = {
+            'uuid': uuid,
+        }
+        data = self._run(self._get('player', params=params))
+
+        response = data['response']
+        raw = data['raw']
+        if not raw['player']:
+            raise PlayerNotFound(id)
+        clean_data = utils._clean(raw['player'])
+        input_data = {
+            'raw': raw,
+            'response': response,
+        }.update(clean_data)
+        return Player(**input_data)
