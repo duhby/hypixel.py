@@ -130,7 +130,7 @@ class Player:
         if stats:
             if stats.get('Bedwars'):
                 input_data = utils._clean(stats['bedwars'], 'bedwars')
-                input_data['raw'] = self.raw
+                input_data['_raw'] = self.raw
                 self.bedwars = Bedwars(**input_data)
 
         # level
