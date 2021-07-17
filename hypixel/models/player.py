@@ -41,10 +41,6 @@ from . import Parkour
 
 from . import Bedwars
 
-__all__ = (
-    Player,
-)
-
 @dataclass
 class Player:
     """Base model for player stats.
