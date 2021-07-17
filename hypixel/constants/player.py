@@ -24,7 +24,7 @@ DEALINGS IN THE SOFTWARE.
 
 PLAYER = {
     '_id': 'id',
-    # 'uuid': 'uuid',
+    'uuid': 'uuid',
     'firstLogin': 'first_login',
     'displayname': 'name',
     # 'playername': 'name', # lowercase version of displayname
@@ -33,9 +33,10 @@ PLAYER = {
     'knownAliases': 'known_aliases',
     # 'knownAliasesLower'
     'achievementsOneTime': 'achievements',
-    'mcVersionRp': 'version',
+    'achievementPoints': 'achievement_points',
     'networkExp': 'network_exp',
-    # 'karma': 'karma'
+    'karma': 'karma',
+    'mcVersionRp': 'version',
     # 'lastAdsenseGenerateTime'
     # 'lastClaimedReward'
     # 'totalRewards'
@@ -45,8 +46,7 @@ PLAYER = {
     # 'rewardHighScore'
     # 'friendRequestsUuid': 'friend_requests_uuid'
     # 'achievementTracking'
-    'achievementPoints': 'achievement_points',
     'currentGadget': 'current_gadget',
-    # 'channel': 'channel',
+    'channel': 'channel',
     'mostRecentGameType': 'most_recent_game',
 }
