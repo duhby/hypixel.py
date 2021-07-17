@@ -9,3 +9,4 @@ MIT License, see LICENSE for more details.
 """
 
 from .player import Player
+from .bedwars import Bedwars
