@@ -29,10 +29,10 @@ def _clean(data: Dict, mode=None) -> Dict:
         aliases = Constants.ALIASES
     else:
         aliases = Constants.GAMEMODES[mode]
-    # replaces the keys in the data with their equivalent alias
+    # replaces keys in data with their formatted alias
     replaced_data = {aliases.get(k, k): v for k, v in data.items()}
-    # removes unused keys
-    return dict((key, replaced_data[key]) for key in [k for k in aliases.keys() if k in replaced_data])
+    # removes unused/unsupported items
+    return {key: replaced_data[key] for key in replaced_data if key in aliases.values()}
 
 def get_level(network_exp: int) -> float:
     return 1 + (-8750.0 + (8750 ** 2 + 5000 * network_exp) ** 0.5) / 2500
