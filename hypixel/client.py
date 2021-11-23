@@ -85,7 +85,7 @@ class Client:
         self.loop.run_until_complete(future)
 
     def _next_key(self):
-        if not self.keys
+        if not self.keys:
             raise KeyRequired('_next_key()')
         try:
             return next(self._itr)
