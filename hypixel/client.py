@@ -90,7 +90,7 @@ class Client:
         try:
             return next(self._itr)
         except StopIteration:
-            itr = iter(self.keys)
+            self._itr = iter(self.keys)
             return next(self._itr)
 
     async def _validate_keys(self):
