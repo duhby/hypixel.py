@@ -19,7 +19,7 @@ classifiers = [
     'Natural Language :: English',
     'Intended Audience :: Developers',
     'Operating System :: OS Independent',
-    'Programming Language :: Python :: 3',
+    'Programming Language :: Python :: 3.7',
     'License :: OSI Approved :: MIT License',
 ]
 
@@ -39,5 +39,5 @@ setup(
     url='https://github.com/duhby/hypixel.py',
     classifiers=classifiers,
     install_requires=requirements,
-    python_requires='>=3.6',
+    python_requires='>=3.7',
 )
