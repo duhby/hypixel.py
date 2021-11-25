@@ -23,7 +23,7 @@ DEALINGS IN THE SOFTWARE.
 """
 
 import asyncio
-import uuid
+from uuid import UUID
 import atexit
 import json
 from datetime import datetime
@@ -31,6 +31,7 @@ from datetime import timedelta
 from typing import Union
 from typing import Optional
 from typing import Dict
+from typing import List
 
 import aiohttp
 
@@ -56,52 +57,59 @@ class Client:
         Finish documentation for :class:`Client`.
     """
     def __init__(self, keys=None, *, loop=None, **options):
-        self.keys = keys
-        if self.keys:
-            if isinstance(self.keys, str):
-                self.keys = [self.keys]
-            elif not isinstance(self.keys, list):
-                raise MalformedApiKey(self.keys)
-            self._itr = iter(self.keys)
+        self._keys = keys
+        if self._keys:
+            if isinstance(self._keys, str):
+                self._keys = [self._keys]
+            elif not isinstance(self._keys, list):
+                raise MalformedApiKey(self._keys)
+            self._itr = iter(self._keys)
+        else:
+            self._itr = None
         self.loop = asyncio.get_event_loop() if loop is None else loop
         # self.loop = options.get('loop', asyncio.get_event_loop())
         self.autoclose = options.get('autoclose', True)
         self.autoverify = options.get('autoverify', False)
-        self.handle_429 = options.get('handle_429', True)
+        self.handle_rate_limits = options.get('handle_rate_limits', True)
 
         # handle options
         if self.autoclose:
             atexit.register(self.close)
-        if self.autoverify and self.keys:
+        if self.autoverify and self._keys:
             self.validate_keys()
 
         # internal
         self._session = aiohttp.ClientSession(loop=self.loop)
-        self._itr = None
+
+    # properties
+
+    @property
+    def keys(self) -> List[str]:
+        return self._keys
 
     # internal
 
     def _run(self, future):
-        self.loop.run_until_complete(future)
+        return self.loop.run_until_complete(future)
 
     def _next_key(self):
-        if not self.keys:
+        if not self._keys:
             raise KeyRequired('_next_key()')
         try:
             return next(self._itr)
         except StopIteration:
-            self._itr = iter(self.keys)
+            self._itr = iter(self._keys)
             return next(self._itr)
 
     async def _validate_keys(self):
         # check for malformed UUID
-        for key in self.keys:
+        for key in self._keys:
             try:
                 uuid.UUID(key)
             except ValueError:
                 raise(MalformedApiKey(key))
         # check for invalid keys
-        for key in self.keys:
+        for key in self._keys:
             await self._get('key', key_required=False, key=key)
 
     async def _close(self):
@@ -126,7 +134,7 @@ class Client:
             params = {}
 
         if key_required:
-            if self.keys is None:
+            if self._keys is None:
                 raise KeyRequired(path)
             params['key'] = self._next_key()
 
@@ -134,13 +142,8 @@ class Client:
             f'https://api.hypixel.net/{path}',
             params=params,
         )
-
         if response.status == 200:
-            data = await response.json()
-            return {
-                'raw': data,
-                'response': response,
-            }
+            return await response.json()
 
         elif response.status == 429:
             # TODO: handle 429
@@ -183,8 +186,8 @@ class Client:
         """Adds a key to :attr:`.keys` and updates internal attributes.
         """
         if isinstance(key, str):
-            self.keys.append(key)
-            self._itr = iter(self.keys)
+            self._keys.append(key)
+            self._itr = iter(self._keys)
         else:
             raise MalformedApiKey(key)
 
@@ -192,38 +195,38 @@ class Client:
         """Removes a key from :attr:`.keys` and updates internal attributes.
         """
         if isinstance(key, str):
-            self.keys.append(key)
-            self._itr = iter(self.keys)
+            self._keys.append(key)
+            self._itr = iter(self._keys)
         else:
             raise MalformedApiKey(key)
 
     def player(self, id: str) -> Player:
         """Creates a :class:`Player` object based off an api response.
         """
-        if not isinstance(id: str):
-            raise TypeError("Given username or uuid is not a string.")
+        if not isinstance(id, str):
+            raise TypeError('Given username or uuid is not a string.')
         try:
-            uuid.UUID(id)
+            UUID(id)
         except ValueError:
             try:
-                uuid = utils.getUUID(name=id)
+                uuid = self._run(utils._get_uuid(session=self._session, name=id))
             except ValueError:
-                raise ValueError(f"Invalid username or uuid: {id}")                
+                raise ValueError(f'Invalid username or uuid: {id}')                
         else:
             uuid = id
 
         params = {
             'uuid': uuid,
         }
-        data = self._run(self._get('player', params=params))
+        response = self._run(self._get('player', params=params))
 
-        response = data['response']
-        raw = data['raw']
-        if not raw['player']:
+        if not response['player']:
             raise PlayerNotFound(id)
-        clean_data = utils._clean(raw['player'])
-        input_data = {
-            'raw': raw,
-            'response': response,
-        }.update(clean_data)
-        return Player(**input_data)
+
+        data = {
+            'raw': response,
+            '_data': response['player']
+        }
+        clean_data = utils._clean(response['player'])
+        data.update(clean_data)
+        return Player(**data)
