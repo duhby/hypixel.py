@@ -22,120 +22,110 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 """
 
-from dataclasses import dataclass
-
+from dataclasses import dataclass, fields, field
 from datetime import datetime
 from typing import Optional
-from typing import List
-from typing import Dict
-from typing import Any
-from aiohttp import ClientResponse
 
 from .. import utils
 
-from .games import *
-from . import Socials
-from . import Achievement
-from . import Game
-from . import Parkour
+from .playerdata import Arcade
+from .playerdata import Bedwars
+from .playerdata import Socials
 
-from . import Bedwars
+__all__ = (
+    'Player',
+)
 
 @dataclass
 class Player:
-    """Base model for player stats.
-
-    Attributes
-    ----------
-    raw: Dict[str, Any]
-        The raw json response data.
-    response: ClientResponse
-        The raw response object returned from the API.
-    id: str
-        The Hypixel ID of the player.
-    uuid: str
-        The Mojang UUID of the player.
-    first_login: datetime
-        The first login time of the player.
-    name: str
-        The Minecraft username of the player.
-
-        .. note::
-
-            This won't always be up to date with Mojang's servers, as it
-            only updates when the player logs on Hypixel.
-    last_login: datetime
-        The last login time of the player.
-    last_logout: datetime
-        The last logout time of the player.
-    known_aliases: List[str]
-        A list of known past usernames.
-    achievements: List[Achievement]
-        A list of current achievements the player has.
-    achievement_points: int:
-        The currnet amount of achievement points the player has.
-    network_exp: int
-        The current amount of network experience the player has.
-    karma: int
-        The current amount of karma the player has.
-    version: Optional[str]
-        The last Minecraft version the player logged in using.
-
-        .. warning::
-
-            Sometimes returns ``None`` due to the fact that players
-            could have logged into the server with an unrecognized
-            server protocol at the time which doesn't want to fix
-            itself afterwards deeming this value as unstable.
-    current_gadget: Optional[str]
-        The current gadget the player has equipped.
-    channel: Optional[str]
-        The current channel the player is in.
-    most_recent_game: Optional[Game]
-        The most recent game type of the player.
-    level: float
-        The current network level of the player. Up to 2 decimal places.
-    socials: Socials
-        A :class:`Socials` object of the player's linked social accounts.
-    parkour: Parkour
-        A :class:`Parkour` object of the player's parkour times.
-    bedwars: Bedwars
-        A :class:`Bedwars` object of the player's bedwars stats.
-    """
-    raw: Dict[str, Any]
-    response: ClientResponse
-    id: str
-    uuid: str
-    first_login: datetime
-    name: str
-    last_login: datetime
-    last_logout: datetime
-    known_aliases: List[str]
-    achievements: List[Achievement] # should always exist because of 'general_first_join'
-    achievement_points: int
-    network_exp: int
-    karma: int
+    _data: dict = field(repr=False)
+    raw: dict = field(repr=False)
+    id: str = None
+    uuid: str = None
+    first_login: datetime = None
+    name: str = None
+    last_login: datetime = None
+    last_logout: datetime = None
+    known_aliases: list = None
+    # todo: change type to List[Achievement]
+    achievements: list = field(default_factory=list, repr=False)
+    achievements_multiple: dict = field(default_factory=dict, repr=False)
+    network_exp: int = 0 # not sure why hypixel returns a float.. oh well
+    karma: int = 0
     version: str = None
+    achievement_points: int = 0
     current_gadget: str = None
     channel: str = None
-    most_recent_game: Game = None
+    # todo: change type to Game
+    most_recent_game: str = None
+
+    @property
+    def rank(self) -> Optional[str]:
+        """
+        returns:
+        None
+        VIP
+        VIP+
+        MVP
+        MVP+
+        MVP++
+        YOUTUBE
+        PIG+++
+        MOJANG
+        GAME MASTER
+        ADMIN
+        OWNER
+        """
+        display_rank = None
+        pr = self.raw.get('player', {}).get('newPackageRank')
+        mpr = self.raw.get('player', {}).get('monthlyPackageRank')
+        prefix = self.raw.get('player', {}).get('prefix')
+        rank = self.raw.get('player', {}).get('rank')
+        if prefix:
+            return utils.clean_rank_prefix(prefix)
+        elif rank:
+            if rank == 'YOUTUBER':
+                return 'YOUTUBE'
+            return rank.replace('_', ' ')
+        elif mpr != 'SUPERSTAR':
+            if not pr or pr == 'NONE':
+                return None
+            else:
+                display_rank = pr
+        else:
+            return 'MVP++'
+        return display_rank.replace('_', '').replace('PLUS', '+')
 
     def __post_init__(self):
-        player_data = self.raw['player']
-        stats = player_data.get('stats')
-        if stats:
-            if stats.get('Bedwars'):
-                input_data = utils._clean(stats['bedwars'], 'bedwars')
-                input_data['_raw'] = self.raw
-                self.bedwars = Bedwars(**input_data)
+        # type conversion
+        for f in fields(self):
+            value = getattr(self, f.name)
+            if not value:
+                continue
+            elif not isinstance(value, f.type):
+                if f.type is datetime:
+                    unix = value / 1e3 # miliseconds to unix time
+                    setattr(self, f.name, datetime.fromtimestamp(unix))
+                else:
+                    setattr(self, f.name, f.type(value))
 
         # level
-        self.level: float = utils.get_level(self.network_exp)
+        self.level: int = utils.get_level(self.network_exp)
 
         # socials
-        socials = utils._clean(self._data, mode='socials')
-        self.socials: Socials = Socials(**socials)
+        social_data = self._data.get('socialMedia', {}).get('links')
+        if social_data:
+            social_data = utils._clean(social_data, mode='SOCIALS')
+            self.socials = Socials(**social_data)
+        else:
+            self.socials = Socials({})
 
-        # parkour
-        parkour = utils._clean(self._data, mode='parkour')
-        self.parkour: Parkour = Parkour(**parkour)
+        # gamemodes
+        arcade_data = utils._clean(self._data, mode='ARCADE')
+        self.arcade = Arcade(**arcade_data)
+
+        bedwars_data = utils._clean(self._data, mode='BEDWARS')
+        self.bedwars = Bedwars(**bedwars_data)
+
+        # tkr_data = utils._clean(self._data, mode='TKR')
+        # self.tkr = TurboKartRacers(**tkr_data)
