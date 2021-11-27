@@ -24,7 +24,8 @@ classifiers = [
 ]
 
 packages = [
-    'hypixel'
+    'hypixel',
+    'hypixel.models',
 ]
 
 setup(
