@@ -1,14 +1,5 @@
-<h1>
-    hypixel.py
-</h1>
-
-<h4>
-    A fully asynchronous, feature-rich, Hypixel API wrapper inspired by 
-    <a href='https://github.com/Rapptz/discord.py'>discord.py</a>, 
-    <a href='https://github.com/Obsidion-dev/asyncpixel'>asyncpixel</a>, and 
-    <a href='https://github.com/myerfire/hypixelaPY'>hypixelaPY</a>
-</h4>
-
+<div align="center">
+<h1>hypixel.py</h1>
 <a href='https://discord.gg/PtsBc4b'>
     <img src='https://img.shields.io/discord/719949131497603123.svg?color=%237289da&label=discord&logo=discord&style=flat-square' alt='Discord Server'>
 </a>
@@ -21,6 +12,16 @@
 <a href='https://github.com/duhby/hypixel.py/blob/master/LICENSE'>
     <img src='https://img.shields.io/github/license/duhby/hypixel.py?style=flat-square&color=bright-green' alt='License'>
 </a>
+<h2>An asynchronous, feature-rich, Hypixel API wrapper for Python</h2>
+<br>
+</div>
 
-<h2>Soon™</h2>
+<!--
+<h4>
+    Inspired by 
+    <a href='https://github.com/Rapptz/discord.py'>discord.py</a> and
+    <a href='https://github.com/Hypixel-API-Reborn/hypixel-api-reborn'>hypixel-api-reborn</a>
+</h4>
+-->
+
 <p>Coming soon ok be patient</p>
