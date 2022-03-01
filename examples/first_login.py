@@ -10,7 +10,7 @@ async def main():
     async with client:
         try:
             player = await client.player('duhby')
-            print(player.first_login.strftime("%A, %b %d %Y"))
+            print(player.first_login.strftime('%A, %b %d %Y'))
         except HypixelException as error:
             print(error)
 
