@@ -12,7 +12,7 @@ async def main():
             key = await client.key('api-key')
             print(key.queries)
         except HypixelException as error:
-            print(error.text)
+            print(error)
 
 if __name__ == '__main__':
     asyncio.run(main())
