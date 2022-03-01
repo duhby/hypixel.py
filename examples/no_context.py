@@ -9,7 +9,7 @@ async def main():
     try:
         "Do stuff here"
     except HypixelException as error:
-        print(error.text)
+        print(error)
 
     # make sure this is awaited before the program ends
     await client.close()
