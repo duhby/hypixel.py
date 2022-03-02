@@ -30,7 +30,10 @@ from .. import utils
 
 from .playerdata import Arcade
 from .playerdata import Bedwars
+from .playerdata import Duels
+from .playerdata import Paintball
 from .playerdata import Socials
+from .playerdata import TurboKartRacers
 
 __all__ = (
     'Player',
@@ -58,6 +61,14 @@ class Player:
     channel: str = None
     # todo: change type to Game
     most_recent_game: str = None
+    level: int = utils.get_level(network_exp)
+    # gamemodes
+    arcade: Arcade = field(init=False)
+    bedwars: Bedwars = field(init=False)
+    duels: Duels = field(init=False)
+    paintball: Paintball = field(init=False)
+    socials: Socials = field(init=False)
+    tkr: TurboKartRacers = field(init=False)
 
     @property
     def rank(self) -> Optional[str]:
@@ -99,7 +110,10 @@ class Player:
     def __post_init__(self):
         # type conversion
         for f in fields(self):
-            value = getattr(self, f.name)
+            try:
+                value = getattr(self, f.name)
+            except AttributeError:
+                continue
             if not value:
                 continue
             elif not isinstance(value, f.type):
@@ -109,23 +123,15 @@ class Player:
                 else:
                     setattr(self, f.name, f.type(value))
 
-        # level
-        self.level: int = utils.get_level(self.network_exp)
-
-        # socials
-        social_data = self._data.get('socialMedia', {}).get('links')
-        if social_data:
-            social_data = utils._clean(social_data, mode='SOCIALS')
-            self.socials = Socials(**social_data)
-        else:
-            self.socials = Socials({})
-
-        # gamemodes
-        arcade_data = utils._clean(self._data, mode='ARCADE')
-        self.arcade = Arcade(**arcade_data)
-
-        bedwars_data = utils._clean(self._data, mode='BEDWARS')
-        self.bedwars = Bedwars(**bedwars_data)
-
-        # tkr_data = utils._clean(self._data, mode='TKR')
-        # self.tkr = TurboKartRacers(**tkr_data)
+        # playerdata
+        modes = {
+            'arcade': Arcade,
+            'bedwars': Bedwars,
+            'duels': Duels,
+            'paintball': Paintball,
+            'socials': Socials,
+            'tkr': TurboKartRacers,
+        }
+        for mode, model in modes.items():
+            data = utils._clean(self._data, mode=mode.upper())
+            setattr(self, mode, model(**data))
