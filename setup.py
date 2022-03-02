@@ -15,16 +15,17 @@ classifiers = [
     #   3 - Alpha
     #   4 - Beta
     #   5 - Production/Stable
-    # 'Development Status :: 3 - Alpha',
+    'Development Status :: 3 - Alpha',
     'Natural Language :: English',
     'Intended Audience :: Developers',
     'Operating System :: OS Independent',
-    'Programming Language :: Python :: 3',
+    'Programming Language :: Python :: 3.7',
     'License :: OSI Approved :: MIT License',
 ]
 
 packages = [
-    'hypixel'
+    'hypixel',
+    'hypixel.models',
 ]
 
 setup(
@@ -39,5 +40,5 @@ setup(
     url='https://github.com/duhby/hypixel.py',
     classifiers=classifiers,
     install_requires=requirements,
-    python_requires='>=3.6',
+    python_requires='>=3.7',
 )
