@@ -22,7 +22,6 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 """
 
-import asyncio
 import functools
 import time
 
@@ -49,7 +48,7 @@ def _clean(data: dict, mode: str) -> dict:
         data = data.get('stats', {}).get('GingerBread', {})
 
     elif mode == 'BEDWARS':
-        level = data.get('achievement_stats', {}).get('bedwars_level')
+        level = data.get('achievement_stats', {}).get('bedwars_level', 1)
         data = data.get('stats', {}).get('Bedwars', {})
         data['bedwars_level'] = level
         # copy here instead of before and after because BedwarsMode classes
@@ -58,6 +57,9 @@ def _clean(data: dict, mode: str) -> dict:
 
     elif mode == 'DUELS':
         data = data.get('stats', {}).get('Duels', {})
+
+    elif mode == 'PAINTBALL':
+        data = data.get('stats', {}).get('Paintball', {})
 
     elif mode == 'SOCIALS':
         data = data.get('socialMedia', {}).get('links', {})
