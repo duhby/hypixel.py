@@ -1,5 +1,5 @@
 <div align="center">
-<h1>hypixel.py</h1>
+<h1>hypixel.py (alpha)</h1>
 <a href='https://discord.gg/PtsBc4b'>
     <img src='https://img.shields.io/discord/719949131497603123.svg?color=%237289da&label=discord&logo=discord&style=flat-square' alt='Discord Server'>
 </a>
@@ -16,12 +16,14 @@
 <br>
 </div>
 
-<!--
-<h4>
-    Inspired by 
-    <a href='https://github.com/Rapptz/discord.py'>discord.py</a> and
-    <a href='https://github.com/Hypixel-API-Reborn/hypixel-api-reborn'>hypixel-api-reborn</a>
-</h4>
--->
-
-<p>Coming soon ok be patient</p>
+<h2>Why hypixel.py?</h2>
+<h3>Blazing fast.</h3>
+<p>Hypixel.py is fast and lightweight, using built in functions to achieve async timed lru caching, fast nested dataclass json sterilization, modern sane rate limit handling, and more.</p>
+<h3>Fully asynchronous.</h3>
+<p>Hypixel.py is fully asynchronous and uses modern async/await python syntax. This means your program won't have to wait for your api requests to finish before running any more code.</p>
+<h3>Minimal depdencies.</h3>
+<p>Hypixel.py uses built in libraries for everything possible so you don't need to worry about relying on more libraries than necessary.</p>
+<h3>Marvelously clean syntax.</h3>
+<p>Hypixel.py uses dot syntax for all of its models so you can easily access any data point without worrying about dictionaries and strings.</p>
+<h3>Highly maintained documentation.</h3>
+<p>Hypixel.py's documentation is highly maintained and provides a plentiful amount of examples to get you started.</p>
