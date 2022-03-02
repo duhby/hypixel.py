@@ -10,4 +10,6 @@ MIT License, see LICENSE for more details.
 
 from .arcade import Arcade
 from .bedwars import Bedwars
+from .duels import Duels
 from .socials import Socials
+from .tkr import TurboKartRacers
