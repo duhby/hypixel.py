@@ -29,21 +29,31 @@ from ... import utils
 class CaptureTheWool:
     captures: int = 0
     kills_assists: int = 0
-    # achievements: int = 0
 
 @dataclass
 class HypixelSays:
     rounds: int = 0
     wins: int = 0
-
-    # math
-    @property
-    def losses(self) -> int:
-        return rounds - wins
+    losses: int = rounds - wins
 
     @property
     def wlr(self) -> float:
         return utils.safe_div(self.wins, self.losses)
+
+@dataclass
+class MiniWalls:
+    kills: int = 0
+    deaths: int = 0
+    wins: int = 0
+    final_kills: int = 0
+    wither_kills: int = 0
+    wither_damage: int = 0
+    arrows_hit: int = 0
+    arrows_shot: int = 0
+
+    @property
+    def kd(self) -> float:
+        return utils.safe_div(self.kills, self.deaths)
 
 @dataclass
 class PartyGames:
@@ -52,7 +62,6 @@ class PartyGames:
     wins_2: int = 0
     wins_3: int = 0
 
-    # math
     @property
     def total_wins(self) -> int:
         return self.wins + self.wins_2 + self.wins_3
@@ -61,13 +70,30 @@ class PartyGames:
 class Arcade:
     _data: dict = field(repr=False)
     coins: int = 0
+    # gamemodes
+    ctw: CaptureTheWool = field(init=False)
+    hypixel_says: HypixelSays = field(init=False)
+    mini_walls: MiniWalls = field(init=False)
+    party_games: PartyGames = field(init=False)
 
     def __post_init__(self):
-        ctw_data = utils._clean(self._data, mode='CTW')
-        self.ctw = CaptureTheWool(**ctw_data)
+        # type conversion
+        for f in fields(self):
+            try:
+                value = getattr(self, f.name)
+            except AttributeError:
+                continue
+            if not value:
+                continue
+            elif not isinstance(value, f.type):
+                setattr(self, f.name, f.type(value))
 
-        hypixel_says_data = utils._clean(self._data, mode='HYPIXEL_SAYS')
-        self.hypixel_says = HypixelSays(**hypixel_says_data)
-
-        party_games_data = utils._clean(self._data, mode='PARTY_GAMES')
-        self.party = PartyGames(**party_games_data)
+        modes = {
+            'ctw': CaptureTheWool,
+            'hypixel_says': HypixelSays,
+            'mini_walls': MiniWalls,
+            'party_games': PartyGames,
+        }
+        for mode, model in modes.items():
+            data = utils._clean(self._data, mode=mode.upper())
+            setattr(self, mode, model(**data))
