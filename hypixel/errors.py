@@ -22,14 +22,20 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 """
 
+from __future__ import annotations
+from typing import Any
+
 __all__ = (
     'HypixelException',
+    'InvalidPlayerId',
     'PlayerNotFound',
+    'KeyNotFound',
     'ApiError',
     'RateLimitError',
     'InvalidApiKey',
     'MalformedApiKey',
     'KeyRequired',
+    'ClosedSession',
 )
 
 class HypixelException(Exception):
@@ -38,8 +44,27 @@ class HypixelException(Exception):
     Theoretically, this can be used to catch all errors from this library.
     """
 
+class InvalidPlayerId(HypixelException):
+    """Raised when a passed player id does not have a string value.
+
+    Inherits from :exc:`HypixelException`
+
+    Attributes
+    ----------
+    id: str
+        The invalid player id.
+    text: str
+        The text of the error.
+    """
+    def __init__(self, player_id):
+        self.id = player_id
+        self.text = f"passed player id '{self.id}' is not a string"
+        super().__init__(self.text)
+
 class PlayerNotFound(HypixelException):
-    """Exception raised when a requested player does not exist.
+    """Raised when a requested player does not exist.
+
+    Inherits from :exc:`HypixelException`
 
     Attributes
     ----------
@@ -50,33 +75,57 @@ class PlayerNotFound(HypixelException):
     """
     def __init__(self, player):
         self.player = player
-        self.text = f"Player '{self.player}' did not return a response."
+        self.text = f"player '{self.player}' did not yield a response"
+        super().__init__(self.text)
+
+class KeyNotFound(HypixelException):
+    """Raised when a requested key does not exist.
+
+    Inherits from :exc:`HypixelException`
+
+    Attributes
+    ----------
+    key: str
+        The key requested.
+    text: str
+        The text of the error.
+    """
+    def __init__(self, key):
+        self.key = key
+        self.text = f"key '{self.key}' did not yield a response"
+        super().__init__(self.text)
 
 class ApiError(HypixelException):
     """Base exception for when an API request fails.
 
+    Inherits from :exc:`HypixelException`
+
     Attributes
     ----------
+    api: str
+        The API that caused the error.
     response: aiohttp.ClientResponse
         The client response object that was received.
     text: str
         The text of the error.
     """
-    def __init__(self, response, message=None):
+    def __init__(self, response, api: str, message=None):
         if message is None:
-            message = "An unknown error occured with the API"
+            message = f"an unknown error occured with the {api} API"
+        self.api = api
         self.text = message
         self.response = response
         super().__init__(self.text)
 
 class RateLimitError(ApiError):
-    """Exception raised when the rate limit is reached.
+    """Raised when the rate limit is reached.
 
     Inherits from :exc:`ApiError`
 
     .. note::
 
-        Will not be raised if :attr:`Client.handle_429` is ``True`` (default).
+        Will not be raised if :attr:`Client.handle_rate_limits` is
+        ``True`` (default).
 
     Attributes
     ----------
@@ -88,7 +137,7 @@ class RateLimitError(ApiError):
     def __init__(self, retry_after, response):
         self.retry_after = retry_after
         self.text = (
-            "You are being rate limited, "
+            "you are being rate limited, "
             f"try again at {self.retry_after.strftime('%H:%M:%S')}"
             )
         super().__init__(response, self.text)
@@ -96,16 +145,18 @@ class RateLimitError(ApiError):
 class InvalidApiKey(HypixelException):
     """Base exception for invalid API key exceptions.
 
+    Inherits from :exc:`HypixelException`
+
     .. note::
 
-        Will not be raised until a request is made unless the key is malformed
-        or :meth:`Client.validate_keys` is called.
+        Will not be raised until a request is made unless the key is
+        malformed or :meth:`Client.validate_keys` is called.
 
     .. warning::
 
-        For simplicity, if multiple API keys are invalid, only the first one
-        will be included, even if :meth:`Client.validate_keys` is called
-        multiple times with the same keys.
+        For simplicity, if multiple API keys are invalid, only the first
+        one will be included, even if :meth:`Client.validate_keys` is
+        called multiple times with the same keys.
 
     Attributes
     ----------
@@ -122,14 +173,16 @@ class InvalidApiKey(HypixelException):
         super().__init__(self.text)
 
 class MalformedApiKey(InvalidApiKey, ValueError):
-    """Exception that is raised when a passed API key is not in valid UUID format.
+    """Raised when a passed API key is not in valid UUID
+    format.
 
     Inherits from :exc:`InvalidApiKey` and :exc:`ValueError`
 
     Attributes
     ----------
     key: str
-        The key that caused the error to be raised. See :exc:`InvalidApiKey` for details.
+        The key that caused the error to be raised. See
+        :exc:`InvalidApiKey` for details.
     text: str
         The text of the error.
     """
@@ -138,7 +191,8 @@ class MalformedApiKey(InvalidApiKey, ValueError):
         super().__init__(key, self.text)
 
 class KeyRequired(InvalidApiKey, TypeError):
-    """Exception that is raised when an API key is required but none were passed.
+    """Raised when an API key is required but none were
+    passed.
 
     Inherits from :exc:`InvalidApiKey` and :exc:`TypeError`
 
@@ -153,3 +207,19 @@ class KeyRequired(InvalidApiKey, TypeError):
         self.path = path
         self.text = f"{self.path} requires an API key to be used"
         super().__init__(None, self.text)
+
+class ClosedSession(HypixelException, RuntimeError):
+    """Raised when the Client tries to make an API call
+    after :meth:`Client.close` is called.
+
+    Inherits from :exc:`HypixelException` and :exc:`RuntimeError`
+
+    .. note::
+
+        If :attr:`Client.cache` is ``True`` and the response is stored in
+        cache, :exc:`ClosedSession` won't be raised and the function will
+        return normally.
+    """
+    def __init__(self):
+        self.text = 'session is closed'
+        super().__init__(self.text)
