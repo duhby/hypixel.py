@@ -374,6 +374,16 @@ UHC_DUELS = {
     'uhc_duel_bow_shots': 'arrows_shot',
 }
 
+# somehow I don't need to rename anything what
+PAINTBALL = {
+    'coins': 'coins',
+    'wins': 'wins',
+    'kills': 'kills',
+    'deaths': 'deaths',
+    'killstreaks': 'killstreaks',
+    'shots_fired': 'shots_fired',
+}
+
 SOCIALS = {
     'DISCORD': 'discord',
     'YOUTUBE': 'youtube',
