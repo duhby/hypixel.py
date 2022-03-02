@@ -8,4 +8,6 @@ A module used for modeling data.
 MIT License, see LICENSE for more details.
 """
 
+from .bans import Bans
+from .key import Key
 from .player import Player
