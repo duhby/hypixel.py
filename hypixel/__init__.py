@@ -1,7 +1,9 @@
 """
 hypixel.py
 ~~~~~~~~~~~~~~~~~~~
+
 A python wrapper for the Hypixel API
+
 (c) 2021-present duhby
 MIT License, see LICENSE for more details.
 """
