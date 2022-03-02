@@ -37,7 +37,6 @@ class BedwarsMode:
     beds_broken: int = 0
     beds_lost: int = 0
 
-    # math
     @property
     def kdr(self) -> float:
         return utils.safe_div(self.kills, self.deaths)
@@ -83,6 +82,12 @@ class Bedwars:
     beds_lost: int = 0
     winstreak: int = None # if None, winstreaks are disabled
     exp: int = 0
+    # modes
+    solo: BedwarsMode = field(init=False)
+    doubles: BedwarsMode = field(init=False)
+    threes: BedwarsMode = field(init=False)
+    fours: BedwarsMode = field(init=False)
+    teams: BedwarsMode = field(init=False)
     # other
     # island_topper: str = None
     # projectile_trail: str = None
@@ -90,7 +95,6 @@ class Bedwars:
     # kill_effect: str = None
     # selected_ultimate: str = None
 
-    # math
     @property
     def kdr(self) -> float:
         return utils.safe_div(self.kills, self.deaths)
@@ -110,23 +114,22 @@ class Bedwars:
     def __post_init__(self):
         # type conversion
         for f in fields(self):
-            value = getattr(self, f.name)
+            try:
+                value = getattr(self, f.name)
+            except AttributeError:
+                continue
             if not value:
                 continue
             elif not isinstance(value, f.type):
                 setattr(self, f.name, f.type(value))
 
-        solo_data = utils._clean(self._data, mode='BEDWARS_SOLO')
-        self.solo = BedwarsMode(**solo_data)
-
-        doubles_data = utils._clean(self._data, mode='BEDWARS_DOUBLES')
-        self.doubles = BedwarsMode(**doubles_data)
-
-        threes_data = utils._clean(self._data, mode='BEDWARS_THREES')
-        self.threes = BedwarsMode(**threes_data)
-
-        fours_data = utils._clean(self._data, mode='BEDWARS_FOURS')
-        self.fours = BedwarsMode(**fours_data)
-
-        teams_data = utils._clean(self._data, mode='BEDWARS_TEAMS')
-        self.teams = BedwarsMode(**teams_data)
+        modes = (
+            'solo',
+            'doubles',
+            'threes',
+            'fours',
+            'teams',
+        )
+        for mode in modes:
+            data = utils._clean(self._data, mode=f'BEDWARS_{mode.upper()}')
+            setattr(self, mode, BedwarsMode(**data))
