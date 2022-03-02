@@ -1,4 +1,5 @@
 import hypixel
+from hypixel.errors import HypixelException
 import asyncio
 
 description = """A simple example that shows how to use the same Client instance with multiple contexts."""
