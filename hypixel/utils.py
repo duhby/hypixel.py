@@ -23,6 +23,7 @@ DEALINGS IN THE SOFTWARE.
 """
 
 import functools
+import asyncio
 import time
 
 from .constants import aliases
