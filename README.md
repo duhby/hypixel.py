@@ -29,7 +29,7 @@ Hypixel.py's documentation is highly maintained and provides a plentiful amount 
 
 ## Getting Started
 #### Check out the [documentation](#)!
-#### Python 3.7 or higher is required.
+#### Python 3.7 or higher is required (3.8+ recommended).
 To install hypixel.py simply install it from pypi under the name `hypixel.py` with pip or your favorite package manager.
 ```bash
     pip install hypixel.py
