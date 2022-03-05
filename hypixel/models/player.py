@@ -24,7 +24,7 @@ DEALINGS IN THE SOFTWARE.
 
 from dataclasses import dataclass, fields, field
 from datetime import datetime
-from typing import Optional
+from typing import Literal, Optional
 
 from .. import utils
 
@@ -39,10 +39,24 @@ __all__ = (
     'Player',
 )
 
+RankType = Literal[
+    'VIP',
+    'VIP+',
+    'MVP',
+    'MVP+',
+    'MVP++',
+    'YOUTUBE',
+    'PIG+++',
+    'MOJANG',
+    'GAME MASTER',
+    'ADMIN',
+    'OWNER',
+]
+
 @dataclass
 class Player:
     _data: dict = field(repr=False)
-    raw: dict = field(repr=False)
+    raw: dict = field(repr=False) # raw json response
     id: str = None
     uuid: str = None
     first_login: datetime = None
@@ -72,20 +86,12 @@ class Player:
 
     @property
     def rank(self) -> Optional[str]:
-        """
-        returns:
-        None
-        VIP
-        VIP+
-        MVP
-        MVP+
-        MVP++
-        YOUTUBE
-        PIG+++
-        MOJANG
-        GAME MASTER
-        ADMIN
-        OWNER
+        """Return the rank of the player.
+
+        Returns
+        -------
+        Optional[RankType]
+            A string of the rank display if it exists, otherwise None.
         """
         display_rank = None
         pr = self.raw.get('player', {}).get('newPackageRank')
