@@ -85,7 +85,7 @@ class Player:
     tkr: TurboKartRacers = field(init=False)
 
     @property
-    def rank(self) -> Optional[str]:
+    def rank(self) -> Optional[RankType]:
         """Return the rank of the player.
 
         Returns
