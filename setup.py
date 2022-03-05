@@ -49,5 +49,6 @@ setup(
     url='https://github.com/duhby/hypixel.py',
     classifiers=classifiers,
     install_requires=requirements,
+    extras_require=extras_require,
     python_requires='>=3.7',
 )
