@@ -1,7 +1,7 @@
 # This exmaple requies an api key
 
 import hypixel
-from hypixel.errors import HypixelException
+from hypixel import HypixelException
 import asyncio
 
 description = """A simple example that shows how to get a player's first login."""

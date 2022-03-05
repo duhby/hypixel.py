@@ -58,7 +58,7 @@ class InvalidPlayerId(HypixelException):
     """
     def __init__(self, player_id):
         self.id = player_id
-        self.text = f"passed player id '{self.id}' is not a string"
+        self.text = f"Passed player id '{self.id}' is not a string"
         super().__init__(self.text)
 
 class PlayerNotFound(HypixelException):
@@ -75,7 +75,7 @@ class PlayerNotFound(HypixelException):
     """
     def __init__(self, player):
         self.player = player
-        self.text = f"player '{self.player}' did not yield a response"
+        self.text = f"Player '{self.player}' did not yield a response"
         super().__init__(self.text)
 
 class KeyNotFound(HypixelException):
@@ -92,7 +92,7 @@ class KeyNotFound(HypixelException):
     """
     def __init__(self, key):
         self.key = key
-        self.text = f"key '{self.key}' did not yield a response"
+        self.text = f"Key '{self.key}' did not yield a response"
         super().__init__(self.text)
 
 class ApiError(HypixelException):
@@ -109,9 +109,9 @@ class ApiError(HypixelException):
     text: str
         The text of the error.
     """
-    def __init__(self, response, api: str, message=None):
+    def __init__(self, response, api, message=None):
         if message is None:
-            message = f"an unknown error occured with the {api} API"
+            message = f"An unknown error occured with the {api} API"
         self.api = api
         self.text = message
         self.response = response
@@ -134,13 +134,16 @@ class RateLimitError(ApiError):
     text: str
         The text of the error.
     """
-    def __init__(self, retry_after, response):
+    def __init__(self, retry_after, api, response):
         self.retry_after = retry_after
-        self.text = (
-            "you are being rate limited, "
-            f"try again at {self.retry_after.strftime('%H:%M:%S')}"
+        if retry_after is None:
+            self.text = f"You are being rate limited ({api})"
+        else:
+            self.text = (
+                "You are being rate limited, "
+                f"try again at {self.retry_after.strftime('%H:%M:%S')}"
             )
-        super().__init__(response, self.text)
+        super().__init__(response, api, message=self.text)
 
 class InvalidApiKey(HypixelException):
     """Base exception for invalid API key exceptions.
@@ -221,5 +224,5 @@ class ClosedSession(HypixelException, RuntimeError):
         return normally.
     """
     def __init__(self):
-        self.text = 'session is closed'
+        self.text = 'Session is closed'
         super().__init__(self.text)

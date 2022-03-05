@@ -69,7 +69,7 @@ class Bedwars:
     ----------
     """
     _data: dict = field(repr=False)
-    level: int = 0
+    level: int = 1 # default handling for this field is done in utils.py
     coins: int = 0
     kills: int = 0
     deaths: int = 0

@@ -1,5 +1,5 @@
 import hypixel
-from hypixel.errors import HypixelException
+from hypixel import HypixelException
 import asyncio
 
 import time

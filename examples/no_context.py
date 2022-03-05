@@ -1,5 +1,5 @@
 import hypixel
-from hypixel.errors import HypixelException
+from hypixel import HypixelException
 import asyncio
 
 description = """A simple example that shows how to use hypixel.Client without a context manager."""

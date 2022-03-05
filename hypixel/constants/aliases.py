@@ -400,3 +400,16 @@ BANS = {
     'watchdog_rollingDaily': 'watchdog_day',
     'watchdog_total': 'watchdog_total',
 }
+
+FRIEND = {
+    '_id': 'id',
+    'uuidReceiver': 'uuid',
+    'started': 'started',
+}
+
+STATUS = {
+    'online': 'online',
+    'gameType': 'game_type',
+    'mode': 'mode',
+    'map': 'map',
+}
