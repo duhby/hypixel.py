@@ -195,7 +195,32 @@ class Client:
         elif response.status == 429:
             # TODO: handle 429
             retry_after = None
-            raise RateLimitError(retry_after, response)
+            raise RateLimitError(retry_after, 'mojang', response)
+
+        else:
+            raise ApiError(response, 'mojang')
+
+    async def _get_name(self, uuid: str) -> str:
+        if self._session.closed:
+            raise ClosedSession
+        response = await self._session.get(
+            f'https://api.mojang.com/user/profiles/{uuid}/names'
+        )
+        if response.status == 200:
+            data = await response.json()
+            name = data[-1].get('name')
+            if not name:
+                raise PlayerNotFound(uuid)
+            return name
+
+        elif response.status == 204:
+            raise PlayerNotFound(uuid)
+
+        elif response.status == 429:
+            # TODO: handle 429
+            # No Retry-After given
+            retry_after = None
+            raise RateLimitError(retry_after, 'mojang', response)
 
         else:
             raise ApiError(response, 'mojang')
@@ -266,7 +291,7 @@ class Client:
                 datetime.now() +
                 timedelta(seconds=int(response.headers['Retry-After']))
             )
-            raise RateLimitError(retry_after, response)
+            raise RateLimitError(retry_after, 'hypixel', response)
 
         elif response.status == 403:
             if params.get('key') is None:
@@ -280,7 +305,7 @@ class Client:
             except Exception:
                 raise ApiError(response, 'hypixel')
             else:
-                text = f'an unexpected error occurred with the hypixel API: {text}'
+                text = f'An unexpected error occurred with the hypixel API: {text}'
                 raise ApiError(response, 'hypixel', text)
 
     # public
@@ -367,27 +392,24 @@ class Client:
             raise InvalidPlayerId(name)
         return await self._get_uuid(name)
 
+    async def get_name(self, uuid: str) -> str:
+        """Get the name of a player."""
+        if not isinstance(uuid, str):
+            raise InvalidPlayerId(uuid)
+        return await self._get_name(uuid)
+
     # API (hypixel)
 
+    @utils.convert_id
     async def player(self, id_: str) -> Player:
         """Create a :class:`Player` object based off an API response."""
-        if not isinstance(id_, str):
-            raise InvalidPlayerId(id_)
-        try:
-            UUID(id_)
-        except ValueError:
-            uuid = await self._get_uuid(name=id_)
-        else:
-            uuid = id_
-
         params = HashedDict(
-            {'uuid': uuid}
+            {'uuid': id_['uuid']}
         )
-
         response = await self._get('player', params=params)
 
         if not response.get('player'):
-            raise PlayerNotFound(id_)
+            raise PlayerNotFound(id_['orig'])
 
         data = {
             'raw': response,
@@ -437,3 +459,48 @@ class Client:
         clean_data = utils._clean(response, mode='BANS')
         data.update(clean_data)
         return Bans(**data)
+
+    @utils.convert_id
+    async def player_friends(self, id_: str) -> List[Friend]:
+        """Get a list of a player's friends."""
+        params = HashedDict(
+            {'uuid': id_['uuid']}
+        )
+        response = await self._get('friends', params=params)
+
+        if not response.get('records'): # probably has no friends
+            raise PlayerNotFound(id_['orig'])
+
+        records = response['records']
+
+        raw = {
+            'raw': response,
+        }
+        
+        friends = []
+        for friend in records:
+            clean_data = utils._clean(friend, mode='FRIEND', extra=id_)
+            data = raw.copy()
+            data.update(clean_data)
+            friends.append(Friend(**data))
+        return friends
+
+    @utils.convert_id
+    async def player_status(self, id_: str) -> Status:
+        """Get the status of a player."""
+        params = HashedDict(
+            {'uuid': id_['uuid']}
+        )
+        response = await self._get('status', params=params)
+
+        if not response.get('session'):
+            raise PlayerNotFound(id_['orig'])
+
+        session = response['session']
+
+        data = {
+            'raw': response,
+        }
+        clean_data = utils._clean(session, mode='STATUS')
+        data.update(clean_data)
+        return Status(**data)
