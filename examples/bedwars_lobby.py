@@ -1,6 +1,6 @@
 import hypixel
 from hypixel import HypixelException
-import aiohttp
+import asyncio
 
 description = """A simple example showing how to display a full bedwars lobby username."""
 

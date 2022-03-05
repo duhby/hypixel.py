@@ -20,7 +20,9 @@ extras_require = {
 
 packages = [
     'hypixel',
+    'hypixel.constants',
     'hypixel.models',
+    'hypixel.models.playerdata',
 ]
 
 classifiers = [

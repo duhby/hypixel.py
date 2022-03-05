@@ -45,7 +45,7 @@ You can also add `[speed]` after hypixel.py to install [additional packages](#op
 ```python
 import hypixel
 from hypixel import HypixelException
-import aiohttp
+import asyncio
 
 async def main():
     client = hypixel.Client('api-key')
