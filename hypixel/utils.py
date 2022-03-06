@@ -60,6 +60,7 @@ def _clean(data: dict, mode: str, extra=None) -> dict:
 
     elif mode == 'DUELS':
         data = data.get('stats', {}).get('Duels', {})
+        data['_data'] = data.copy()
 
     elif mode == 'PAINTBALL':
         data = data.get('stats', {}).get('Paintball', {})
