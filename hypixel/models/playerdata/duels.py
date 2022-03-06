@@ -68,6 +68,20 @@ class Duels:
     melee_swings: int = 0
     arrows_hit: int = 0
     arrows_shot: int = 0
+    blitz: DuelsMode = field(init=False)
+    bow: DuelsMode = field(init=False)
+    boxing: DuelsMode = field(init=False)
+    bridge: DuelsMode = field(init=False)
+    classic: DuelsMode = field(init=False)
+    combo: DuelsMode = field(init=False)
+    mega_walls: DuelsMode = field(init=False)
+    no_debuff: DuelsMode = field(init=False)
+    op: DuelsMode = field(init=False)
+    parkour: DuelsMode = field(init=False)
+    skywars: DuelsMode = field(init=False)
+    sumo: DuelsMode = field(init=False)
+    tnt_games: DuelsMode = field(init=False)
+    uhc: DuelsMode = field(init=False)
 
     @property
     def wlr(self) -> float:
