@@ -96,6 +96,7 @@ class Client:
             self._itr = iter(self._keys)
         else:
             self._itr = None
+
         self.loop = asyncio.get_event_loop() if loop is None else loop
 
         self.autoverify = options.get('autoverify', False)
