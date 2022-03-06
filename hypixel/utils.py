@@ -32,6 +32,7 @@ from .errors import *
 
 REQUIRE_COPY = getattr(aliases, 'REQUIRE_COPY')
 
+# rename keys, remove unused ones, and handle specific cases
 def _clean(data: dict, mode: str, extra=None) -> dict:
     alias = getattr(aliases, mode)
     if mode in REQUIRE_COPY:
@@ -60,6 +61,9 @@ def _clean(data: dict, mode: str, extra=None) -> dict:
 
     elif mode == 'DUELS':
         data = data.get('stats', {}).get('Duels', {})
+        # copy here instead of before and after because DuelsMode classes
+        # need stats.Duels specific data
+        data['_data'] = data.copy()
 
     elif mode == 'PAINTBALL':
         data = data.get('stats', {}).get('Paintball', {})

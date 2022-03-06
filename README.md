@@ -41,6 +41,11 @@ You can also add `[speed]` after hypixel.py to install [additional packages](#op
 ### Optional Packages
 - [aiodns](https://pypi.org/project/aiodns/), [brotlipy](https://pypi.org/project/brotlipy/), [cchardet](https://pypi.org/project/cchardet/) (to enhance aiohttp performance)
 
+## Warning
+If you are running python version 3.8 or higher on Windows, then you must add the following code before you start an event loop (asyncio.run):
+```python
+asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+```
 ## Quick Example
 ```python
 import hypixel

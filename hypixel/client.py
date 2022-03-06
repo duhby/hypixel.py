@@ -96,14 +96,16 @@ class Client:
             self._itr = iter(self._keys)
         else:
             self._itr = None
+
         self.loop = asyncio.get_event_loop() if loop is None else loop
+
         self.autoverify = options.get('autoverify', False)
         # self.rate_limit = options.get('rate_limit', True)
         self.cache = options.get('cache', False)
         self.cache_mojang = options.get('cache_mojang', self.cache)
         self.cache_hypixel = options.get('cache_hypixel', self.cache)
-        # cache time
 
+        # cache time
         self.cache_time = options.get('cache_time', 60)
         self.cache_time_m = options.get('cache_time_m', self.cache_time)
         self.cache_time_h = options.get('cache_time_h', self.cache_time)
