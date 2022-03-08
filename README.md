@@ -39,7 +39,7 @@ You can also add `[speed]` after hypixel.py to install [additional packages](#op
     pip install hypixel.py[speed]
 ```
 ### Optional Packages
-- [aiodns](https://pypi.org/project/aiodns/), [brotlipy](https://pypi.org/project/brotlipy/), [cchardet](https://pypi.org/project/cchardet/) (to enhance aiohttp performance)
+- [aiodns](https://pypi.org/project/aiodns/), [brotlipy](https://pypi.org/project/brotlipy/), and [cchardet](https://pypi.org/project/cchardet/) (to enhance aiohttp performance), [ujson](https://pypi.org/project/ujson/) (4x faster json decoding)
 
 ## Warning
 If you are running python version 3.8 or higher on Windows, then you must add the following code before you start an event loop (asyncio.run):
