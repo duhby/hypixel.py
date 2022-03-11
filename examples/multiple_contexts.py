@@ -2,14 +2,14 @@ import hypixel
 from hypixel import HypixelException
 import asyncio
 
-description = """A simple example that shows how to use the same Client instance with multiple contexts."""
+__doc__ = """A simple example that shows how to use the same Client instance with multiple contexts."""
 
 async def main():
     client = hypixel.Client()
     async with client:
         "Do stuff here"
 
-    # Opening a new context will open a new aiohttp.ClientSession but keep your hypixel.Client attributes
+    # Opening a new context will open a new aiohttp.ClientSession while keeping your Client attributes
     async with client:
         "Do more stuff here"
 
