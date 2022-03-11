@@ -1,4 +1,4 @@
-# This exmaple requies an api key
+# This exmaple requires an api key
 
 import hypixel
 from hypixel import HypixelException
