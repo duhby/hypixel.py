@@ -4,7 +4,7 @@ import hypixel
 from hypixel import HypixelException
 import asyncio
 
-description = """A simple example that shows how to get watchdog and staff ban info."""
+__doc__ = """A simple example that shows how to get watchdog and staff ban info."""
 
 async def main():
     client = hypixel.Client('api-key')
