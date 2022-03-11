@@ -1,3 +1,5 @@
+# This example requires an api key
+
 import hypixel
 from hypixel import HypixelException
 import asyncio
@@ -7,7 +9,7 @@ import time
 description = """A simple example that shows how to use the cache."""
 
 async def main():
-    client = hypixel.Client(cache=True, cache_time=5)
+    client = hypixel.Client('api-key', cache=True, cache_time=5)
     async with client:
         try:
             player = await client.player('duhby')
