@@ -1,3 +1,5 @@
+# This example requires an api key
+
 import hypixel
 from hypixel import HypixelException
 import asyncio
