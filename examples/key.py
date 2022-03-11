@@ -4,14 +4,16 @@ import hypixel
 from hypixel import HypixelException
 import asyncio
 
-description = """A simple example that shows how to get a key's queries."""
+__doc__ = """A simple example that shows how to get a key's queries."""
 
 async def main():
     client = hypixel.Client()
     async with client:
         try:
-            key = await client.key('api-key')
-            print(key.queries)
+            print(await client.key('api-key'))
+            # If you passed a key into the client,
+            # you can get its info as follows
+            print(await client.key(client.keys[0]))
         except HypixelException as error:
             print(error)
 
