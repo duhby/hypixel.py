@@ -4,6 +4,8 @@ import hypixel
 from hypixel import HypixelException
 import asyncio
 
+__doc__ = """A simple example that shows how to convert the default time to other timezones."""
+
 try:
     # Python 3.9+
     from zoneinfo import ZoneInfo
@@ -12,13 +14,11 @@ except ImportError:
     # This module also works for python 3.6, however hypixel.py does not
     from backports.zoneinfo import ZoneInfo
 
-description = """A simple example that shows how to convert the default time to other timezones."""
-
 async def main():
     client = hypixel.Client('api-key')
     async with client:
         try:
-            player = await client.player('duhby')
+            player = await client.player('gamerboy80')
             # Can be None if in game privacy settings are changed
             if player.last_login:
                 # List possible timezones with zoneinfo.available_timezones()
