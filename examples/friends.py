@@ -15,6 +15,7 @@ async def main():
     client = hypixel.Client('api-key')
     async with client:
         try:
+            # Sort sorts the friends list from earliest to latest
             friends = await client.player_friends('gamerboy80', sort=True)
             earliest = friends[0]
             name = await client.get_name(earliest.uuid)
