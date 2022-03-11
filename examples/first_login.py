@@ -4,13 +4,13 @@ import hypixel
 from hypixel import HypixelException
 import asyncio
 
-description = """A simple example that shows how to get a player's first login."""
+__doc__ = """A simple example that shows how to get a player's first login."""
 
 async def main():
     client = hypixel.Client('api-key')
     async with client:
         try:
-            player = await client.player('duhby')
+            player = await client.player('gamerboy80')
             print(player.first_login.strftime('%A, %b %d %Y'))
         except HypixelException as error:
             print(error)
