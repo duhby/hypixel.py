@@ -1,5 +1,5 @@
 """
-The MIT License (MIT)
+The MIT License
 
 Copyright (c) 2021-present duhby
 
@@ -36,6 +36,8 @@ __all__ = (
     'MalformedApiKey',
     'KeyRequired',
     'ClosedSession',
+    'LoopPolicyError',
+    'GuildNotFound',
 )
 
 class HypixelException(Exception):
@@ -53,8 +55,6 @@ class InvalidPlayerId(HypixelException):
     ----------
     id: str
         The invalid player id.
-    text: str
-        The text of the error.
     """
     def __init__(self, player_id):
         self.id = player_id
@@ -69,9 +69,7 @@ class PlayerNotFound(HypixelException):
     Attributes
     ----------
     player: str
-        The player requested. Could be a UUID or a username.
-    text: str
-        The text of the error.
+        The player requested. Could be a uuid or a username.
     """
     def __init__(self, player):
         self.player = player
@@ -87,8 +85,6 @@ class KeyNotFound(HypixelException):
     ----------
     key: str
         The key requested.
-    text: str
-        The text of the error.
     """
     def __init__(self, key):
         self.key = key
@@ -106,8 +102,6 @@ class ApiError(HypixelException):
         The API that caused the error.
     response: aiohttp.ClientResponse
         The client response object that was received.
-    text: str
-        The text of the error.
     """
     def __init__(self, response, api, message=None):
         if message is None:
@@ -131,8 +125,6 @@ class RateLimitError(ApiError):
     ----------
     retry_after: datetime.datetime
         The time to wait until to retry a request.
-    text: str
-        The text of the error.
     """
     def __init__(self, retry_after, api, response):
         self.retry_after = retry_after
@@ -165,8 +157,6 @@ class InvalidApiKey(HypixelException):
     ----------
     key: str
         The key that caused the error to be raised.
-    text: str
-        The text of the error.
     """
     def __init__(self, key, message=None):
         if message is None:
@@ -176,7 +166,7 @@ class InvalidApiKey(HypixelException):
         super().__init__(self.text)
 
 class MalformedApiKey(InvalidApiKey, ValueError):
-    """Raised when a passed API key is not in valid UUID
+    """Raised when a passed API key is not in valid uuid
     format.
 
     Inherits from :exc:`InvalidApiKey` and :exc:`ValueError`
@@ -186,8 +176,6 @@ class MalformedApiKey(InvalidApiKey, ValueError):
     key: str
         The key that caused the error to be raised. See
         :exc:`InvalidApiKey` for details.
-    text: str
-        The text of the error.
     """
     def __init__(self, key):
         self.text = "API key is not a valid uuid string"
@@ -202,9 +190,7 @@ class KeyRequired(InvalidApiKey, TypeError):
     Attributes
     ----------
     path: str
-        The path that caused the error.
-    text: str
-        The text of the error.
+        The api endpoint the error was from.
     """
     def __init__(self, path):
         self.path = path
@@ -225,4 +211,32 @@ class ClosedSession(HypixelException, RuntimeError):
     """
     def __init__(self):
         self.text = 'Session is closed'
+        super().__init__(self.text)
+
+class LoopPolicyError(HypixelException, RuntimeError):
+    """Raised when the event loop policy is misconfigured.
+
+    Inherits from :exc:`HypixelException` and :exc:`RuntimeError`
+    """
+    def __init__(self):
+        self.text = (
+            'Misconfigured event loop policy! '
+            'Set the asyncio event loop policy to Windows Selector'
+        )
+        super().__init__(self.text)
+
+class GuildNotFound(HypixelException):
+    """Raised when a requested guild does not exist.
+
+    Inherits from :exc:`HypixelException`
+
+    Attributes
+    ----------
+    guild: str
+        The guild requested. Could be a username, a player uuid, a guild 
+        name, or a guild uuid.
+    """
+    def __init__(self, guild):
+        self.guild = guild
+        self.text = f"Guild '{self.guild}' did not yield a response"
         super().__init__(self.text)
