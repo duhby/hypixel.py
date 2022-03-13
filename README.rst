@@ -15,7 +15,7 @@ A modern, asynchronous, feature-rich, Hypixel API wrapper for Python.
    :target: https://pypi.python.org/pypi/hypixel.py/
    :alt: PyPI version info
 .. image:: https://img.shields.io/github/license/duhby/hypixel.py?style=for-the-badge&color=bright-green
-   :target: https://choosealicense.com/licenses/mit/
+   :target: https://github.com/duhby/hypixel.py/blob/master/LICENSE/
    :alt: License
 
 Why hypixel.py?
