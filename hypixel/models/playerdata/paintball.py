@@ -1,5 +1,5 @@
 """
-The MIT License (MIT)
+The MIT License
 
 Copyright (c) 2021-present duhby
 
@@ -33,11 +33,10 @@ class Paintball:
     deaths: int = 0
     killstreaks: int = 0
     shots_fired: int = 0
+    # Handled later
+    kdr: float = None
+    skr: float = None
 
-    @property
-    def kdr(self) -> float:
-        return utils.safe_div(self.kills, self.deaths)
-
-    @property
-    def skr(self) -> float:
-        return utils.safe_div(self.shots_fired, self.kills)
+    def __post_init__(self):
+        self.kdr = utils.safe_div(self.kills, self.deaths)
+        self.skr = utils.safe_div(self.shots_fired, self.kills)
