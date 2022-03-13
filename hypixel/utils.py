@@ -26,15 +26,40 @@ import functools
 import asyncio
 import time
 from uuid import UUID
+from typing import Optional
+from datetime import datetime, timezone
 
-from .constants import aliases, get_game_type
+from .models import GameType, ColorType, GuildRank
+from .constants.aliases import *
+from .constants import GAME_TYPES, COLOR_TYPES
 from .errors import *
 
-REQUIRE_COPY = getattr(aliases, 'REQUIRE_COPY')
+# @functools.lru_cache
+# def get_game(database_name) -> Optional[GameType]:
+#     data = next((
+#         item for item in GAME_TYPES if item['database_name'] == database_name
+#     ), None)
+#     if not data:
+#         return None
+#     return GameType(**data)
 
-# rename keys, remove unused ones, and handle specific cases
+@functools.lru_cache
+def get_game_type(type_name) -> Optional[GameType]:
+    data = next((
+        item for item in GAME_TYPES if item['type_name'] == type_name
+    ), None)
+    if not data:
+        return None
+    return GameType(**data)
+
+REQUIRE_COPY = (
+    'ARCADE',
+    'HYPIXEL_SAYS',
+    'MINI_WALLS',
+    'PARTY_GAMES',
+)
 def _clean(data: dict, mode: str, extra=None) -> dict:
-    alias = getattr(aliases, mode)
+    alias = globals()[mode]
     if mode in REQUIRE_COPY:
         _data = data.copy()
 
@@ -72,15 +97,33 @@ def _clean(data: dict, mode: str, extra=None) -> dict:
         data = data.get('socialMedia', {}).get('links', {})
 
     elif mode == 'FRIEND':
-        # sender and receiver could be either the player or the friend
+        # Sender and receiver could be either the player or the friend
         # as the api stores the sender and receiver of the specific friend
-        # request
+        # request.
+        # Extra is the player's uuid.
         if data['uuidReceiver'] == extra:
             data['uuidReceiver'] = data['uuidSender']
 
     elif mode == 'STATUS':
         # convert game_type to GameType
         data['gameType'] = get_game_type(data.get('gameType'))
+
+    elif mode == 'GUILD':
+        achievements = data.get('achievements', {})
+        data['winners'] = achievements.get('WINNERS')
+        data['experience_kings'] = achievements.get('EXPERIENCE_KINGS')
+        data['most_online_players'] = achievements.get('ONLINE_PLAYERS')
+
+    elif mode == 'GUILD_MEMBER':
+        # Extra is the guild's ranks.
+        rank = next((
+            rank for rank in extra if rank.name == data['rank']
+        ), None)
+        if rank is not None:
+            data['rank'] = extra
+        else:
+            # TODO: get a list of legacy ranks like Guild Master and Officer
+            data['rank'] = GuildRank(name=data['rank'])
 
     if mode in REQUIRE_COPY:
         data['_data'] = _data
@@ -139,9 +182,9 @@ def get_title(data: dict, mode: str) -> str:
     for key, value in divisions.items():
         prestige = data.get(f'{mode}_{key}_title_prestige')
         if prestige:
-            # doesn't return instantly because
-            # past division keys are still stored
-            # return the last (current/highest) one
+            # Doesn't return instantly because
+            # past division keys are still stored.
+            # Return the last (current/highest) one.
             title = f'{value} {romanize(prestige)}'
     return title
 
@@ -149,7 +192,7 @@ def async_timed_cache(function, max_age: int, max_size: int, typed=False):
     """Lru cache decorator with time-based cache invalidation and async
     implementation.
     """
-    # _time_hash forces functools to provide TTL (time to live)
+    # _time_hash forces functools to provide a time to live.
     @functools.lru_cache(maxsize=max_size, typed=typed)
     def _new_timed(*args, _time_hash, **kwargs):
         return asyncio.ensure_future(function(*args, **kwargs))
@@ -179,8 +222,8 @@ class HashedDict(dict):
         fs = frozenset(self.items())
         return hash(fs)
 
-# only works on asynchronous instance methods where the first non-self
-# parameter is the id
+# Only works on asynchronous instance methods where the first non-self
+# parameter is the id.
 def convert_id(function):
     @functools.wraps(function)
     async def _wrapped(obj, id_, *args, **kwargs):
@@ -198,3 +241,95 @@ def convert_id(function):
         return await function(obj, id_, *args, **kwargs)
         
     return _wrapped
+
+def get_rank(raw):
+    """Return the rank of the player."""
+    display_rank = None
+    pr = raw.get('player', {}).get('newPackageRank')
+    mpr = raw.get('player', {}).get('monthlyPackageRank')
+    prefix = raw.get('player', {}).get('prefix')
+    rank = raw.get('player', {}).get('rank')
+    if prefix:
+        return clean_rank_prefix(prefix)
+    elif rank:
+        if rank == 'YOUTUBER':
+            return 'YOUTUBE'
+        if rank == 'NORMAL': # some accounts have this lol (ex. notch)
+            return None
+        return rank.replace('_', ' ')
+    elif mpr != 'SUPERSTAR':
+        if not pr or pr == 'NONE':
+            return None
+        else:
+            display_rank = pr
+    else:
+        return 'MVP++'
+    return display_rank.replace('_', '').replace('PLUS', '+')
+
+
+"""
+MIT License
+
+Copyright (c) 2018 The Slothpixel Project
+"""
+
+# length 15
+EXP_NEEDED = (
+    100000,
+    150000,
+    250000,
+    500000,
+    750000,
+    1000000,
+    1250000,
+    1500000,
+    2000000,
+    2500000,
+    2500000,
+    2500000,
+    2500000,
+    2500000,
+    3000000,
+)
+MAX_LEVEL = 1000
+def get_guild_level(exp: int) -> float:
+    level = 0
+    for i in range(MAX_LEVEL + 1):
+        # required exp to get to the next level
+        need = 0
+        if i >= 15:
+            need = EXP_NEEDED[-1]
+        else:
+            need = EXP_NEEDED[i]
+
+        # return the current level plus progress towards the next (unused)
+        # if the required exp is met, otherwise increment the level and
+        # subtract the used exp
+        if exp - need < 0:
+            return round((level + (exp / need)) * 100) / 100
+        level += 1
+        exp -= need
+    return MAX_LEVEL
+
+@functools.lru_cache
+def get_color_type(type_name) -> Optional[ColorType]:
+    data = next((
+        item for item in COLOR_TYPES if item['type_name'] == type_name
+    ), None)
+    if not data:
+        return None
+    return ColorType(**data)
+
+UTC = timezone.utc
+def _add_tzinfo(dt, tzinfo=UTC) -> datetime:
+    # Add timezone info for easier manipulation with timezones.
+    return dt.replace(tzinfo=tzinfo)
+
+def convert_to_datetime(decimal, add_tzinfo=True) -> datetime:
+    # Float division is cheaper than integer division.
+    # Precision is a non-issue as decimals go only to the thousandth place.
+    seconds = decimal / 1e3
+    dt = datetime.fromtimestamp(seconds)
+    if add_tzinfo:
+        return _add_tzinfo(dt)
+    return dt
