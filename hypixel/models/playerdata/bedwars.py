@@ -1,5 +1,5 @@
 """
-The MIT License (MIT)
+The MIT License
 
 Copyright (c) 2021-present duhby
 
@@ -36,31 +36,17 @@ class BedwarsMode:
     final_deaths: int = 0
     beds_broken: int = 0
     beds_lost: int = 0
-
-    @property
-    def kdr(self) -> float:
-        return utils.safe_div(self.kills, self.deaths)
-
-    @property
-    def wlr(self) -> float:
-        return utils.safe_div(self.wins, self.losses)
-
-    @property
-    def fkdr(self) -> float:
-        return utils.safe_div(self.final_kills, self.final_deaths)
-
-    @property
-    def bblr(self) -> float:
-        return utils.safe_div(self.beds_broken, self.beds_lost)
+    # Handled later
+    kdr: float = None
+    wlr: float = None
+    fkdr: float = None
+    bblr: float = None
 
     def __post_init__(self):
-        # type conversion
-        for f in fields(self):
-            value = getattr(self, f.name)
-            if not value:
-                continue
-            if not isinstance(value, f.type):
-                setattr(self, f.name, f.type(value))
+        self.kdr = utils.safe_div(self.kills, self.deaths)
+        self.wlr = utils.safe_div(self.wins, self.losses)
+        self.fkdr = utils.safe_div(self.final_kills, self.final_deaths)
+        self.bblr = utils.safe_div(self.beds_broken, self.beds_lost)
 
 @dataclass
 class Bedwars:
@@ -80,14 +66,18 @@ class Bedwars:
     final_deaths: int = 0
     beds_broken: int = 0
     beds_lost: int = 0
-    winstreak: int = None # if None, winstreaks are disabled
+    winstreak: int = None # winstreaks can be disabled
     exp: int = 0
-    # modes
     solo: BedwarsMode = field(init=False)
     doubles: BedwarsMode = field(init=False)
     threes: BedwarsMode = field(init=False)
     fours: BedwarsMode = field(init=False)
     teams: BedwarsMode = field(init=False)
+    # Handled later
+    kdr: float = None
+    wlr: float = None
+    fkdr: float = None
+    bblr: float = None
     # other
     # island_topper: str = None
     # projectile_trail: str = None
@@ -95,33 +85,11 @@ class Bedwars:
     # kill_effect: str = None
     # selected_ultimate: str = None
 
-    @property
-    def kdr(self) -> float:
-        return utils.safe_div(self.kills, self.deaths)
-
-    @property
-    def wlr(self) -> float:
-        return utils.safe_div(self.wins, self.losses)
-
-    @property
-    def fkdr(self) -> float:
-        return utils.safe_div(self.final_kills, self.final_deaths)
-
-    @property
-    def bblr(self) -> float:
-        return utils.safe_div(self.beds_broken, self.beds_lost)
-
     def __post_init__(self):
-        # type conversion
-        for f in fields(self):
-            try:
-                value = getattr(self, f.name)
-            except AttributeError:
-                continue
-            if not value:
-                continue
-            elif not isinstance(value, f.type):
-                setattr(self, f.name, f.type(value))
+        self.kdr = utils.safe_div(self.kills, self.deaths)
+        self.wlr = utils.safe_div(self.wins, self.losses)
+        self.fkdr = utils.safe_div(self.final_kills, self.final_deaths)
+        self.bblr = utils.safe_div(self.beds_broken, self.beds_lost)
 
         modes = (
             'solo',
