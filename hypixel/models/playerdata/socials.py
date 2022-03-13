@@ -1,5 +1,5 @@
 """
-The MIT License (MIT)
+The MIT License
 
 Copyright (c) 2021-present duhby
 
