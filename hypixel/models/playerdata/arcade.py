@@ -35,7 +35,8 @@ class HypixelSays:
     rounds: int = 0
     wins: int = 0
     losses: int = rounds - wins
-    wlr: float = None # handled later
+    # Handled later
+    wlr: float = None
 
     def __post_init__(self):
         self.wlr = utils.safe_div(self.wins, self.losses)
@@ -50,10 +51,11 @@ class MiniWalls:
     wither_damage: int = 0
     arrows_hit: int = 0
     arrows_shot: int = 0
-    kd: float = None # handled later
+    # Handled later
+    kdr: float = None
 
     def __post_init__(self):
-        self.kd = utils.safe_div(self.kills, self.deaths)
+        self.kdr = utils.safe_div(self.kills, self.deaths)
 
 @dataclass
 class PartyGames:
@@ -61,7 +63,8 @@ class PartyGames:
     # legacy
     wins_2: int = 0
     wins_3: int = 0
-    total_wins: int = None # handled later
+    # Handled later
+    total_wins: int = None
 
     def __post_init__(self):
         self.total_wins = self.wins + self.wins_2 + self.wins_3
