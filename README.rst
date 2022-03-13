@@ -62,7 +62,7 @@ To install hypixel.py, simply install it from pypi under the name ``hypixel.py``
 
    pip install hypixel.py
 
-You can also append ``[speed]`` to the end to install `additional packages <#Optional-Packages>`_ to enhance aiohttp performance automatically.
+You can also append ``[speed]`` to install `additional packages <#Optional-Packages>`_ to enhance aiohttp and json performance automatically.
 
 .. code:: sh
 
