@@ -1,5 +1,5 @@
 """
-The MIT License (MIT)
+The MIT License
 
 Copyright (c) 2021-present duhby
 
@@ -36,7 +36,8 @@ class TurboKartRacers:
     banana_hits: int = 0
     bananas_received: int = 0
     wins: int = 0 # top 3
+    # Handled later
+    self.br: float = None
 
-    @property
-    def br(self) -> float:
-        return utils.safe_div(self.banana_hits, self.bananas_received)
+    def __post_init__(self):
+        self.br = utils.safe_div(self.banana_hits, self.bananas_received)
