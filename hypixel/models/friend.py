@@ -1,5 +1,5 @@
 """
-The MIT License (MIT)
+The MIT License
 
 Copyright (c) 2021-present duhby
 
@@ -25,7 +25,7 @@ DEALINGS IN THE SOFTWARE.
 from dataclasses import dataclass, fields, field
 from datetime import datetime
 
-# from .. import utils
+from .. import utils
 
 __all__ = (
     'Friend',
@@ -39,6 +39,4 @@ class Friend:
     started: datetime # started
 
     def __post_init__(self):
-        # type conversion
-        unix = self.started / 1e3 # miliseconds to unix time
-        self.started = datetime.fromtimestamp(unix)
+        self.started = utils.convert_to_datetime(self.started)
