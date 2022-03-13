@@ -27,6 +27,7 @@ from typing import Any
 
 __all__ = (
     'HypixelException',
+    'BadArgument',
     'InvalidPlayerId',
     'PlayerNotFound',
     'KeyNotFound',
@@ -46,10 +47,24 @@ class HypixelException(Exception):
     Theoretically, this can be used to catch all errors from this library.
     """
 
-class InvalidPlayerId(HypixelException):
-    """Raised when a passed player id does not have a string value.
+class BadArgument(HypixelException):
+    """Raised when a passed argument is faulty.
 
     Inherits from :exc:`HypixelException`
+
+    .. note::
+
+        Could be from either an invalid type or if the argument passed
+        does not yield an API response.
+    """
+    def __init__(self, message):
+        self.text = message
+        super().__init__(self.text)
+
+class InvalidPlayerId(BadArgument):
+    """Raised when a passed player id does not have a string value.
+
+    Inherits from :exc:`BadArgument`
 
     Attributes
     ----------
@@ -61,10 +76,10 @@ class InvalidPlayerId(HypixelException):
         self.text = f"Passed player id '{self.id}' is not a string"
         super().__init__(self.text)
 
-class PlayerNotFound(HypixelException):
+class PlayerNotFound(BadArgument):
     """Raised when a requested player does not exist.
 
-    Inherits from :exc:`HypixelException`
+    Inherits from :exc:`BadArgument`
 
     Attributes
     ----------
@@ -76,10 +91,10 @@ class PlayerNotFound(HypixelException):
         self.text = f"Player '{self.player}' did not yield a response"
         super().__init__(self.text)
 
-class KeyNotFound(HypixelException):
+class KeyNotFound(BadArgument):
     """Raised when a requested key does not exist.
 
-    Inherits from :exc:`HypixelException`
+    Inherits from :exc:`BadArgument`
 
     Attributes
     ----------
@@ -137,10 +152,10 @@ class RateLimitError(ApiError):
             )
         super().__init__(response, api, message=self.text)
 
-class InvalidApiKey(HypixelException):
+class InvalidApiKey(BadArgument):
     """Base exception for invalid API key exceptions.
 
-    Inherits from :exc:`HypixelException`
+    Inherits from :exc:`BadArgument`
 
     .. note::
 
@@ -190,7 +205,7 @@ class KeyRequired(InvalidApiKey, TypeError):
     Attributes
     ----------
     path: str
-        The api endpoint the error was from.
+        The API endpoint the error was from.
     """
     def __init__(self, path):
         self.path = path
@@ -225,10 +240,10 @@ class LoopPolicyError(HypixelException, RuntimeError):
         )
         super().__init__(self.text)
 
-class GuildNotFound(HypixelException):
+class GuildNotFound(BadArgument):
     """Raised when a requested guild does not exist.
 
-    Inherits from :exc:`HypixelException`
+    Inherits from :exc:`BadArgument`
 
     Attributes
     ----------
