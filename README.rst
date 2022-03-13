@@ -56,17 +56,20 @@ Getting Started
 
 **Python 3.7+ is required (3.9+ recommended)**
 
+Installation
+^^^^^^^^^^^^
+
 To install hypixel.py, simply install it from pypi under the name ``hypixel.py`` with pip or your favorite package manager.
 
 .. code:: sh
 
-   pip install hypixel.py
+   pip install hypixel.py --upgrade
 
-You can also append ``[speed]`` to install `additional packages <#Optional-Packages>`_ to enhance aiohttp and json performance automatically.
+You can also append ``[speed]`` to install optional packages (see below) to enhance aiohttp and json performance automatically.
 
 .. code:: sh
 
-   pip install hypixel.py[speed]
+   pip install hypixel.py[speed] --upgrade
 
 Optional Packages
 ^^^^^^^^^^^^^^^^^
@@ -82,7 +85,7 @@ To enhance json decoding (up to 4x faster):
 - `ujson <https://pypi.org/project/ujson/>`_
 
 Warning
--------
+^^^^^^^
 
 If you are running python version 3.8 or higher on Windows, then you must add the following code before you start an event loop (asyncio.run):
 
@@ -91,7 +94,7 @@ If you are running python version 3.8 or higher on Windows, then you must add th
    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
 Quick Example
--------------
+^^^^^^^^^^^^^
 
 .. code:: python
 
