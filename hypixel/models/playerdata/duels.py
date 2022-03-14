@@ -39,8 +39,8 @@ class DuelsMode:
     arrows_shot: int = 0
     # Handled later
     wlr: float = None
-    mr: float = None
-    ar: float = None
+    mr: float = None # will be 0 if it doesn't have hits
+    ar: float = None # will be 0 if it doesn't have bows
     title: str = None
 
     def __post_init__(self):
