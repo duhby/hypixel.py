@@ -1,5 +1,5 @@
 """
-The MIT License (MIT)
+The MIT License
 
 Copyright (c) 2021-present duhby
 
@@ -22,11 +22,44 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 """
 
-REQUIRE_COPY = (
+__all__ = (
+    'KEY',
+    'PLAYER',
+    'BEDWARS',
+    'BEDWARS_SOLO',
+    'BEDWARS_DOUBLES',
+    'BEDWARS_THREES',
+    'BEDWARS_FOURS',
+    'BEDWARS_TEAMS',
     'ARCADE',
+    'CTW',
     'HYPIXEL_SAYS',
-    'MINI_WALLS',
     'PARTY_GAMES',
+    'MINI_WALLS',
+    'TKR',
+    'DUELS',
+    'BLITZ_DUELS',
+    'BOW_DUELS',
+    'BOXING_DUELS',
+    'BRIDGE_DUELS',
+    'CLASSIC_DUELS',
+    'COMBO_DUELS',
+    'MEGA_WALLS_DUELS',
+    'NO_DEBUFF_DUELS',
+    'OP_DUELS',
+    'PARKOUR_DUELS',
+    'SKYWARS_DUELS',
+    'SUMO_DUELS',
+    'TNT_GAMES_DUELS',
+    'UHC_DUELS',
+    'PAINTBALL',
+    'SOCIALS',
+    'BANS',
+    'FRIEND',
+    'STATUS',
+    'GUILD_MEMBER',
+    'GUILD_RANK',
+    'GUILD',
 )
 
 # even if key-value pairs are equal, they still need to be added because
@@ -411,4 +444,40 @@ STATUS = {
     'gameType': 'game_type',
     'mode': 'mode',
     'map': 'map',
+}
+
+GUILD_MEMBER = {
+    'uuid': 'uuid',
+    'rank': 'rank',
+    'joined': 'joined',
+    'expHistory': 'exp_history',
+    'questParticipation': 'quest_participation',
+    'name': 'name',
+}
+
+# future proofing in case other items are added
+GUILD_RANK = {
+    'name': 'name',
+    'default': 'default',
+    'created': 'created',
+    'priority': 'priority',
+    'tag': 'tag',
+}
+
+GUILD = {
+    '_id': 'id',
+    'name': 'name',
+    'exp': 'exp',
+    'created': 'created',
+    'legacyRanking': 'legacy_rank',
+    'members': 'members',
+    'ranks': 'ranks',
+    'joinable': 'joinable',
+    'tag': 'tag',
+    'tagColor': 'tag_color',
+    'description': 'description',
+    'preferredGames': 'preferred_games',
+    'publiclyListed': 'publicly_listed',
+    'guildExpByGameType': 'game_exp',
+    # 'banner': 'banner',
 }
