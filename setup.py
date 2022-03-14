@@ -46,7 +46,7 @@ setup(
     packages=packages,
     description='A Python wrapper for the Hypixel API',
     long_description=readme,
-    long_description_content_type="text/markdown",
+    long_description_content_type="text/x-rst",
     url='https://github.com/duhby/hypixel.py',
     classifiers=classifiers,
     install_requires=requirements,
