@@ -1,5 +1,5 @@
 """
-The MIT License (MIT)
+The MIT License
 
 Copyright (c) 2021-present duhby
 
@@ -24,7 +24,9 @@ DEALINGS IN THE SOFTWARE.
 
 from dataclasses import dataclass, fields, field
 from datetime import datetime
+
 from typing import Literal, Optional
+from .games import GameType
 
 from .. import utils
 
@@ -55,8 +57,19 @@ RankType = Literal[
 
 @dataclass
 class Player:
+    """Player model object.
+
+    Attributes
+    ----------
+    rank: Optional[RankType]
+        A string of the rank display if it exists, otherwise None.
+
+    .. todo::
+
+        Finish player class documentation.
+    """
     _data: dict = field(repr=False)
-    raw: dict = field(repr=False) # raw json response
+    raw: dict = field(repr=False)
     id: str = None
     uuid: str = None
     first_login: datetime = None
@@ -73,9 +86,10 @@ class Player:
     achievement_points: int = 0
     current_gadget: str = None
     channel: str = None
-    # todo: change type to Game
-    most_recent_game: str = None
-    level: int = utils.get_level(network_exp)
+    # require extra post init calculations
+    rank: RankType = None
+    level: float = None
+    most_recent_game: GameType = None
     # gamemodes
     arcade: Arcade = field(init=False)
     bedwars: Bedwars = field(init=False)
@@ -84,50 +98,22 @@ class Player:
     socials: Socials = field(init=False)
     tkr: TurboKartRacers = field(init=False)
 
-    @property
-    def rank(self) -> Optional[RankType]:
-        """Return the rank of the player.
-
-        Returns
-        -------
-        Optional[RankType]
-            A string of the rank display if it exists, otherwise None.
-        """
-        display_rank = None
-        pr = self.raw.get('player', {}).get('newPackageRank')
-        mpr = self.raw.get('player', {}).get('monthlyPackageRank')
-        prefix = self.raw.get('player', {}).get('prefix')
-        rank = self.raw.get('player', {}).get('rank')
-        if prefix:
-            return utils.clean_rank_prefix(prefix)
-        elif rank:
-            if rank == 'YOUTUBER':
-                return 'YOUTUBE'
-            return rank.replace('_', ' ')
-        elif mpr != 'SUPERSTAR':
-            if not pr or pr == 'NONE':
-                return None
-            else:
-                display_rank = pr
-        else:
-            return 'MVP++'
-        return display_rank.replace('_', '').replace('PLUS', '+')
-
     def __post_init__(self):
         # type conversion
-        for f in fields(self):
-            try:
-                value = getattr(self, f.name)
-            except AttributeError:
+        for date in ('first_login', 'last_login', 'last_logout'):
+            value = getattr(self, date)
+            if value is None:
                 continue
-            if not value:
-                continue
-            elif not isinstance(value, f.type):
-                if f.type is datetime:
-                    unix = value / 1e3 # miliseconds to unix time
-                    setattr(self, f.name, datetime.fromtimestamp(unix))
-                else:
-                    setattr(self, f.name, f.type(value))
+            dt = utils.convert_to_datetime(value)
+            setattr(self, date, dt)
+        self.network_exp = int(self.network_exp)
+
+        # extra post init calculations
+        self.level = utils.get_level(self.network_exp)
+        self.rank = utils.get_rank(self.raw)
+        self.most_recent_game = utils.get_game_type(
+            self.most_recent_game
+        )
 
         # playerdata
         modes = {

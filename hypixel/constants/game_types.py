@@ -1,5 +1,5 @@
 """
-The MIT License (MIT)
+The MIT License
 
 Copyright (c) 2021-present duhby
 
@@ -22,61 +22,49 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 """
 
-from __future__ import annotations
-from typing import Optional
-import functools
-import hypixel # can't import GameType directly; circular imports :(
-from .. import utils
+from typing import Literal
 
 __all__ = (
-    'get_game',
-    'get_game_type',
     'GAME_TYPES',
+    'GameTypes',
 )
 
-# from database name
-@functools.lru_cache
-def get_game(database_name) -> Optional[GameType]:
-    data = next((
-        item for item in GAME_TYPES if item['database_name'] == database_name
-    ), None)
-    if not data:
-        return None
-    return hypixel.models.GameType(**data)
-
-# from type name (from gameType in /status)
-def get_game_type(type_name) -> Optional[GameType]:
-    data = next((
-        item for item in GAME_TYPES if item['type_name'] == type_name
-    ), None)
-    if not data:
-        return None
-    return hypixel.models.GameType(**data)
-
-# ---------------------------------------------------------------------- #
+GameTypes = Literal[
+    'QUAKECRAFT',
+    'WALLS',
+    'PAINTBALL',
+    'SURVIVAL_GAMES',
+    'TNTGAMES',
+    'VAMPIREZ',
+    'WALLS3',
+    'ARCADE',
+    'ARENA',
+    'UHC',
+    'MCGO',
+    'BATTLEGROUND',
+    'SUPER_SMASH',
+    'GINGERBREAD',
+    'HOUSING',
+    'SKYWARS',
+    'TRUE_COMBAT',
+    'SPEED_UHC',
+    'SKYCLASH',
+    'LEGACY',
+    'PROTOTYPE',
+    'BEDWARS',
+    'MURDER_MYSTERY',
+    'BUILD_BATTLE',
+    'DUELS',
+    'SKYBLOCK',
+    'PIT',
+    'REPLAY',
+    'SMP',
+]
 
 """
-The MIT License (MIT)
+MIT License
 
 Copyright (c) 2017 The OpenDota Project, The Slothpixel Project
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the 'Software'), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
 """
 
 GAME_TYPES = [
@@ -86,7 +74,7 @@ GAME_TYPES = [
     'database_name': 'Quake',
     'clean_name': 'Quake',
     'standard_name': 'Quake',
-    'legacy': True
+    'legacy': True,
   },
   {
     'id': 3,
@@ -94,7 +82,7 @@ GAME_TYPES = [
     'database_name': 'Walls',
     'clean_name': 'Walls',
     'standard_name': 'Walls',
-    'legacy': True
+    'legacy': True,
   },
   {
     'id': 4,
@@ -102,7 +90,7 @@ GAME_TYPES = [
     'database_name': 'Paintball',
     'clean_name': 'Paintball',
     'standard_name': 'Paintball',
-    'legacy': True
+    'legacy': True,
   },
   {
     'id': 5,
@@ -110,7 +98,7 @@ GAME_TYPES = [
     'database_name': 'HungerGames',
     'lobby_name': 'blitz',
     'clean_name': 'Blitz Survival Games',
-    'standard_name': 'Blitz'
+    'standard_name': 'Blitz',
   },
   {
     'id': 6,
@@ -118,7 +106,7 @@ GAME_TYPES = [
     'database_name': 'TNTGames',
     'lobby_name': 'tnt',
     'clean_name': 'TNT Games',
-    'standard_name': 'TNT'
+    'standard_name': 'TNT',
   },
   {
     'id': 7,
@@ -126,7 +114,7 @@ GAME_TYPES = [
     'database_name': 'VampireZ',
     'clean_name': 'VampireZ',
     'standard_name': 'VampireZ',
-    'legacy': True
+    'legacy': True,
   },
   {
     'id': 13,
@@ -134,7 +122,7 @@ GAME_TYPES = [
     'database_name': 'Walls3',
     'lobby_name': 'megawalls',
     'clean_name': 'Mega Walls',
-    'standard_name': 'MegaWalls'
+    'standard_name': 'MegaWalls',
   },
   {
     'id': 14,
@@ -142,7 +130,7 @@ GAME_TYPES = [
     'database_name': 'Arcade',
     'lobby_name': 'arcade',
     'clean_name': 'Arcade',
-    'standard_name': 'Arcade'
+    'standard_name': 'Arcade',
   },
   {
     'id': 17,
@@ -150,7 +138,7 @@ GAME_TYPES = [
     'database_name': 'Arena',
     'clean_name': 'Arena',
     'standard_name': 'Arena',
-    'legacy': True
+    'legacy': True,
   },
   {
     'id': 20,
@@ -158,7 +146,7 @@ GAME_TYPES = [
     'database_name': 'UHC',
     'lobby_name': 'uhc',
     'clean_name': 'UHC Champions',
-    'standard_name': 'UHC'
+    'standard_name': 'UHC',
   },
   {
     'id': 21,
@@ -166,7 +154,7 @@ GAME_TYPES = [
     'database_name': 'MCGO',
     'lobby_name': 'mcgo',
     'clean_name': 'Cops and Crims',
-    'standard_name': 'CvC'
+    'standard_name': 'CvC',
   },
   {
     'id': 23,
@@ -174,7 +162,7 @@ GAME_TYPES = [
     'database_name': 'Battleground',
     'lobby_name': 'bg',
     'clean_name': 'Warlords',
-    'standard_name': 'Warlords'
+    'standard_name': 'Warlords',
   },
   {
     'id': 24,
@@ -182,7 +170,7 @@ GAME_TYPES = [
     'database_name': 'SuperSmash',
     'lobby_name': 'smash',
     'clean_name': 'Smash Heroes',
-    'standard_name': 'Smash'
+    'standard_name': 'Smash',
   },
   {
     'id': 25,
@@ -190,14 +178,14 @@ GAME_TYPES = [
     'database_name': 'GingerBread',
     'clean_name': 'Turbo Kart Racers',
     'standard_name': 'TKR',
-    'legacy': True
+    'legacy': True,
   },
   {
     'id': 26,
     'type_name': 'HOUSING',
     'database_name': 'Housing',
     'clean_name': 'Housing',
-    'standard_name': 'Housing'
+    'standard_name': 'Housing',
   },
   {
     'id': 51,
@@ -205,7 +193,7 @@ GAME_TYPES = [
     'database_name': 'SkyWars',
     'lobby_name': 'sw',
     'clean_name': 'SkyWars',
-    'standard_name': 'SkyWars'
+    'standard_name': 'SkyWars',
   },
   {
     'id': 52,
@@ -213,7 +201,7 @@ GAME_TYPES = [
     'database_name': 'TrueCombat',
     'lobby_name': 'Truepvp',
     'clean_name': 'Crazy Walls',
-    'standard_name': 'CrazyWalls'
+    'standard_name': 'CrazyWalls',
   },
   {
     'id': 54,
@@ -221,7 +209,7 @@ GAME_TYPES = [
     'database_name': 'SpeedUHC',
     'lobby_name': 'speeduhc',
     'clean_name': 'Speed UHC',
-    'standard_name': 'SpeedUHC'
+    'standard_name': 'SpeedUHC',
   },
   {
     'id': 55,
@@ -229,7 +217,7 @@ GAME_TYPES = [
     'database_name': 'SkyClash',
     'lobby_name': 'skyclash',
     'clean_name': 'SkyClash',
-    'standard_name': 'SkyClash'
+    'standard_name': 'SkyClash',
   },
   {
     'id': 56,
@@ -238,7 +226,7 @@ GAME_TYPES = [
     'lobby_name': 'legacy',
     'clean_name': 'Classic Games',
     'standard_name': 'Classic',
-    'legacy': True
+    'legacy': True,
   },
   {
     'id': 57,
@@ -246,7 +234,7 @@ GAME_TYPES = [
     'database_name': 'Prototype',
     'lobby_name': 'prototype',
     'clean_name': 'Prototype',
-    'standard_name': 'Prototype'
+    'standard_name': 'Prototype',
   },
   {
     'id': 58,
@@ -254,7 +242,7 @@ GAME_TYPES = [
     'database_name': 'Bedwars',
     'lobby_name': 'bedwars',
     'clean_name': 'Bed Wars',
-    'standard_name': 'BedWars'
+    'standard_name': 'BedWars',
   },
   {
     'id': 59,
@@ -262,7 +250,7 @@ GAME_TYPES = [
     'database_name': 'MurderMystery',
     'lobby_name': 'mm',
     'clean_name': 'Murder Mystery',
-    'standard_name': 'MurderMystery'
+    'standard_name': 'MurderMystery',
   },
   {
     'id': 60,
@@ -270,7 +258,7 @@ GAME_TYPES = [
     'database_name': 'BuildBattle',
     'lobby_name': 'bb',
     'clean_name': 'Build Battle',
-    'standard_name': 'BuildBattle'
+    'standard_name': 'BuildBattle',
   },
   {
     'id': 61,
@@ -278,34 +266,34 @@ GAME_TYPES = [
     'database_name': 'Duels',
     'lobby_name': 'duels',
     'clean_name': 'Duels',
-    'standard_name': 'Duels'
+    'standard_name': 'Duels',
   },
   {
     'id': 63,
     'type_name': 'SKYBLOCK',
     'database_name': 'SkyBlock',
     'clean_name': 'SkyBlock',
-    'standard_name': 'SkyBlock'
+    'standard_name': 'SkyBlock',
   },
   {
     'id': 64,
     'type_name': 'PIT',
     'database_name': 'Pit',
     'clean_name': 'Pit',
-    'standard_name': 'Pit'
+    'standard_name': 'Pit',
   },
   {
     'id': 65,
     'type_name': 'REPLAY',
     'database_name': 'Replay',
     'clean_name': 'Replay',
-    'standard_name': 'Replay'
+    'standard_name': 'Replay',
   },
   {
     'id': 67,
     'type_name': 'SMP',
     'database_name': 'SMP',
     'clean_name': 'SMP',
-    'standard_name': 'SMP'
-  }
+    'standard_name': 'SMP',
+  },
 ]

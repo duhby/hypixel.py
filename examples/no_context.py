@@ -2,7 +2,7 @@ import hypixel
 from hypixel import HypixelException
 import asyncio
 
-description = """A simple example that shows how to use hypixel.Client without a context manager."""
+__doc__ = """A simple example that shows how to use hypixel.Client without a context manager."""
 
 async def main():
     client = hypixel.Client()
@@ -12,7 +12,7 @@ async def main():
     except HypixelException as error:
         print(error)
 
-    # make sure this is awaited before the program ends
+    # Make sure this is awaited before your script ends
     await client.close()
 
 if __name__ == '__main__':

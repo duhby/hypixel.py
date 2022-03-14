@@ -22,21 +22,17 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 """
 
+# No api endpoint is associated with this model
+
 from dataclasses import dataclass
-from ... import utils
+
+__all__ = (
+    'ColorType',
+)
 
 @dataclass
-class Paintball:
-    coins: int = 0
-    wins: int = 0
-    kills: int = 0
-    deaths: int = 0
-    killstreaks: int = 0
-    shots_fired: int = 0
-    # Handled later
-    kdr: float = None
-    skr: float = None
-
-    def __post_init__(self):
-        self.kdr = utils.safe_div(self.kills, self.deaths)
-        self.skr = utils.safe_div(self.shots_fired, self.kills)
+class ColorType:
+    type_name: str
+    clean_name: str
+    chat_code: str
+    hexadecimal: str

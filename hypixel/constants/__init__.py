@@ -8,5 +8,6 @@ A module for storing constant data.
 MIT License, see LICENSE for more details.
 """
 
-from . import aliases
+from .aliases import *
 from .game_types import *
+from .color_types import *

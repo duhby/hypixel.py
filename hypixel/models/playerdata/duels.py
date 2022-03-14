@@ -1,5 +1,5 @@
 """
-The MIT License (MIT)
+The MIT License
 
 Copyright (c) 2021-present duhby
 
@@ -37,24 +37,21 @@ class DuelsMode:
     melee_swings: int = 0
     arrows_hit: int = 0
     arrows_shot: int = 0
+    # Handled later
+    wlr: float = None
+    mr: float = None # will be 0 if it doesn't have hits
+    ar: float = None # will be 0 if it doesn't have bows
+    title: str = None
 
-    @property
-    def wlr(self) -> float:
-        return utils.safe_div(self.wins, self.losses)
-
-    @property
-    def mr(self) -> float:
-        misses = self.melee_swings - self.melee_hits
-        return utils.safe_div(self.melee_hits, misses)
-
-    @property
-    def ar(self) -> float:
-        misses = self.arrows_shot - self.arrows_hit
-        return utils.safe_div(self.arrows_hit, misses)
-
-    @property
-    def title(self) -> str:
-        return utils.get_title(self._data, self._mode)
+    def __post_init__(self):
+        self.wlr = utils.safe_div(self.wins, self.losses)
+        self.mr = utils.safe_div(
+            self.melee_hits, self.melee_swings - self.melee_hits
+        )
+        self.ar = utils.safe_div(
+            self.arrows_hit, self.arrows_shot - self.arrows_hit
+        )
+        self.title = utils.get_title(self._data, self._mode)
 
 @dataclass
 class Duels:
@@ -68,6 +65,11 @@ class Duels:
     melee_swings: int = 0
     arrows_hit: int = 0
     arrows_shot: int = 0
+    # Handled later
+    wlr: float = None
+    mr: float = None
+    ar: float = None
+    title: str = None
     blitz: DuelsMode = field(init=False)
     bow: DuelsMode = field(init=False)
     boxing: DuelsMode = field(init=False)
@@ -83,25 +85,16 @@ class Duels:
     tnt_games: DuelsMode = field(init=False)
     uhc: DuelsMode = field(init=False)
 
-    @property
-    def wlr(self) -> float:
-        return utils.safe_div(self.wins, self.losses)
-
-    @property
-    def mr(self) -> float:
-        misses = self.melee_swings - self.melee_hits
-        return utils.safe_div(self.melee_hits, misses)
-
-    @property
-    def ar(self) -> float:
-        misses = self.arrows_shot - self.arrows_hit
-        return utils.safe_div(self.arrows_hit, misses)
-
-    @property
-    def title(self) -> str:
-        return utils.get_title(self._data, 'all_modes')
-
     def __post_init__(self):
+        self.wlr = utils.safe_div(self.wins, self.losses)
+        self.mr = utils.safe_div(
+            self.melee_hits, self.melee_swings - self.melee_hits
+        )
+        self.ar = utils.safe_div(
+            self.arrows_hit, self.arrows_shot - self.arrows_hit
+        )
+        self.title = utils.get_title(self._data, 'all_modes')
+
         modes = (
             'blitz',
             'bow',

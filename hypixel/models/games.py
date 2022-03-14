@@ -1,5 +1,5 @@
 """
-The MIT License (MIT)
+The MIT License
 
 Copyright (c) 2021-present duhby
 
@@ -49,5 +49,5 @@ class GameType:
     database_name: str
     clean_name: str
     standard_name: str
-    legacy: bool = False
     lobby_name: Optional[str] = None
+    legacy: bool = False

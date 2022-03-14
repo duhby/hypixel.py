@@ -1,5 +1,5 @@
 """
-The MIT License (MIT)
+The MIT License
 
 Copyright (c) 2021-present duhby
 
@@ -22,10 +22,12 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 """
 
+import sys
 import asyncio
 import json
 from uuid import UUID
 from collections import namedtuple
+from operator import attrgetter
 from datetime import datetime, timedelta
 
 from typing import List
@@ -38,6 +40,12 @@ from . import utils
 from .errors import *
 from .models import *
 from .utils import HashedDict
+
+try:
+    import ujson
+    JSON_DECODER = ujson.loads
+except ImportError:
+    JSON_DECODER = json.loads
 
 __all__ = (
     'Client',
@@ -80,13 +88,29 @@ class Client:
     Raises
     ------
     :exc:`.MalformedApiKey`
-        Raised if an invalidly formed API key is passed.
-
+        Raised when an invalidly formed API key is passed.
+    :exc:`.LoopPolicyError`
+        Raised when the event loop policy is misconfigured.
 
     .. todo::
         Finish documentation for :class:`Client`.
     """
     def __init__(self, keys=None, *, loop=None, **options):
+        self.loop = asyncio.get_event_loop() if loop is None else loop
+        try:
+            if (
+                isinstance(
+                    self.loop.get_event_loop_policy(),
+                    asyncio.DefaultEventLoopPolicy,
+                )
+                and sys.version_info[0] == 3
+                and sys.version_info[1] >= 8
+                and sys.platform.startswith('win')
+            ):
+                raise LoopPolicyError
+        except AttributeError:
+            pass
+
         self._keys = keys
         if self._keys is not None:
             if isinstance(self._keys, str):
@@ -97,28 +121,22 @@ class Client:
         else:
             self._itr = None
 
-        self.loop = asyncio.get_event_loop() if loop is None else loop
-
         self.autoverify = options.get('autoverify', False)
         # self.rate_limit = options.get('rate_limit', True)
         self.cache = options.get('cache', False)
         self.cache_mojang = options.get('cache_mojang', self.cache)
         self.cache_hypixel = options.get('cache_hypixel', self.cache)
 
-        # cache time
         self.cache_time = options.get('cache_time', 60)
         self.cache_time_m = options.get('cache_time_m', self.cache_time)
         self.cache_time_h = options.get('cache_time_h', self.cache_time)
 
-        # cache size
         self.cache_size = options.get('cache_size', None)
         self.cache_size_m = options.get('cache_size_m', self.cache_size)
         self.cache_size_h = options.get('cache_size_h', self.cache_size)
 
-        # internal
         self._session = aiohttp.ClientSession(loop=self.loop)
 
-        # handle options
         if self.autoverify and self._keys:
             self.validate_keys()
         if self.cache_mojang:
@@ -134,13 +152,9 @@ class Client:
                 self.cache_size_h,
             )
 
-    # properties
-
     @property
     def keys(self) -> List[str]:
         return self._keys
-
-    # remove these and use ._get.cache_info() instead? idk
 
     @property
     def hypixel_cache_info(self) -> Optional[namedtuple]:
@@ -154,16 +168,13 @@ class Client:
             return None
         return self._get_uuid.cache_info()
 
-    # internal
-
     async def __aenter__(self):
-        # open a new session if it has been closed
+        # Open a new session if it has been closed
         if self._session.closed:
             self._session = aiohttp.ClientSession(loop=self.loop)
         return self
 
     async def __aexit__(self, exc_type, exc, tb):
-        # don't return otherwise exceptions get suppressed
         await self._session.close()
 
     def _run(self, future):
@@ -185,10 +196,10 @@ class Client:
             f'https://api.mojang.com/users/profiles/minecraft/{name}'
         )
         if response.status == 200:
-            data = await response.json()
+            data = await response.json(loads=JSON_DECODER)
             uuid = data.get('id')
             if not uuid:
-                raise PlayerNotFound(name) # for safety
+                raise PlayerNotFound(name)
             return uuid
 
         elif response.status == 204:
@@ -196,6 +207,7 @@ class Client:
 
         elif response.status == 429:
             # TODO: handle 429
+            # No Retry-After is given
             retry_after = None
             raise RateLimitError(retry_after, 'mojang', response)
 
@@ -209,7 +221,7 @@ class Client:
             f'https://api.mojang.com/user/profiles/{uuid}/names'
         )
         if response.status == 200:
-            data = await response.json()
+            data = await response.json(loads=JSON_DECODER)
             name = data[-1].get('name')
             if not name:
                 raise PlayerNotFound(uuid)
@@ -220,7 +232,7 @@ class Client:
 
         elif response.status == 429:
             # TODO: handle 429
-            # No Retry-After given
+            # No Retry-After is given
             retry_after = None
             raise RateLimitError(retry_after, 'mojang', response)
 
@@ -231,7 +243,7 @@ class Client:
         self,
         path: str,
         *,
-        # hashed to allow caching
+        # Hashed to allow caching
         params: Optional[HashedDict] = None,
         key_required: Optional[bool] = True,
         key: Optional[str] = None,
@@ -271,7 +283,7 @@ class Client:
         # TODO: handle 429
         if params is None:
             params = {}
-        params = dict(params) # allow mutations
+        params = dict(params) # Allow mutations
 
         if key:
             params['key'] = key
@@ -285,7 +297,7 @@ class Client:
             params=params,
         )
         if response.status == 200:
-            return await response.json()
+            return await response.json(loads=JSON_DECODER)
 
         elif response.status == 429:
             # TODO: handle 429
@@ -302,7 +314,7 @@ class Client:
 
         else:
             try:
-                text = await response.json()
+                text = await response.json(loads=JSON_DECODER)
                 text = text.get('cause')
             except Exception:
                 raise ApiError(response, 'hypixel')
@@ -310,7 +322,7 @@ class Client:
                 text = f'An unexpected error occurred with the hypixel API: {text}'
                 raise ApiError(response, 'hypixel', text)
 
-    # public
+    # Public
 
     async def close(self) -> None:
         """Safely close aiohttp session.
@@ -341,13 +353,11 @@ class Client:
             This first checks for malformed UUIDs, and then requests
             key objects from the API to check if the keys are valid.
         """
-        # check for malformed UUID
         for key in self._keys:
             try:
                 UUID(key)
             except ValueError:
                 raise MalformedApiKey(key)
-        # check for invalid keys
         for key in self._keys:
             await self._get('key', key=key)
 
@@ -386,7 +396,7 @@ class Client:
         if self.cache_hypixel:
             self._get.clear_cache()
 
-    # API (mojang)
+    # API (Mojang)
 
     async def get_uuid(self, name: str) -> str:
         """Get the uuid of a player."""
@@ -400,7 +410,7 @@ class Client:
             raise InvalidPlayerId(uuid)
         return await self._get_name(uuid)
 
-    # API (hypixel)
+    # API (Hypixel)
 
     @utils.convert_id
     async def player(self, id_: str) -> Player:
@@ -415,7 +425,7 @@ class Client:
 
         data = {
             'raw': response,
-            '_data': response['player']
+            '_data': response['player'],
         }
         clean_data = utils._clean(response['player'], mode='PLAYER')
         data.update(clean_data)
@@ -430,9 +440,8 @@ class Client:
     async def key(self, key: str) -> Key:
         """Get the data of a key."""
         if not isinstance(key, str):
-            # make a new exception for HypixelException type errors
-            raise HypixelException(
-                f'TypeError: given key is not a string.'
+            raise BadArgument(
+                f"Given key '{key}' is not a string."
             )
         try:
             UUID(key)
@@ -445,7 +454,7 @@ class Client:
             raise KeyNotFound(key)
 
         data = {
-            'raw': response
+            'raw': response,
         }
         clean_data = utils._clean(response['record'], mode='KEY')
         data.update(clean_data)
@@ -456,14 +465,14 @@ class Client:
         response = await self._get('watchdogstats')
 
         data = {
-            'raw': response
+            'raw': response,
         }
         clean_data = utils._clean(response, mode='BANS')
         data.update(clean_data)
         return Bans(**data)
 
     @utils.convert_id
-    async def player_friends(self, id_: str) -> List[Friend]:
+    async def player_friends(self, id_: str, sort=False) -> List[Friend]:
         """Get a list of a player's friends."""
         params = HashedDict(
             {'uuid': id_['uuid']}
@@ -478,13 +487,17 @@ class Client:
         raw = {
             'raw': response,
         }
-        
+
         friends = []
         for friend in records:
-            clean_data = utils._clean(friend, mode='FRIEND', extra=id_)
+            clean_data = utils._clean(friend, mode='FRIEND', extra=id_['uuid'])
             data = raw.copy()
             data.update(clean_data)
             friends.append(Friend(**data))
+
+        if sorted:
+            # Faster than lambda
+            friends = sorted(friends, key=attrgetter('started'))
         return friends
 
     @utils.convert_id
@@ -506,3 +519,55 @@ class Client:
         clean_data = utils._clean(session, mode='STATUS')
         data.update(clean_data)
         return Status(**data)
+
+    async def guild_by_id(self, id_: str) -> Guild:
+        """Get a guild from the id."""
+        params = HashedDict(
+            {'id': id_}
+        )
+        response = await self._get('guild', params=params)
+
+        if not response.get('guild'):
+            raise GuildNotFound(id_)
+
+        data = {
+            'raw': response,
+        }
+        clean_data = utils._clean(response['guild'], mode='GUILD')
+        data.update(clean_data)
+        return Guild(**data)
+
+    @utils.convert_id
+    async def guild_by_player(self, id_: str) -> Guild:
+        """Get a guild from a player."""
+        params = HashedDict(
+            {'player': id_['uuid']}
+        )
+        response = await self._get('guild', params=params)
+
+        if not response.get('guild'):
+            raise GuildNotFound(id_['orig'])
+
+        data = {
+            'raw': response,
+        }
+        clean_data = utils._clean(response['guild'], mode='GUILD')
+        data.update(clean_data)
+        return Guild(**data)
+
+    async def guild_by_name(self, name: str) -> Guild:
+        """Get a guild from the name."""
+        params = HashedDict(
+            {'name': name}
+        )
+        response = await self._get('guild', params=params)
+
+        if not response.get('guild'):
+            raise GuildNotFound(name)
+
+        data = {
+            'raw': response,
+        }
+        clean_data = utils._clean(response['guild'], mode='GUILD')
+        data.update(clean_data)
+        return Guild(**data)

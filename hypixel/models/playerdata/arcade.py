@@ -1,5 +1,5 @@
 """
-The MIT License (MIT)
+The MIT License
 
 Copyright (c) 2021-present duhby
 
@@ -35,10 +35,11 @@ class HypixelSays:
     rounds: int = 0
     wins: int = 0
     losses: int = rounds - wins
+    # Handled later
+    wlr: float = None
 
-    @property
-    def wlr(self) -> float:
-        return utils.safe_div(self.wins, self.losses)
+    def __post_init__(self):
+        self.wlr = utils.safe_div(self.wins, self.losses)
 
 @dataclass
 class MiniWalls:
@@ -50,10 +51,11 @@ class MiniWalls:
     wither_damage: int = 0
     arrows_hit: int = 0
     arrows_shot: int = 0
+    # Handled later
+    kdr: float = None
 
-    @property
-    def kd(self) -> float:
-        return utils.safe_div(self.kills, self.deaths)
+    def __post_init__(self):
+        self.kdr = utils.safe_div(self.kills, self.deaths)
 
 @dataclass
 class PartyGames:
@@ -61,33 +63,22 @@ class PartyGames:
     # legacy
     wins_2: int = 0
     wins_3: int = 0
+    # Handled later
+    total_wins: int = None
 
-    @property
-    def total_wins(self) -> int:
-        return self.wins + self.wins_2 + self.wins_3
+    def __post_init__(self):
+        self.total_wins = self.wins + self.wins_2 + self.wins_3
 
 @dataclass
 class Arcade:
     _data: dict = field(repr=False)
     coins: int = 0
-    # gamemodes
     ctw: CaptureTheWool = field(init=False)
     hypixel_says: HypixelSays = field(init=False)
     mini_walls: MiniWalls = field(init=False)
     party_games: PartyGames = field(init=False)
 
     def __post_init__(self):
-        # type conversion
-        for f in fields(self):
-            try:
-                value = getattr(self, f.name)
-            except AttributeError:
-                continue
-            if not value:
-                continue
-            elif not isinstance(value, f.type):
-                setattr(self, f.name, f.type(value))
-
         modes = {
             'ctw': CaptureTheWool,
             'hypixel_says': HypixelSays,
