@@ -37,7 +37,7 @@ class TurboKartRacers:
     bananas_received: int = 0
     wins: int = 0 # top 3
     # Handled later
-    self.br: float = None
+    br: float = None
 
     def __post_init__(self):
         self.br = utils.safe_div(self.banana_hits, self.bananas_received)
