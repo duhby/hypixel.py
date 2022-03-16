@@ -25,6 +25,20 @@ async def main():
                 if lobby:
                     mode = parkour._modes[i]
                     print(f"{mode:<15} {utils.strfdelta(lobby.time):<10} {lobby.completed.year}")
+
+            # To compare another player's times
+            # Kinda messy, but it shows the functionality
+            # len() and subscripting[int] also work on Parkour objects, however len() always returns
+            # the total amount, even if attributes are None, so subscripting 2 objects with the same
+            # index always returns the same attribute.
+            player2 = await client.player('technoblade')
+            parkour2 = player2.parkour
+            for i, (p1, p2) in enumerate(zip(parkour, parkour2)):
+                if p1 and p2:
+                    if p1.time < p2.time:
+                        print(f"{parkour._modes[i]}: {player.name} with {p1.time}")
+                    else:
+                        print(f"{parkour._modes[i]}: {player2.name} with {p2.time}")
         except HypixelException as error:
             print(error)
 
