@@ -84,7 +84,7 @@ html_theme = 'furo'
 # documentation.
 html_theme_options = {
     "navigation_with_keys": True,
-    "announcement": "<em>Important</em> This isn't released yet why u here",
+    "announcement": "<strong>Important:</strong> This isn't released yet why u here",
 }
 
 # The name of an image file (within the static path) to use as favicon of the
