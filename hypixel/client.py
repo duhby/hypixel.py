@@ -100,7 +100,7 @@ class Client:
         try:
             if (
                 isinstance(
-                    self.loop.get_event_loop_policy(),
+                    asyncio.get_event_loop_policy(),
                     asyncio.DefaultEventLoopPolicy,
                 )
                 and sys.version_info[0] == 3
