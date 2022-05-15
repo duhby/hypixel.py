@@ -54,7 +54,7 @@ Getting Started
 
 **Check out the** `examples <https://github.com/duhby/hypixel.py/tree/master/examples>`_ **and** `documentation <#>`_!
 
-**Python 3.7+ is required (3.9+ recommended)**
+**Python 3.7+ is required (3.9 recommended)**
 
 Installation
 ^^^^^^^^^^^^
@@ -66,6 +66,7 @@ To install hypixel.py, simply install it from pypi under the name ``hypixel.py``
    pip install hypixel.py --upgrade
 
 You can also append ``[speed]`` to install optional packages (see below) to enhance aiohttp and json performance automatically.
+**Warning:** cchardet does not support python 3.10
 
 .. code:: sh
 
