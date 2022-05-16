@@ -149,6 +149,9 @@ def clean_rank_prefix(string: str) -> str:
     string = string.replace('[', '').replace(']', '')
     return string
 
+def wool_wars_level(exp: int) -> float:
+    pass
+
 # values past 10 aren't needed
 # value = (100, 90, 50, 40, 10, 9, 5, 4, 1)
 # symbol = ('C', 'XC', 'L', 'XL', 'X', 'IX', 'V', 'IV', 'I')
