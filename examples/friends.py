@@ -8,7 +8,7 @@ __doc__ = """
 A simple example that shows how to get and use player_friends data.
 
 .. note::
-    Only shows friends the player is stil frien
+    Only shows friends the player is currently friends with.
 """
 
 async def main():
