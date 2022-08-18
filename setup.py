@@ -12,7 +12,7 @@ with open('requirements.txt') as f:
 
 extras_require = {
     "speed": [
-        "aiodns >= 1.1",
+        "aiodns>=1.1",
         "Brotlipy",
         "cchardet"; python_version < "3.10",
         "ujson",
