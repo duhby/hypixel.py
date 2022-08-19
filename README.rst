@@ -66,7 +66,7 @@ To install hypixel.py, simply install it from pypi under the name ``hypixel.py``
    pip install hypixel.py --upgrade
 
 You can also append ``[speed]`` to install optional packages (see below) to enhance aiohttp and json performance automatically.
-**Warning:** cchardet does not support python 3.10 and subsequently will not be installed using [speed] if you're on 3.10 or higher.
+**Warning:** cchardet does not support python 3.10+ and subsequently will not be installed using [speed] if you're on 3.10 or higher.
 
 .. code:: sh
 
