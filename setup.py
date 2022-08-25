@@ -11,11 +11,11 @@ with open('requirements.txt') as f:
   requirements = f.read().splitlines()
 
 extras_require = {
-    "speed": [
-        "aiodns>=1.1",
-        "Brotlipy",
-        "cchardet"; python_version < "3.10",
-        "ujson",
+    'speed': [
+        'aiodns>=1.1',
+        'Brotlipy',
+        'cchardet==2.1.7; python_version < "3.10"',
+        'ujson',
     ]
 }
 
