@@ -32,6 +32,7 @@ __all__ = (
     'PlayerNotFound',
     'KeyNotFound',
     'ApiError',
+    'TimeoutError',
     'RateLimitError',
     'InvalidApiKey',
     'MalformedApiKey',
@@ -126,6 +127,22 @@ class ApiError(HypixelException):
         self.response = response
         super().__init__(self.text)
 
+class TimeoutError(ApiError):
+    """Raised when the client did not receive a response within the
+    required time.
+
+    Inherits from :exc:`ApiError`
+
+    Attributes
+    ----------
+    api: str
+        The API that caused the error.
+    """
+    def __init__(self, api):
+        self.api = api
+        self.text = f"API timeout {api}"
+        super().__init__(response=None, api=self.api, message=self.text)
+
 class RateLimitError(ApiError):
     """Raised when the rate limit is reached.
 
@@ -148,7 +165,7 @@ class RateLimitError(ApiError):
         else:
             self.text = (
                 "You are being rate limited, "
-                f"try again at {self.retry_after.strftime('%H:%M:%S')}"
+                f"try again in {retry_after} seconds"
             )
         super().__init__(response, api, message=self.text)
 

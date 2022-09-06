@@ -29,6 +29,7 @@ __all__ = (
     'GameTypes',
 )
 
+# Sorted by game id
 GameTypes = Literal[
     'QUAKECRAFT',
     'WALLS',

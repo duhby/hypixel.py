@@ -26,16 +26,22 @@ from dataclasses import dataclass, fields, field
 from datetime import datetime
 
 from typing import Literal, Optional
+from .color import ColorType
 from .games import GameType
 
 from .. import utils
 
 from .playerdata import Arcade
 from .playerdata import Bedwars
+from .playerdata import Blitz
 from .playerdata import Duels
+from .playerdata import MurderMystery
 from .playerdata import Paintball
+from .playerdata import Parkour
+from .playerdata import Skywars
 from .playerdata import Socials
 from .playerdata import TurboKartRacers
+from .playerdata import Uhc
 
 __all__ = (
     'Player',
@@ -80,26 +86,27 @@ class Player:
     # todo: change type to List[Achievement]
     achievements: list = field(default_factory=list, repr=False)
     achievements_multiple: dict = field(default_factory=dict, repr=False)
-    network_exp: int = 0 # not sure why hypixel returns a float.. oh well
+    network_exp: int = 0
     karma: int = 0
     version: str = None
     achievement_points: int = 0
     current_gadget: str = None
     channel: str = None
-    # require extra post init calculations
-    rank: RankType = None
-    level: float = None
+    rank: Optional[RankType] = field(init=False)
+    plus_color: Optional[ColorType] = field(init=False)
+    level: float = field(init=False)
     most_recent_game: GameType = None
-    # gamemodes
     arcade: Arcade = field(init=False)
     bedwars: Bedwars = field(init=False)
     duels: Duels = field(init=False)
     paintball: Paintball = field(init=False)
+    parkour: Parkour = field(init=False)
+    skywars: Skywars = field(init=False)
     socials: Socials = field(init=False)
     tkr: TurboKartRacers = field(init=False)
+    uhc: Uhc = field(init=False)
 
     def __post_init__(self):
-        # type conversion
         for date in ('first_login', 'last_login', 'last_logout'):
             value = getattr(self, date)
             if value is None:
@@ -108,22 +115,32 @@ class Player:
             setattr(self, date, dt)
         self.network_exp = int(self.network_exp)
 
-        # extra post init calculations
         self.level = utils.get_level(self.network_exp)
         self.rank = utils.get_rank(self.raw)
         self.most_recent_game = utils.get_game_type(
-            self.most_recent_game
+            self.raw.get('player', {}).get('mostRecentGameType')
         )
+        self.plus_color = utils.get_color_type(self._data.get('rankPlusColor'))
 
         # playerdata
         modes = {
             'arcade': Arcade,
             'bedwars': Bedwars,
+            'blitz': Blitz,
             'duels': Duels,
+            'murder_mystery': MurderMystery,
             'paintball': Paintball,
+            'parkour': Parkour,
+            'skywars': Skywars,
             'socials': Socials,
             'tkr': TurboKartRacers,
+            'uhc': Uhc,
         }
         for mode, model in modes.items():
             data = utils._clean(self._data, mode=mode.upper())
             setattr(self, mode, model(**data))
+
+    def __eq__(self, other):
+        if isinstance(other, Player):
+            return self.uuid == other.uuid
+        return False

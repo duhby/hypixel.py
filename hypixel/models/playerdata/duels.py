@@ -37,11 +37,10 @@ class DuelsMode:
     melee_swings: int = 0
     arrows_hit: int = 0
     arrows_shot: int = 0
-    # Handled later
-    wlr: float = None
-    mr: float = None # will be 0 if it doesn't have hits
-    ar: float = None # will be 0 if it doesn't have bows
-    title: str = None
+    wlr: float = field(init=False) # More accurate than kdr
+    mr: float = field(init=False) # will be 0 if it doesn't have hits
+    ar: float = field(init=False) # will be 0 if it doesn't have bows
+    title: str = field(init=False)
 
     def __post_init__(self):
         self.wlr = utils.safe_div(self.wins, self.losses)
@@ -65,11 +64,10 @@ class Duels:
     melee_swings: int = 0
     arrows_hit: int = 0
     arrows_shot: int = 0
-    # Handled later
-    wlr: float = None
-    mr: float = None
-    ar: float = None
-    title: str = None
+    wlr: float = field(init=False)
+    mr: float = field(init=False)
+    ar: float = field(init=False)
+    title: str = field(init=False)
     blitz: DuelsMode = field(init=False)
     bow: DuelsMode = field(init=False)
     boxing: DuelsMode = field(init=False)

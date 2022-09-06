@@ -95,7 +95,7 @@ class Guild:
     def __post_init__(self):
         self.created = utils.convert_to_datetime(self.created)
         self.tag_color = utils.get_color_type(self.tag_color)
-        self.level = utils.get_guild_level(self.exp)
+        self.level = utils.guild_level(self.exp)
 
         self.preferred_games = [
             utils.get_game_type(game)

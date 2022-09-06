@@ -22,7 +22,7 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 """
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from ... import utils
 
 @dataclass
@@ -36,8 +36,7 @@ class TurboKartRacers:
     banana_hits: int = 0
     bananas_received: int = 0
     wins: int = 0 # top 3
-    # Handled later
-    br: float = None
+    br: float = field(init=False)
 
     def __post_init__(self):
         self.br = utils.safe_div(self.banana_hits, self.bananas_received)

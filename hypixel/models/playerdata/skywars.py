@@ -26,62 +26,60 @@ from dataclasses import dataclass, field
 from ... import utils
 
 @dataclass
-class CaptureTheWool:
-    captures: int = 0
-    kills_assists: int = 0
-
-@dataclass
-class HypixelSays:
-    rounds: int = 0
-    wins: int = 0
-    losses: int = rounds - wins
-    wlr: float = field(init=False)
-
-    def __post_init__(self):
-        self.wlr = utils.safe_div(self.wins, self.losses)
-
-@dataclass
-class MiniWalls:
+class SkywarsMode:
     kills: int = 0
     deaths: int = 0
     wins: int = 0
-    final_kills: int = 0
-    wither_kills: int = 0
-    wither_damage: int = 0
-    arrows_hit: int = 0
-    arrows_shot: int = 0
+    losses: int = 0
     kdr: float = field(init=False)
+    wlr: float = field(init=False)
 
     def __post_init__(self):
         self.kdr = utils.safe_div(self.kills, self.deaths)
+        self.wlr = utils.safe_div(self.wins, self.losses)
 
 @dataclass
-class PartyGames:
-    wins: int = 0
-    # legacy
-    wins_2: int = 0
-    wins_3: int = 0
-    total_wins: int = field(init=False)
-
-    def __post_init__(self):
-        self.total_wins = self.wins + self.wins_2 + self.wins_3
-
-@dataclass
-class Arcade:
+class Skywars:
     _data: dict = field(repr=False)
+    level: float = field(init=False)
     coins: int = 0
-    ctw: CaptureTheWool = field(init=False)
-    hypixel_says: HypixelSays = field(init=False)
-    mini_walls: MiniWalls = field(init=False)
-    party_games: PartyGames = field(init=False)
+    kills: int = 0
+    deaths: int = 0
+    wins: int = 0
+    losses: int = 0
+    games: int = 0
+    arrows_hit: int = 0
+    arrows_shot: int = 0
+    winstreak: int = None # winstreaks can be disabled # win_streak
+    souls: int = 0
+    exp: int = 0
+    kdr: float = field(init=False)
+    wlr: float = field(init=False)
+    ar: float = field(init=False)
+    solo_normal: SkywarsMode = field(init=False)
+    solo_insane: SkywarsMode = field(init=False)
+    team_normal: SkywarsMode = field(init=False)
+    team_insane: SkywarsMode = field(init=False)
+    ranked: SkywarsMode = field(init=False)
+    mega: SkywarsMode = field(init=False)
 
     def __post_init__(self):
-        modes = {
-            'ctw': CaptureTheWool,
-            'hypixel_says': HypixelSays,
-            'mini_walls': MiniWalls,
-            'party_games': PartyGames,
-        }
-        for mode, model in modes.items():
-            data = utils._clean(self._data, mode=mode.upper())
-            setattr(self, mode, model(**data))
+        self.level = utils.skywars_level(self.exp)
+        self.kdr = utils.safe_div(self.kills, self.deaths)
+        self.wlr = utils.safe_div(self.wins, self.losses)
+        self.ar = utils.safe_div(
+            self.arrows_hit, self.arrows_shot - self.arrows_hit
+        )
+
+        modes = (
+            'ranked',
+            'solo_normal',
+            'solo_insane',
+            'team_normal',
+            'team_insane',
+            'mega_normal',
+            'mega_doubles',
+        )
+        for mode in modes:
+            data = utils._clean(self._data, mode=f'SKYWARS_{mode.upper()}')
+            setattr(self, mode, SkywarsMode(**data))

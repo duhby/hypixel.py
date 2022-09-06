@@ -22,25 +22,28 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 """
 
-from dataclasses import dataclass, fields, field
+from dataclasses import dataclass, field
 from ... import utils
 
 @dataclass
 class BedwarsMode:
     kills: int = 0
     deaths: int = 0
+    fall_deaths: int = 0
+    void_deaths: int = 0
     wins: int = 0
     losses: int = 0
-    games_played: int = 0
+    games: int = 0
     final_kills: int = 0
     final_deaths: int = 0
+    fall_final_deaths: int = 0
+    void_final_deaths: int = 0
     beds_broken: int = 0
     beds_lost: int = 0
-    # Handled later
-    kdr: float = None
-    wlr: float = None
-    fkdr: float = None
-    bblr: float = None
+    kdr: float = field(init=False)
+    wlr: float = field(init=False)
+    fkdr: float = field(init=False)
+    bblr: float = field(init=False)
 
     def __post_init__(self):
         self.kdr = utils.safe_div(self.kills, self.deaths)
@@ -59,25 +62,28 @@ class Bedwars:
     coins: int = 0
     kills: int = 0
     deaths: int = 0
+    fall_deaths: int = 0
+    void_deaths: int = 0
     wins: int = 0
     losses: int = 0
-    games_played: int = 0
+    games: int = 0
     final_kills: int = 0
     final_deaths: int = 0
+    fall_final_deaths: int = 0
+    void_final_deaths: int = 0
     beds_broken: int = 0
     beds_lost: int = 0
     winstreak: int = None # winstreaks can be disabled
     exp: int = 0
+    kdr: float = field(init=False)
+    wlr: float = field(init=False)
+    fkdr: float = field(init=False)
+    bblr: float = field(init=False)
     solo: BedwarsMode = field(init=False)
     doubles: BedwarsMode = field(init=False)
     threes: BedwarsMode = field(init=False)
     fours: BedwarsMode = field(init=False)
     teams: BedwarsMode = field(init=False)
-    # Handled later
-    kdr: float = None
-    wlr: float = None
-    fkdr: float = None
-    bblr: float = None
     # other
     # island_topper: str = None
     # projectile_trail: str = None

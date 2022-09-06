@@ -28,8 +28,8 @@ import json
 from uuid import UUID
 from collections import namedtuple
 from operator import attrgetter
-from datetime import datetime, timedelta
 
+from typing import Dict
 from typing import List
 from typing import Optional
 from typing import Union
@@ -39,7 +39,7 @@ import aiohttp
 from . import utils
 from .errors import *
 from .models import *
-from .utils import HashedDict
+from .utils import ExponentialBackoff, HashedDict
 
 try:
     import ujson
@@ -74,16 +74,24 @@ class Client:
         Defaults to ``False``
     handle_rate_limits: :class:`bool`
         Defaults to ``True``
-    cache:
+    cache: bool
         Whether or not to cache (both mojang and hypixel, separately)
         api calls
         Defaults to ``False``
-    cache_time:
+    cache_time: int
         Amount of time until cached items expire
         Defaults to ``60``
-    cache_size:
+    cache_size: Optional[int]
         Amount of recent unique calls to be stored in cache
         Defaults to ``None``
+    timeout: int
+        How long to wait for a 200 client response before raising a
+        :exc:`TimeoutError`
+    .. note::
+
+        If :attr:`rate_limit` is ``True`` (default), then for mojang
+        requests, if a second 429 response is received and the interval
+        is greater than the timeout, then it will raise.
 
     Raises
     ------
@@ -100,7 +108,7 @@ class Client:
         try:
             if (
                 isinstance(
-                    asyncio.get_event_loop_policy(),
+                    self.loop.get_event_loop_policy(),
                     asyncio.DefaultEventLoopPolicy,
                 )
                 and sys.version_info[0] == 3
@@ -122,10 +130,15 @@ class Client:
             self._itr = None
 
         self.autoverify = options.get('autoverify', False)
-        # self.rate_limit = options.get('rate_limit', True)
+        self.timeout = options.get('timeout', 10)
+
+        self.rate_limit = options.get('rate_limit', True)
+        self.rate_limit_m = options.get('rate_limit_m', self.rate_limit)
+        self.rate_limit_h = options.get('rate_limit_h', self.rate_limit)
+
         self.cache = options.get('cache', False)
-        self.cache_mojang = options.get('cache_mojang', self.cache)
-        self.cache_hypixel = options.get('cache_hypixel', self.cache)
+        self.cache_m = options.get('cache_m', self.cache)
+        self.cache_h = options.get('cache_h', self.cache)
 
         self.cache_time = options.get('cache_time', 60)
         self.cache_time_m = options.get('cache_time_m', self.cache_time)
@@ -135,17 +148,31 @@ class Client:
         self.cache_size_m = options.get('cache_size_m', self.cache_size)
         self.cache_size_h = options.get('cache_size_h', self.cache_size)
 
-        self._session = aiohttp.ClientSession(loop=self.loop)
+        self._session = options.get('session', None)
+        if self._session is None:
+            self._session = aiohttp.ClientSession(
+                loop=self.loop,
+                timeout=aiohttp.ClientTimeout(
+                    total=self.timeout,
+                ),
+            )
 
         if self.autoverify and self._keys:
             self.validate_keys()
-        if self.cache_mojang:
+        if self.rate_limit_m:
+            self.backoff = ExponentialBackoff(self.timeout)
+        if self.cache_m:
             self._get_uuid = utils.async_timed_cache(
                 self._get_uuid,
                 self.cache_time_m,
                 self.cache_size_m,
             )
-        if self.cache_hypixel:
+            self._get_name = utils.async_timed_cache(
+                self._get_name,
+                self.cache_time_m,
+                self.cache_size_m,
+            )
+        if self.cache_h:
             self._get = utils.async_timed_cache(
                 self._get,
                 self.cache_time_h,
@@ -177,25 +204,43 @@ class Client:
     async def __aexit__(self, exc_type, exc, tb):
         await self._session.close()
 
-    def _run(self, future):
-        return self.loop.run_until_complete(future)
+    # def _run(self, future):
+    #     return self.loop.run_until_complete(future)
 
     def _next_key(self):
         if not self._keys:
-            raise KeyRequired("'function' object '_next_key'")
+            raise KeyRequired("method '_next_key'")
         try:
             return next(self._itr)
         except StopIteration:
             self._itr = iter(self._keys)
             return next(self._itr)
 
+    async def _get_uuid_helper(self, name):
+        return await self._session.get(
+            f'https://api.mojang.com/users/profiles/minecraft/{name}'
+        )
+
     async def _get_uuid(self, name: str) -> str:
         if self._session.closed:
             raise ClosedSession
-        response = await self._session.get(
-            f'https://api.mojang.com/users/profiles/minecraft/{name}'
-        )
+        try:
+            response = await self._get_uuid_helper(name)
+        except asyncio.TimeoutError:
+            raise TimeoutError('mojang')
+
+        if response.status == 429:
+            if not self.rate_limit_m:
+                retry_after = None
+                raise RateLimitError(retry_after, 'mojang', response)
+            else:
+                while response.status == 429:
+                    retry = self.backoff.delay()
+                    await asyncio.sleep(retry)
+                    response = await self._get_uuid_helper(name)
+
         if response.status == 200:
+            self.reset_backoff()
             data = await response.json(loads=JSON_DECODER)
             uuid = data.get('id')
             if not uuid:
@@ -205,22 +250,34 @@ class Client:
         elif response.status == 204:
             raise PlayerNotFound(name)
 
-        elif response.status == 429:
-            # TODO: handle 429
-            # No Retry-After is given
-            retry_after = None
-            raise RateLimitError(retry_after, 'mojang', response)
-
         else:
             raise ApiError(response, 'mojang')
+
+    async def _get_name_helper(self, uuid):
+        return await self._session.get(
+            f'https://api.mojang.com/user/profiles/{uuid}/names'
+        )
 
     async def _get_name(self, uuid: str) -> str:
         if self._session.closed:
             raise ClosedSession
-        response = await self._session.get(
-            f'https://api.mojang.com/user/profiles/{uuid}/names'
-        )
+        try:
+            response = await self._get_name_helper(uuid)
+        except asyncio.TimeoutError:
+            raise TimeoutError('mojang')
+
+        if response.status == 429:
+            if not self.rate_limit_m:
+                retry_after = None
+                raise RateLimitError(retry_after, 'mojang', response)
+            else:
+                while response.status == 429:
+                    retry = self.backoff.delay()
+                    await asyncio.sleep(retry)
+                    response = await self._get_name_helper(uuid)
+
         if response.status == 200:
+            self.reset_backoff()
             data = await response.json(loads=JSON_DECODER)
             name = data[-1].get('name')
             if not name:
@@ -230,14 +287,14 @@ class Client:
         elif response.status == 204:
             raise PlayerNotFound(uuid)
 
-        elif response.status == 429:
-            # TODO: handle 429
-            # No Retry-After is given
-            retry_after = None
-            raise RateLimitError(retry_after, 'mojang', response)
-
         else:
             raise ApiError(response, 'mojang')
+
+    async def _get_helper(self, path, params):
+        return await self._session.get(
+            f'https://api.hypixel.net/{path}',
+            params=params,
+        )
 
     async def _get(
         self,
@@ -292,20 +349,27 @@ class Client:
                 raise KeyRequired(path)
             params['key'] = self._next_key()
 
-        response = await self._session.get(
-            f'https://api.hypixel.net/{path}',
-            params=params,
-        )
+        try:
+            response = await self._get_helper(path, params)
+        except asyncio.TimeoutError:
+            raise TimeoutError('hypixel')
+
+        if response.status == 429:
+            if not self.rate_limit_h:
+                # Initially <class 'str'>
+                retry_after = int(response.headers['Retry-After'])
+                raise RateLimitError(retry_after, 'hypixel', response)
+            else:
+                while response.status == 429:
+                    retry = int(response.headers['Retry-After'])
+                    # Retrying exactly after the amount of seconds can
+                    # cause spamming the api while still being limited
+                    # because the time is restricted to int precision.
+                    await asyncio.sleep(retry + 1)
+                    response = await self._get_helper(path, params)
+
         if response.status == 200:
             return await response.json(loads=JSON_DECODER)
-
-        elif response.status == 429:
-            # TODO: handle 429
-            retry_after = (
-                datetime.now() +
-                timedelta(seconds=int(response.headers['Retry-After']))
-            )
-            raise RateLimitError(retry_after, 'hypixel', response)
 
         elif response.status == 403:
             if params.get('key') is None:
@@ -323,6 +387,9 @@ class Client:
                 raise ApiError(response, 'hypixel', text)
 
     # Public
+
+    def reset_backoff(self):
+        self.backoff = ExponentialBackoff(self.timeout)
 
     async def close(self) -> None:
         """Safely close aiohttp session.
@@ -372,8 +439,11 @@ class Client:
     def remove_key(self, key: str) -> None:
         """Update :attr:`keys` and internal attributes."""
         if isinstance(key, str):
-            self._keys.append(key)
-            self._itr = iter(self._keys)
+            try:
+                self._keys.remove(key)
+                self._itr = iter(self._keys)
+            except ValueError:
+                pass
         else:
             raise MalformedApiKey(key)
 
@@ -381,19 +451,19 @@ class Client:
 
     def clear_cache(self) -> None:
         """Clear hypixel and mojang lru caches."""
-        if self.cache_mojang:
+        if self.cache_m:
             self.clear_mojang_cache()
-        if self.cache_hypixel:
+        if self.cache_h:
             self.clear_hypixel_cache()
 
     def clear_mojang_cache(self) -> None:
         """Clear mojang lru cache."""
-        if self.cache_mojang:
+        if self.cache_m:
             self._get_uuid.clear_cache()
 
     def clear_hypixel_cache(self) -> None:
         """Clear hypixel lru cache."""
-        if self.cache_hypixel:
+        if self.cache_h:
             self._get.clear_cache()
 
     # API (Mojang)
@@ -416,7 +486,7 @@ class Client:
     async def player(self, id_: str) -> Player:
         """Create a :class:`Player` object based off an API response."""
         params = HashedDict(
-            {'uuid': id_['uuid']}
+            uuid=id_['uuid']
         )
         response = await self._get('player', params=params)
 
@@ -475,7 +545,7 @@ class Client:
     async def player_friends(self, id_: str, sort=False) -> List[Friend]:
         """Get a list of a player's friends."""
         params = HashedDict(
-            {'uuid': id_['uuid']}
+            uuid=id_['uuid']
         )
         response = await self._get('friends', params=params)
 
@@ -504,7 +574,7 @@ class Client:
     async def player_status(self, id_: str) -> Status:
         """Get the status of a player."""
         params = HashedDict(
-            {'uuid': id_['uuid']}
+            uuid=id_['uuid']
         )
         response = await self._get('status', params=params)
 
@@ -523,7 +593,7 @@ class Client:
     async def guild_by_id(self, id_: str) -> Guild:
         """Get a guild from the id."""
         params = HashedDict(
-            {'id': id_}
+            id=id_
         )
         response = await self._get('guild', params=params)
 
@@ -541,7 +611,7 @@ class Client:
     async def guild_by_player(self, id_: str) -> Guild:
         """Get a guild from a player."""
         params = HashedDict(
-            {'player': id_['uuid']}
+            player=id_['uuid']
         )
         response = await self._get('guild', params=params)
 
@@ -558,7 +628,7 @@ class Client:
     async def guild_by_name(self, name: str) -> Guild:
         """Get a guild from the name."""
         params = HashedDict(
-            {'name': name}
+            name=name
         )
         response = await self._get('guild', params=params)
 
@@ -571,3 +641,32 @@ class Client:
         clean_data = utils._clean(response['guild'], mode='GUILD')
         data.update(clean_data)
         return Guild(**data)
+
+    async def leaderboards(self) -> Dict[str, List[Leaderboard]]:
+        """Get the game leaderboards."""
+        response = await self._get('leaderboards')
+
+        if not response.get('leaderboards'):
+            raise ApiError(response, 'hypixel')
+
+        leaderboards = {}
+        for mode, values in response['leaderboards'].items():
+            lbs = []
+            for lb in values:
+                data = utils._clean(lb, mode='LB')
+                lbs.append(Leaderboard(**data))
+            leaderboards[mode] = lbs
+
+        return leaderboards
+
+        # leaderboards = []
+        # for mode in response['leaderboards'].values():
+        #     for lb in mode:
+        #         data = utils._clean(lb, mode='LB')
+        #         leaderboards.append(Leaderboard(**data))
+
+        # leaderboards = {}
+        # for mode, data in response['leaderboards'].items():
+        #     leaderboards[mode] = GameLeaderboard(_data=data)
+
+        # return leaderboards
