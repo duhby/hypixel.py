@@ -13,7 +13,7 @@ from .bedwars import *
 from .blitz import *
 from .duels import *
 from .murder_mystery import *
-from .paintball import *
+from .paintball import Paintball
 from .parkour import *
 from .skywars import *
 from .socials import *
