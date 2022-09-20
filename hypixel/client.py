@@ -84,9 +84,9 @@ class Client:
         .. note::
 
             The cache uses an async, time-invalidating, least recently used
-            implementation. This means it works on asynchronous functions, can remove
-            items that have been in the cache for x amount of time, and can remove items
-            that have been least recently used if the size limit is reached.
+            implementation. This means it works on asynchronous functions, can invalidate
+            items that have been in the cache for x amount of time, and can remove least
+            recently used items if the size limit is reached.
 
         .. admonition:: Limitations
 
@@ -105,7 +105,7 @@ class Client:
         Refer to ``self.cache`` for more information.
         Defaults to ``self.cache``.
     cache_size: :class:`int`
-        The amount of cached items that are stored before deleting the oldest ones.
+        The amount of cached items that are stored before deleting the oldest items.
         If ``None`` (the default), then there is no limit.
     cache_size_h: :class:`int`
         Cache size for the Hypixel API.
@@ -116,8 +116,17 @@ class Client:
         Refer to ``self.cache_size`` for more information.
         Defaults to ``self.cache_size``.
     cache_time: :class:`int`
-        The amount of time (in seconds) cached items can be stored before getting deleted.
+        The amount of time (in seconds) cached items can be stored before getting
+        invalidated.
         Defaults to ``60``.
+
+        .. note::
+
+            The timestamp of a cached item is stored when the function is called, not when
+            it is returned. So, the time the API takes to get the request counts towards
+            the time invalidation. That's why it's recommended to have a value of at least
+            10, but for the average use case it should be at least 60 if you want to get
+            any cache hits.
     cache_time_h: :class:`int`
         Cache time for the Hypixel API. Refer to ``self.cache_time`` for more information.
         Defaults to ``self.cache_time``.
@@ -344,7 +353,7 @@ class Client:
 
     async def _get_name_helper(self, uuid):
         return await self._session.get(
-            f'https://api.mojang.com/user/profiles/{uuid}/names'
+            f'https://api.mojang.com/user/profile/{uuid}'
         )
 
     async def _get_name(self, uuid: str) -> str:
@@ -368,7 +377,7 @@ class Client:
 
         if response.status == 200:
             data = await response.json(loads=JSON_DECODER)
-            name = data[-1].get('name')
+            name = data.get('name')
             if not name:
                 raise PlayerNotFound(uuid)
             return name
@@ -377,6 +386,7 @@ class Client:
             raise PlayerNotFound(uuid)
 
         else:
+            print(response.status)
             raise ApiError(response, 'mojang')
 
     async def _get_helper(self, path, params):
@@ -657,12 +667,7 @@ class Client:
         KeyRequired
             The client does not have any keys.
         PlayerNotFound
-            The passed player id does not exist.
-
-            .. note::
-
-                While the Minecraft account may exist, this will still raise if they
-                have not logged onto Hypixel before.
+            The passed player id does not exist in Mojang's or Hypixel's databases.
         RateLimitError
             The rate limit is exceeded and ``self.rate_limit_h`` is ``False``.
         TimeoutError
