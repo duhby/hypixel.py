@@ -36,7 +36,7 @@ to prevent frustration due to the complexity and inapplicability of the API in i
 Getting Started
 ---------------
 
-**Check out the** `examples <https://github.com/duhby/hypixel.py/tree/master/examples>`_ **and** `documentation <#>`_!
+**Check out the** `examples <https://docs.dubs.rip/en/dev/examples.html>`_ **and** `documentation <https://docs.dubs.rip/en/dev/>`_!
 
 **Python 3.7+ is required (3.9 recommended)**
 
