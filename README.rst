@@ -13,6 +13,9 @@ hypixel.py (alpha)
 .. image:: https://img.shields.io/github/license/duhby/hypixel.py?style=for-the-badge&color=bright-green
    :target: https://github.com/duhby/hypixel.py/blob/master/LICENSE/
    :alt: License
+.. image:: https://img.shields.io/readthedocs/hypixelpy/dev?style=for-the-badge
+    :target: https://docs.dubs.rip/en/dev/
+    :alt: Documentation Status
 
 
 .. start_doc
