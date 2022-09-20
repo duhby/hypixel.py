@@ -32,7 +32,7 @@ from typing import Optional
 from datetime import datetime, timezone, timedelta
 from string import Formatter
 
-from .models import GameType, ColorType, GuildRank
+from .models import ColorType, GameType, GuildRank
 from .constants.aliases import *
 from .constants import GAME_TYPES, COLOR_TYPES
 from .errors import *
@@ -474,21 +474,21 @@ Copyright (c) 2015-present Rapptz
 """
 
 class ExponentialBackoff:
-    """An implementation of the exponential backoff algorithm
+    """An implementation of the exponential backoff algorithm.
 
     Provides a convenient interface to implement an exponential backoff
-    for reconnecting or retrying transmissions in a distributed network.
+    for reconnecting or retrying transmissions.
 
     Once instantiated, the delay method will return the next interval to
-    wait for when retrying a connection or transmission.  The maximum
+    wait for when retrying a connection or transmission. The maximum
     delay increases exponentially with each retry up to a maximum of
-    2^10 * base, and is reset if no more attempts are needed in a period
-    of 2^11 * base seconds.
+    2^10 * base.
 
-    .
-        Raises
-        ------
-        timeout error thing
+    Raises
+    ------
+    :exc:`TimeoutError`
+        Raised when the difference of time from the last request is greater than
+        the client's timeout.
     """
 
     def __init__(self, timeout: int = 2**11):
@@ -506,7 +506,7 @@ class ExponentialBackoff:
         self._randfunc = rand.uniform
 
     def delay(self) -> float:
-        """Compute the next delay
+        """Compute the next delay.
 
         Returns the next delay to wait according to the exponential
         backoff algorithm.  This is a value between 0 and base * 2^exp
@@ -519,8 +519,8 @@ class ExponentialBackoff:
         invocation = time.monotonic()
         interval = invocation - self._last_invocation
         self._last_invocation = invocation
-        
-        if interval > self._timeout:
+
+        if self._timeout is not None and interval > self._timeout:
             raise TimeoutError('mojang')
             # self._exp = 0
 

@@ -27,8 +27,12 @@ from ... import utils
 
 from typing import Literal
 
-WWClass = Literal['TANK', 'ASSULT', 'ARCHER', 'SWORDSMAN', 'GOLEM', 'ENGINEER']
+__all__ = (
+    'WoolWars',
+    'WWClass',
+)
 
+WWClass = Literal['TANK', 'ASSULT', 'ARCHER', 'SWORDSMAN', 'GOLEM', 'ENGINEER']
 
 @dataclass
 class WoolWars:

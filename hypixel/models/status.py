@@ -24,7 +24,7 @@ DEALINGS IN THE SOFTWARE.
 
 from dataclasses import dataclass, field
 from typing import Optional
-from .games import GameType
+from .types import GameType
 
 __all__ = (
     'Status',

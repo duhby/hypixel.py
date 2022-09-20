@@ -1,15 +1,15 @@
-# This exmaple requires an api key
-
-import hypixel
-from hypixel import HypixelException
-import asyncio
-
-__doc__ = """
+"""
 A simple example that shows how to get and use player_friends data.
 
 .. note::
     Only shows friends the player is currently friends with.
 """
+
+# This exmaple requires an api key
+
+import hypixel
+from hypixel import HypixelException
+import asyncio
 
 async def main():
     client = hypixel.Client('api-key')

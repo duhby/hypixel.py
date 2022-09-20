@@ -27,7 +27,7 @@ from typing import Any
 
 __all__ = (
     'HypixelException',
-    'BadArgument',
+    'ArgumentError',
     'InvalidPlayerId',
     'PlayerNotFound',
     'KeyNotFound',
@@ -48,7 +48,7 @@ class HypixelException(Exception):
     Theoretically, this can be used to catch all errors from this library.
     """
 
-class BadArgument(HypixelException):
+class ArgumentError(HypixelException):
     """Raised when a passed argument is faulty.
 
     Inherits from :exc:`HypixelException`
@@ -62,10 +62,10 @@ class BadArgument(HypixelException):
         self.text = message
         super().__init__(self.text)
 
-class InvalidPlayerId(BadArgument):
-    """Raised when a passed player id does not have a string value.
+class InvalidPlayerId(ArgumentError):
+    """Raised when a passed player id is not a string.
 
-    Inherits from :exc:`BadArgument`
+    Inherits from :exc:`ArgumentError`
 
     Attributes
     ----------
@@ -77,10 +77,10 @@ class InvalidPlayerId(BadArgument):
         self.text = f"Passed player id '{self.id}' is not a string"
         super().__init__(self.text)
 
-class PlayerNotFound(BadArgument):
+class PlayerNotFound(ArgumentError):
     """Raised when a requested player does not exist.
 
-    Inherits from :exc:`BadArgument`
+    Inherits from :exc:`ArgumentError`
 
     Attributes
     ----------
@@ -92,10 +92,10 @@ class PlayerNotFound(BadArgument):
         self.text = f"Player '{self.player}' did not yield a response"
         super().__init__(self.text)
 
-class KeyNotFound(BadArgument):
+class KeyNotFound(ArgumentError):
     """Raised when a requested key does not exist.
 
-    Inherits from :exc:`BadArgument`
+    Inherits from :exc:`ArgumentError`
 
     Attributes
     ----------
@@ -169,10 +169,10 @@ class RateLimitError(ApiError):
             )
         super().__init__(response, api, message=self.text)
 
-class InvalidApiKey(BadArgument):
+class InvalidApiKey(ArgumentError):
     """Base exception for invalid API key exceptions.
 
-    Inherits from :exc:`BadArgument`
+    Inherits from :exc:`ArgumentError`
 
     .. note::
 
@@ -183,12 +183,12 @@ class InvalidApiKey(BadArgument):
 
         For simplicity, if multiple API keys are invalid, only the first
         one will be included, even if :meth:`Client.validate_keys` is
-        called multiple times with the same keys.
+        called multiple times.
 
     Attributes
     ----------
     key: str
-        The key that caused the error to be raised.
+        The key that caused the error.
     """
     def __init__(self, key, message=None):
         if message is None:
@@ -206,7 +206,7 @@ class MalformedApiKey(InvalidApiKey, ValueError):
     Attributes
     ----------
     key: str
-        The key that caused the error to be raised. See
+        The key that caused the error. See
         :exc:`InvalidApiKey` for details.
     """
     def __init__(self, key):
@@ -257,10 +257,10 @@ class LoopPolicyError(HypixelException, RuntimeError):
         )
         super().__init__(self.text)
 
-class GuildNotFound(BadArgument):
+class GuildNotFound(ArgumentError):
     """Raised when a requested guild does not exist.
 
-    Inherits from :exc:`BadArgument`
+    Inherits from :exc:`ArgumentError`
 
     Attributes
     ----------

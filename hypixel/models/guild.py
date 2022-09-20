@@ -27,9 +27,8 @@ from dataclasses import dataclass, field
 from datetime import datetime
 
 from typing import Dict, List, Literal, Optional
-from .games import GameType
+from .types import ColorType, GameType
 from ..constants import GameTypes
-from .color import ColorType
 
 from .. import utils
 
@@ -70,12 +69,27 @@ class GuildMember:
 
 @dataclass
 class Guild:
+    """Guild model object."""
+
+    # Attributes
+    # ----------
+    # game_exp: Dict[:class:`GameTypes`, :class:`int`]
+    #     A dictionary of a string game type representation and the exp as an int.
+
+    #     .. note::
+
+    #         :class:`GameTypes` is used instead of :class:`GameType` because a dictinoary is the easiest
+    #         way to access the data.
+
+    #     .. tip::
+
+    #         You can use :attr:`GameType.type_name` if you have a GameType instance.
     raw: dict = field(repr=False)
     id: str
     name: str
     exp: int
     created: datetime
-    level: int = None # handled later
+    level: int = field(init=False)
     legacy_rank: Optional[int] = None
     members: List[GuildMember] = field(default_factory=list)
     ranks: List[GuildRank] = field(default_factory=list)

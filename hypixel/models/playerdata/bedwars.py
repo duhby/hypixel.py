@@ -23,7 +23,13 @@ DEALINGS IN THE SOFTWARE.
 """
 
 from dataclasses import dataclass, field
+from typing import Optional
 from ... import utils
+
+__all__ = (
+    'Bedwars',
+    'BedwarsMode',
+)
 
 @dataclass
 class BedwarsMode:
@@ -73,7 +79,7 @@ class Bedwars:
     void_final_deaths: int = 0
     beds_broken: int = 0
     beds_lost: int = 0
-    winstreak: int = None # winstreaks can be disabled
+    winstreak: Optional[int] = None # winstreaks can be disabled
     exp: int = 0
     kdr: float = field(init=False)
     wlr: float = field(init=False)

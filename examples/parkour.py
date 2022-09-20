@@ -1,11 +1,11 @@
+"""A simple example showing how to display a player's parkour times."""
+
 # This example requires an api key
 
 import hypixel
 from hypixel import utils
 from hypixel import HypixelException
 import asyncio
-
-__doc__ = """A simple example showing how to display a player's parkour times."""
 
 async def main():
     client = hypixel.Client('api-key')

@@ -22,12 +22,14 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 """
 
-# No api endpoint is associated with this model
+# No api endpoint is associated with these models
 
 from dataclasses import dataclass
+from typing import Optional
 
 __all__ = (
     'ColorType',
+    'GameType',
 )
 
 @dataclass
@@ -36,3 +38,13 @@ class ColorType:
     clean_name: str
     chat_code: str
     hexadecimal: str
+
+@dataclass
+class GameType:
+    id: int
+    type_name: str
+    database_name: str
+    clean_name: str
+    standard_name: str
+    lobby_name: Optional[str] = None
+    legacy: bool = False

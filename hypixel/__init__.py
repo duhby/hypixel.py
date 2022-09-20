@@ -15,5 +15,21 @@ __copyright__ = 'Copyright 2021-present duhby'
 __version__ = 'dev'
 
 from .client import *
+from .constants import *
 from .errors import *
 from .models import *
+from .utils import *
+
+from typing import NamedTuple, Literal
+
+
+class VersionInfo(NamedTuple):
+    major: int
+    minor: int
+    micro: int
+    releaselevel: Literal["alpha", "beta", "candidate", "final"]
+    serial: int
+
+version_info: VersionInfo = VersionInfo(major=0, minor=2, micro=1, releaselevel='final', serial=0)
+
+del NamedTuple, Literal, VersionInfo

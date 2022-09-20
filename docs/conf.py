@@ -14,6 +14,7 @@ import re
 import os
 import sys
 sys.path.insert(0, os.path.abspath('..'))
+sys.path.append(os.path.abspath('extensions'))
 
 
 # -- Project information -----------------------------------------------------
@@ -23,7 +24,7 @@ copyright = '2021-present duhby'
 author = 'duhby'
 
 
-# from discord.py
+# From discord.py
 version = ''
 with open('../hypixel/__init__.py') as f:
     version = re.search(r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]', f.read(), re.MULTILINE).group(1)
@@ -44,6 +45,9 @@ extensions = [
     'sphinx.ext.napoleon',
     'sphinxcontrib_trio',
     'sphinx_copybutton',
+    'sphinx_design',
+    'attributetable',
+    'exception_hierarchy',
 ]
 
 autodoc_member_order = 'bysource'
@@ -84,7 +88,7 @@ html_theme = 'furo'
 # documentation.
 html_theme_options = {
     "navigation_with_keys": True,
-    "announcement": "<strong>Important:</strong> This isn't released yet why u here",
+    # "announcement": "Hi, not sure what to put here",
 }
 
 # The name of an image file (within the static path) to use as favicon of the
@@ -99,3 +103,12 @@ html_logo = './images/icon.png'
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
+
+# These paths are either relative to html_static_path
+# or fully qualified paths (eg. https://...)
+html_css_files = [
+    'custom.css',
+]
+html_js_files = [
+    'custom.js',
+]

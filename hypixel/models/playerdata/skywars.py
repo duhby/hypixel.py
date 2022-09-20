@@ -23,7 +23,13 @@ DEALINGS IN THE SOFTWARE.
 """
 
 from dataclasses import dataclass, field
+from typing import Optional
 from ... import utils
+
+__all__ = (
+    'Skywars',
+    'SkywarsMode',
+)
 
 @dataclass
 class SkywarsMode:
@@ -50,7 +56,7 @@ class Skywars:
     games: int = 0
     arrows_hit: int = 0
     arrows_shot: int = 0
-    winstreak: int = None # winstreaks can be disabled # win_streak
+    winstreak: Optional[int] = None # winstreaks can be disabled # win_streak
     souls: int = 0
     exp: int = 0
     kdr: float = field(init=False)

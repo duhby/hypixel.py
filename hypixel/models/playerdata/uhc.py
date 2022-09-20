@@ -25,6 +25,11 @@ DEALINGS IN THE SOFTWARE.
 from dataclasses import dataclass, field
 from ... import utils
 
+__all__ = (
+    'Uhc',
+    'UhcMode',
+)
+
 @dataclass
 class UhcMode:
     wins: int = 0

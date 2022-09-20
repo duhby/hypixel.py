@@ -16,6 +16,13 @@ extras_require = {
         'Brotlipy',
         'cchardet==2.1.7; python_version < "3.10"',
         'ujson',
+    ],
+    'docs': [
+        'sphinx==5.1.1',
+        'sphinxcontrib_trio==1.1.2',
+        'furo==2022.9.15',
+        'sphinx_copybutton==0.5.0',
+        'sphinx_design==0.3.0',
     ]
 }
 

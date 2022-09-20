@@ -22,18 +22,22 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 """
 
-from dataclasses import dataclass
-from typing import Optional
+from typing import Literal
 
 __all__ = (
-    'Socials',
+    'RankTypes',
 )
 
-@dataclass
-class Socials:
-    discord: Optional[str] = None
-    youtube: Optional[str] = None
-    twitter: Optional[str] = None
-    twitch: Optional[str] = None
-    instagram: Optional[str] = None
-    hypixel_forums: Optional[str] = None
+RankTypes = Literal[
+    'VIP',
+    'VIP+',
+    'MVP',
+    'MVP+',
+    'MVP++',
+    'YOUTUBE',
+    'PIG+++',
+    'MOJANG',
+    'GAME MASTER',
+    'ADMIN',
+    'OWNER',
+]

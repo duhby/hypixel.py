@@ -25,9 +25,9 @@ DEALINGS IN THE SOFTWARE.
 from dataclasses import dataclass, fields, field
 from datetime import datetime
 
-from typing import Literal, Optional
-from .color import ColorType
-from .games import GameType
+from typing import List, Literal, Optional
+from .types import ColorType, GameType
+from ..constants import RankTypes
 
 from .. import utils
 
@@ -47,32 +47,88 @@ __all__ = (
     'Player',
 )
 
-RankType = Literal[
-    'VIP',
-    'VIP+',
-    'MVP',
-    'MVP+',
-    'MVP++',
-    'YOUTUBE',
-    'PIG+++',
-    'MOJANG',
-    'GAME MASTER',
-    'ADMIN',
-    'OWNER',
-]
-
 @dataclass
 class Player:
     """Player model object.
 
     Attributes
     ----------
-    rank: Optional[RankType]
-        A string of the rank display if it exists, otherwise None.
+    raw: :class:`dict`
+        The raw json response returned from the API.
+    id: :class:`str`
+        Hypixel's unique identifier.
+    uuid: :class:`str`
+        Mojang's unique identifier.
+    first_login: :class:`datetime.datetime`
+        The first login time represented as a datetime in the UTC timezone.
+    name: :class:`str`
+        The username of the player with the correct capitalization.
 
-    .. todo::
+        .. note::
 
-        Finish player class documentation.
+            If the player changed their username after ``last_login``, then this attribute
+            will be outdated.
+    last_login: :class:`datetime.datetime`
+        The last login time represented as a datetime in the UTC timezone.
+    last_logout: :class:`datetime.datetime`
+        The last logout time represented as a datetime in the UTC timezone.
+    known_aliases: List[:class:`str`]
+        A list of previous usernames the account has logged onto Hypixel with.
+    achievements: List[:class:`str`]
+        A list of achievement name strings.
+
+        .. warning::
+
+            This will most likely be changed to List[Achievement] before the 1.0 release.
+    network_exp: :class:`int`
+        The player's current network experience points.
+    karma: :class:`int`
+        The player's current karma.
+    version: :class:`str`
+        The most recent minecraft version the player joined Hypixel with.
+
+        .. note::
+
+            This attribute is highly unstable, and the API often returns inaccurate info
+            or nothing at all.
+    achievement_points: :class:`int`
+        The player's achievement points.
+    current_gadget: :class:`str`
+        The player's current gadget equipped in lobbies.
+    channel: Optional[:class:`str`]
+        The current text channel the player is in.
+
+        .. note::
+
+            Will be ``None`` if the player's ``Online Status`` API setting is disabled.
+    rank: Optional[:class:`RankTypes`]
+        A string representation of the player's rank if it exists; otherwise ``None``.
+    plus_color: Optional[:class:`ColorType`]
+        The player's plus color if their rank has a plus in it; otherwise ``None``.
+    level: :class:`float`
+        The player's Hypixel level.
+    most_recent_game: Optional[:class:`GameType`]
+        .. note::
+
+            Will be ``None`` if the player's ``Recent Games`` API setting is disabled.
+    arcade: :class:`~models.playerdata.Arcade`
+        A model for abstracting arcade related data.
+    bedwars: :class:`~models.playerdata.Bedwars`
+        A model for abstracting bedwars related data.
+    duels: :class:`~models.playerdata.Duels`
+        A model for abstracting duels related data.
+    paintball: :class:`~models.playerdata.Paintball`
+        A model for abstracting paintball related data.
+    parkour: :class:`~models.playerdata.Parkour`
+        A model for abstracting parkour related data.
+    skywars: :class:`~models.playerdata.Skywars`
+        A model for abstracting skywars related data.
+    socials: :class:`~models.playerdata.Socials`
+        A model for abstracting socials related data.
+    tkr: :class:`~models.playerdata.TurboKartRacers`
+        A model for abstracting tkr related data.
+    uhc: :class:`~models.playerdata.Uhc`
+        A model for abstracting uhc related data.
     """
     _data: dict = field(repr=False)
     raw: dict = field(repr=False)
@@ -83,16 +139,14 @@ class Player:
     last_login: datetime = None
     last_logout: datetime = None
     known_aliases: list = None
-    # todo: change type to List[Achievement]
     achievements: list = field(default_factory=list, repr=False)
-    achievements_multiple: dict = field(default_factory=dict, repr=False)
     network_exp: int = 0
     karma: int = 0
     version: str = None
     achievement_points: int = 0
     current_gadget: str = None
     channel: str = None
-    rank: Optional[RankType] = field(init=False)
+    rank: Optional[RankTypes] = field(init=False)
     plus_color: Optional[ColorType] = field(init=False)
     level: float = field(init=False)
     most_recent_game: GameType = None

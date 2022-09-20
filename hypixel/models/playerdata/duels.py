@@ -25,6 +25,11 @@ DEALINGS IN THE SOFTWARE.
 from dataclasses import dataclass, field
 from ... import utils
 
+__all__ = (
+    'Duels',
+    'DuelsMode',
+)
+
 @dataclass
 class DuelsMode:
     _data: dict = field(repr=False)

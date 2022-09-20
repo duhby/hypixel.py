@@ -1,10 +1,10 @@
+"""A simple example that shows how to convert the default time to other timezones."""
+
 # This example requires an api key
 
 import hypixel
 from hypixel import HypixelException
 import asyncio
-
-__doc__ = """A simple example that shows how to convert the default time to other timezones."""
 
 try:
     # Python 3.9+

@@ -1,3 +1,5 @@
+"""A simple example showing how to handle leaderboard models."""
+
 # This example requires an api key
 
 import hypixel
@@ -5,8 +7,6 @@ from hypixel import HypixelException
 import asyncio
 
 from uuid import UUID
-
-__doc__ = """A simple example showing how to handle leaderboard models."""
 
 async def main():
     client = hypixel.Client('api-key')

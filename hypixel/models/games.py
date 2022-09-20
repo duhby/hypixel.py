@@ -30,7 +30,6 @@ __all__ = (
     'Game',
     'GameCount',
     'GameCounts',
-    'GameType',
 )
 
 class Game:
@@ -41,13 +40,3 @@ class GameCount:
 
 class GameCounts:
     pass
-
-@dataclass
-class GameType:
-    id: int
-    type_name: str
-    database_name: str
-    clean_name: str
-    standard_name: str
-    lobby_name: Optional[str] = None
-    legacy: bool = False

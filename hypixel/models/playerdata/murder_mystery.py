@@ -25,6 +25,11 @@ DEALINGS IN THE SOFTWARE.
 from dataclasses import dataclass, field
 from ... import utils
 
+__all__ = (
+    'MurderMystery',
+    'MurderMysteryMode',
+)
+
 @dataclass
 class MurderMysteryMode:
     games: int = 0

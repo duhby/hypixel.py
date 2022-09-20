@@ -8,14 +8,14 @@ A module for modeling player specific data.
 MIT License, see LICENSE for more details.
 """
 
-from .arcade import Arcade
-from .bedwars import Bedwars
-from .blitz import Blitz
-from .duels import Duels
-from .murder_mystery import MurderMystery
-from .paintball import Paintball
-from .parkour import Parkour
-from .skywars import Skywars
-from .socials import Socials
-from .tkr import TurboKartRacers
-from .uhc import Uhc
+from .arcade import *
+from .bedwars import *
+from .blitz import *
+from .duels import *
+from .murder_mystery import *
+from .paintball import *
+from .parkour import *
+from .skywars import *
+from .socials import *
+from .tkr import *
+from .uhc import *

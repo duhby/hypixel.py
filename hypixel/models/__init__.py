@@ -8,12 +8,12 @@ A module for modeling data.
 MIT License, see LICENSE for more details.
 """
 
-from .bans import Bans
-from .color import ColorType
-from .friend import Friend
-from .games import Game, GameCount, GameCounts, GameType
-from .guild import Guild, GuildMember, GuildRank
-from .key import Key
-from .leaderboards import Leaderboard
-from .player import Player
-from .status import Status
+from .bans import *
+from .friend import *
+from .games import *
+from .guild import *
+from .key import *
+from .leaderboards import *
+from .player import *
+from .status import *
+from .types import *

@@ -25,6 +25,10 @@ DEALINGS IN THE SOFTWARE.
 from dataclasses import dataclass, field
 from ... import utils
 
+__all__ = (
+    'Blitz',
+)
+
 @dataclass
 class Blitz:
     coins: int = 0

@@ -25,6 +25,14 @@ DEALINGS IN THE SOFTWARE.
 from dataclasses import dataclass, field
 from ... import utils
 
+__all__ = (
+    'Arcade',
+    'CaptureTheWool',
+    'HypixelSays',
+    'MiniWalls',
+    'PartyGames',
+)
+
 @dataclass
 class CaptureTheWool:
     captures: int = 0
