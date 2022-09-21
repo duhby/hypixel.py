@@ -173,7 +173,7 @@ class Client:
 
             If ``self.rate_limit`` is ``True`` (default), then for Mojang API requests, if
             a 429 response is received and the interval is greater than ``self.timeout``,
-            then it will raise an :exc:`TimeoutError`.
+            then it will raise a :exc:`TimeoutError`.
 
     Raises
     ------
@@ -653,7 +653,7 @@ class Client:
 
         Parameters
         ----------
-        id_: :class:`str`
+        id\_: :class:`str`
             The username or uuid of a player.
 
         Raises
