@@ -12,7 +12,7 @@ __title__ = 'hypixel'
 __author__ = 'duhby'
 __license__ = 'MIT'
 __copyright__ = 'Copyright 2021-present duhby'
-__version__ = '0.3.0a'
+__version__ = 'dev'
 
 from .client import *
 from .color import *
