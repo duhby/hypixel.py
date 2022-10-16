@@ -50,7 +50,7 @@ classifiers = [
     'Natural Language :: English',
     'Intended Audience :: Developers',
     'Operating System :: OS Independent',
-    'Programming Language :: Python :: 3.7',
+    'Programming Language :: Python :: 3.8',
     'License :: OSI Approved :: MIT License',
 ]
 
@@ -67,5 +67,5 @@ setup(
     classifiers=classifiers,
     install_requires=requirements,
     extras_require=extras_require,
-    python_requires='>=3.7',
+    python_requires='>=3.8',
 )

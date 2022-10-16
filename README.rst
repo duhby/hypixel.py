@@ -38,7 +38,7 @@ Getting Started
 
 **Check out the** `examples <https://docs.dubs.rip/en/dev/examples.html>`_ **and** `documentation <https://docs.dubs.rip/en/dev/>`_!
 
-**Python 3.7+ is required (3.9 recommended)**
+**Python 3.8+ is required (3.10.8+ recommended)**
 
 Installation
 ^^^^^^^^^^^^

@@ -11,7 +11,7 @@ try:
     # Python 3.9+
     from zoneinfo import ZoneInfo
 except ImportError:
-    # Python 3.7-8 (pip install backports.zoneinfo[tzdata])
+    # Python 3.8 (pip install backports.zoneinfo[tzdata])
     # This module also works for python 3.6, however hypixel.py does not
     from backports.zoneinfo import ZoneInfo
 
