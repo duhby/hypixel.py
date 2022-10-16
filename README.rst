@@ -14,7 +14,7 @@ hypixel.py (beta)
    :target: https://github.com/duhby/hypixel.py/blob/master/LICENSE/
    :alt: License
 .. image:: https://img.shields.io/readthedocs/hypixelpy/dev?style=for-the-badge
-    :target: https://docs.dubs.rip/en/dev/
+    :target: https://docs.dubs.rip/en/latest/
     :alt: Documentation Status
 
 
@@ -36,7 +36,7 @@ to prevent frustration due to the complexity and inapplicability of the API in i
 Getting Started
 ---------------
 
-**Check out the** `examples <https://docs.dubs.rip/en/dev/examples.html>`_ **and** `documentation <https://docs.dubs.rip/en/dev/>`_!
+**Check out the** `examples <https://docs.dubs.rip/en/latest/examples.html>`_ **and** `documentation <https://docs.dubs.rip/en/latest/>`_!
 
 **Python 3.8+ is required (3.10.8+ recommended)**
 
