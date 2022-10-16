@@ -44,7 +44,7 @@ class Game:
     legacy: bool = False
 
     @classmethod
-    @functools.lru_cache
+    @functools.lru_cache()
     def from_type(cls, type_name: str) -> Game:
         """Constructs a :class:`Game` from its type name.
 
@@ -61,7 +61,7 @@ class Game:
         return cls(**data)
 
     @classmethod
-    @functools.lru_cache
+    @functools.lru_cache()
     def from_id(cls, id_: int) -> Game:
         """Constructs a :class:`Game` from its id.
 

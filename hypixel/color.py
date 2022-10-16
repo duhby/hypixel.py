@@ -33,7 +33,7 @@ class Color:
     hexadecimal: str
 
     @classmethod
-    @functools.lru_cache
+    @functools.lru_cache()
     def from_type(cls, type_name: str) -> Color:
         """Constructs a :class:`Color` from its type name.
 
