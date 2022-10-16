@@ -33,6 +33,7 @@ extras_require = {
         'pytest==7.1.3',
         'pytest-asyncio==0.19.0',
         'pytest-cov==4.0.0',
+        'aioresponses==0.7.3',
     ]
 }
 
