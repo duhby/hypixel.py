@@ -12,14 +12,15 @@ There are two ways to query version information about the library.
 
 .. data:: __version__
 
-    A string representation of the version. E.g. ``'1.0.0rc1'``. Based off of :pep:`440`.
+    A string representation of the version. E.g. ``'1.0.0rc1'``. Based off of
+    :pep:`440`.
 
 .. data:: version_info
 
     A named tuple that is similar to :obj:`py:sys.version_info`.
 
-    Just like :obj:`py:sys.version_info` the valid values for ``releaselevel`` are
-    'alpha', 'beta', 'candidate' and 'final'.
+    Just like :obj:`py:sys.version_info` the valid values for ``releaselevel``
+    are 'alpha', 'beta', 'candidate' and 'final'.
 
 Client
 ------
@@ -28,21 +29,21 @@ Client
 
 .. autoclass:: Client
     :members:
-    :undoc-members:
 
-Models
-------
+API Models
+----------
 
-Models are dataclasses that are not meant to be manually constructed.
+API Models are dataclasses that are not meant to be manually constructed.
 
 .. danger::
 
-    These are **not intended to be created by users** and are **read-only**.
+    These are **not intended to be created by users** and should be treated as
+    **read-only**.
 
 .. note::
 
-    Although attributes are technically modifiable, it is not recommended
-    to do so.
+    Although attributes are technically modifiable, it is not recommended to do
+    so.
 
 Bans
 ~~~~
@@ -62,8 +63,8 @@ Friend
     :members:
     :undoc-members:
 
-Games
-~~~~~
+.. Games
+.. ~~~~~
 
 .. .. attributetable:: Game
 
@@ -125,15 +126,12 @@ Leaderboards
 Player
 ~~~~~~
 
+.. currentmodule:: hypixel.models.player
+
 .. attributetable:: Player
 
 .. autoclass:: Player()
     :members:
-
-PlayerData
-~~~~~~~~~~
-
-.. currentmodule:: hypixel.models.playerdata
 
 .. attributetable:: Arcade
 
@@ -169,36 +167,153 @@ PlayerData
 
 .. autoclass:: Bedwars()
     :members:
+
+.. attributetable:: BedwarsMode
+
+.. autoclass:: BedwarsMode()
+    :members:
+
+.. attributetable:: Blitz
+
+.. autoclass:: Blitz()
+    :members:
+    :undoc-members:
+
+.. attributetable:: Duels
+
+.. autoclass:: Duels()
+    :members:
+    :undoc-members:
+
+.. attributetable:: DuelsMode
+
+.. autoclass:: DuelsMode()
+    :members:
+    :undoc-members:
+
+.. attributetable:: MurderMystery
+
+.. autoclass:: MurderMystery()
+    :members:
+    :undoc-members:
+
+.. attributetable:: MurderMysteryMode
+
+.. autoclass:: MurderMysteryMode()
+    :members:
+    :undoc-members:
+
+.. attributetable:: Paintball
+
+.. autoclass:: Paintball()
+    :members:
+    :undoc-members:
+
+.. attributetable:: Parkour
+
+.. autoclass:: Parkour()
+    :members:
+    :undoc-members:
+
+.. attributetable:: ParkourLobby
+
+.. autoclass:: ParkourLobby()
+    :members:
+    :undoc-members:
+
+.. attributetable:: Skywars
+
+.. autoclass:: Skywars()
+    :members:
+    :undoc-members:
+
+.. attributetable:: SkywarsMode
+
+.. autoclass:: SkywarsMode()
+    :members:
+    :undoc-members:
+
+.. attributetable:: Socials
+
+.. autoclass:: Socials()
+    :members:
+    :undoc-members:
+
+.. attributetable:: TurboKartRacers
+
+.. autoclass:: TurboKartRacers()
+    :members:
+    :undoc-members:
+
+.. attributetable:: TntGames
+
+.. autoclass:: TntGames()
+    :members:
+    :undoc-members:
+
+.. attributetable:: Uhc
+
+.. autoclass:: Uhc()
+    :members:
+    :undoc-members:
+
+.. attributetable:: UhcMode
+
+.. autoclass:: UhcMode()
+    :members:
+    :undoc-members:
+
+.. attributetable:: WoolGames
+
+.. autoclass:: WoolGames()
+    :members:
+    :undoc-members:
+
+.. attributetable:: WoolGamesMode
+
+.. autoclass:: WoolGamesMode()
+    :members:
     :undoc-members:
 
 .. currentmodule:: hypixel
 
-Types
+Status
+~~~~~~
+
+.. attributetable:: Status
+
+.. autoclass:: Status()
+    :members:
+    :undoc-members:
+
+Data Classes
+------------
+
+These classes are data containers.
+
+They hold metadata for what would otherwise be arbitrary strings returned by the
+API.
+
+Color
 ~~~~~
 
-.. attributetable:: ColorType
+.. attributetable:: Color
 
-.. autoclass:: ColorType()
+.. autoclass:: Color()
     :members:
-    :undoc-members:
 
-.. attributetable:: GameType
+Game
+~~~~
 
-.. autoclass:: GameType()
+.. attributetable:: Game
+
+.. autoclass:: Game()
     :members:
-    :undoc-members:
 
-Constants
+Utilities
 ---------
 
-Constant values for doing stuff.
-
-.. autoclass:: GameTypes
-
-.. autoclass:: RankTypes
-
-Utils
------
+.. attributetable:: ExponentialBackoff
 
 .. autoclass:: ExponentialBackoff
     :members:

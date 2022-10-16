@@ -1,8 +1,13 @@
 from setuptools import setup
 import re
 
+
 with open('hypixel/__init__.py') as f:
-    version = re.search(r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]', f.read(), re.MULTILINE).group(1)
+    version = re.search(
+        r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]',
+        f.read(),
+        re.MULTILINE
+    ).group(1)
 
 with open('README.rst') as f:
     readme = f.read()
@@ -12,10 +17,10 @@ with open('requirements.txt') as f:
 
 extras_require = {
     'speed': [
-        'aiodns>=1.1',
-        'Brotlipy',
+        'aiodns==3.0.0',
+        'brotlipy==0.7.0',
         'cchardet==2.1.7; python_version < "3.10"',
-        'ujson',
+        'ujson==5.5.0',
     ],
     'docs': [
         'sphinx==5.1.1',
@@ -23,14 +28,18 @@ extras_require = {
         'furo==2022.9.15',
         'sphinx_copybutton==0.5.0',
         'sphinx_design==0.3.0',
+    ],
+    'test': [
+        'pytest==7.1.3',
+        'pytest-asyncio==0.19.0',
+        'pytest-cov==4.0.0',
     ]
 }
 
 packages = [
     'hypixel',
-    'hypixel.constants',
     'hypixel.models',
-    'hypixel.models.playerdata',
+    'hypixel.models.player',
 ]
 
 classifiers = [

@@ -1,8 +1,8 @@
 """
 hypixel.models
-~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~
 
-A module for modeling data.
+A module for modeling API responses.
 
 (c) 2021-present duhby
 MIT License, see LICENSE for more details.
@@ -16,4 +16,3 @@ from .key import *
 from .leaderboards import *
 from .player import *
 from .status import *
-from .types import *

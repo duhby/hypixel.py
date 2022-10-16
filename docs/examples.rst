@@ -11,7 +11,7 @@ Ban Info
     :end-before: """
 
 .. literalinclude:: ../examples/ban_info.py
-    :lines: 3-
+    :lines: 4-
 
 Bedwars Lobby
 -------------
@@ -21,7 +21,7 @@ Bedwars Lobby
     :end-before: """
 
 .. literalinclude:: ../examples/bedwars_lobby.py
-    :lines: 3-
+    :lines: 4-
 
 Caching
 -------
@@ -41,7 +41,7 @@ Converting Time
     :end-before: """
 
 .. literalinclude:: ../examples/converting_time.py
-    :lines: 3-
+    :lines: 4-
 
 First Login
 -----------
@@ -111,7 +111,7 @@ Multiple Contexts
     :end-before: """
 
 .. literalinclude:: ../examples/multiple_contexts.py
-    :lines: 3-
+    :lines: 4-
 
 No Context
 ----------
@@ -121,7 +121,7 @@ No Context
     :end-before: """
 
 .. literalinclude:: ../examples/no_context.py
-    :lines: 3-
+    :lines: 4-
 
 Parkour
 -------
@@ -141,7 +141,7 @@ Player Count
     :end-before: """
 
 .. literalinclude:: ../examples/player_count.py
-    :lines: 3-
+    :lines: 4-
 
 Player Status
 -------------

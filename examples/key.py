@@ -11,8 +11,8 @@ async def main():
     async with client:
         try:
             print(await client.key('api-key'))
-            # If you passed a key into the client,
-            # you can get its info as follows
+            # If you passed a key into the client, you can get its info
+            # as follows:
             print(await client.key(client.keys[0]))
         except HypixelException as error:
             print(error)

@@ -1,4 +1,5 @@
-"""A simple example that shows how to get the current number of players."""
+"""A simple example that shows how to get the current number of
+players."""
 
 # This exmaple requies an api key
 

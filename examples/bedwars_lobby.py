@@ -1,4 +1,5 @@
-"""A simple example showing how to display a full bedwars lobby username."""
+"""A simple example showing how to display a full bedwars lobby
+username."""
 
 # This example requires an api key
 
@@ -12,7 +13,6 @@ async def main():
         try:
             player = await client.player('gamerboy80')
             # Will display [None] as the rank if the player has no rank
-            # You can add your own logic
             print(f'[{player.bedwars.level}✫] [{player.rank}] {player.name}')
         except HypixelException as error:
             print(error)

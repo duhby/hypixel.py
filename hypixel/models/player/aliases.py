@@ -1,31 +1,11 @@
 """
-The MIT License
-
 Copyright (c) 2021-present duhby
-
-Permission is hereby granted, free of charge, to any person obtaining a
-copy of this software and associated documentation files (the "Software"),
-to deal in the Software without restriction, including without limitation
-the rights to use, copy, modify, merge, publish, distribute, sublicense,
-and/or sell copies of the Software, and to permit persons to whom the
-Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-DEALINGS IN THE SOFTWARE.
+MIT License, see LICENSE for more details.
 """
 
 # Sorted alphabetically by category
-__all__ = (
+__all__ = [
     'ARCADE',
-    'BANS',
     'BEDWARS',
     'BEDWARS_SOLO',
     'BEDWARS_DOUBLES',
@@ -49,13 +29,7 @@ __all__ = (
     'SUMO_DUELS',
     'TNT_GAMES_DUELS',
     'UHC_DUELS',
-    'FRIEND',
-    'GUILD',
-    'GUILD_MEMBER',
-    'GUILD_RANK',
     'HYPIXEL_SAYS',
-    'KEY',
-    'LB',
     'MINI_WALLS',
     'MURDER_MYSTERY',
     'MM_ASSASSINS',
@@ -67,7 +41,6 @@ __all__ = (
     'PARKOUR',
     'PARKOUR_LOBBY',
     'PARTY_GAMES',
-    'PLAYER',
     'SKYWARS',
     'SKYWARS_RANKED',
     'SKYWARS_SOLO_NORMAL',
@@ -77,32 +50,27 @@ __all__ = (
     'SKYWARS_MEGA_NORMAL',
     'SKYWARS_MEGA_DOUBLES',
     'SOCIALS',
-    'STATUS',
     'TKR',
+    'TNT_GAMES',
     'UHC',
     'UHC_SOLO',
     'UHC_TEAM',
     'UHC_BRAWL',
-    'UHC_SOLO_BRAWL',
-    'UHC_DUO_BRAWL',
-)
+    # 'UHC_SOLO_BRAWL',
+    # 'UHC_DUO_BRAWL',
+    'WOOL_GAMES',
+    'WOOL_GAMES_WOOL_WARS',
+]
+
 
 # Even if key-value pairs are equal, they still need to be added because
-# values that don't have a key in the dictionary are skipped.
-# All dataclasses should use an alias dictionary even if no modification
-# is needed because if more variables are added to the API it will break.
+# values that don't have a key in the dictionary are skipped. All
+# dataclasses should use an alias dictionary even if no modification is
+# needed because if more variables are added to the API it will break.
 
 ARCADE = {
     '_data': '_data',
     'coins': 'coins',
-}
-
-BANS = {
-    'staff_rollingDaily': 'staff_day',
-    'staff_total': 'staff_total',
-    'watchdog_lastMinute': 'watchdog_recent',
-    'watchdog_rollingDaily': 'watchdog_day',
-    'watchdog_total': 'watchdog_total',
 }
 
 BEDWARS = {
@@ -258,7 +226,7 @@ BOW_DUELS = {
     'bow_duel_deaths': 'deaths',
     'bow_duel_wins': 'wins',
     'bow_duel_losses': 'losses',
-    # why if these are uncommented does it give overall duels data?
+    # These give overall duels data for some reason...
     # 'bow_duel_melee_hits': 'melee_hits',
     # 'bow_duel_melee_swings': 'melee_swings',
     'bow_duel_bow_hits': 'arrows_hit',
@@ -401,66 +369,9 @@ UHC_DUELS = {
     'uhc_duel_bow_shots': 'arrows_shot',
 }
 
-FRIEND = {
-    '_id': 'id',
-    'uuidReceiver': 'uuid',
-    'started': 'started',
-}
-
-GUILD = {
-    '_id': 'id',
-    'name': 'name',
-    'exp': 'exp',
-    'created': 'created',
-    'legacyRanking': 'legacy_rank',
-    'members': 'members',
-    'ranks': 'ranks',
-    'joinable': 'joinable',
-    'tag': 'tag',
-    'tagColor': 'tag_color',
-    'description': 'description',
-    'preferredGames': 'preferred_games',
-    'publiclyListed': 'publicly_listed',
-    'guildExpByGameType': 'game_exp',
-    # 'banner': 'banner',
-}
-
-GUILD_MEMBER = {
-    'uuid': 'uuid',
-    'rank': 'rank',
-    'joined': 'joined',
-    'expHistory': 'exp_history',
-    'questParticipation': 'quest_participation',
-    'name': 'name',
-}
-
-GUILD_RANK = {
-    'name': 'name',
-    'default': 'default',
-    'created': 'created',
-    'priority': 'priority',
-    'tag': 'tag',
-}
-
 HYPIXEL_SAYS = {
     'rounds_simon_says': 'rounds',
     'wins_simon_says': 'wins',
-}
-
-KEY = {
-    'key': 'key',
-    'owner': 'owner',
-    'limit': 'limit',
-    'totalQueries': 'queries',
-    'queriesInPastMin': 'recent_queries',
-}
-
-LB = {
-    'path': 'path',
-    'prefix': 'prefix',
-    'title': 'title',
-    'location': 'location',
-    'leaders': 'leaders',
 }
 
 MINI_WALLS = {
@@ -579,42 +490,6 @@ PARTY_GAMES = {
     'wins_party_3': 'wins_3',
 }
 
-PLAYER = {
-    '_id': 'id',
-    'uuid': 'uuid',
-    'firstLogin': 'first_login',
-    'displayname': 'name',
-    # 'playername': 'name', # lowercase version of displayname
-    'lastLogin': 'last_login',
-    'lastLogout': 'last_logout',
-    'knownAliases': 'known_aliases',
-    # 'knownAliasesLower'
-    'achievementsOneTime': 'achievements',
-    # 'achievement_stats': 'achievement_stats',
-    'achievementPoints': 'achievement_points',
-    'networkExp': 'network_exp',
-    'karma': 'karma',
-    'mcVersionRp': 'version',
-    # 'rank': 'rank_',
-    # 'newPackageRank': 'package_rank',
-    # 'rankPlusColor': 'rank_color',
-    # 'monthlyPackageRank': 'monthly_package_rank',
-    # 'monthlyRankColor': 'monthly_rank_color',
-    # 'lastAdsenseGenerateTime'
-    # 'lastClaimedReward'
-    # 'totalRewards'
-    # 'totalDailyRewards'
-    # 'rewardStreak'
-    # 'rewardScore'
-    # 'rewardHighScore'
-    # 'friendRequestsUuid': 'friend_requests_uuid'
-    # 'achievementTracking'
-    'currentGadget': 'current_gadget',
-    'channel': 'channel',
-    # Handled in Player class instead
-    # 'mostRecentGameType': 'most_recent_game',
-}
-
 SKYWARS = {
     '_data': '_data',
     'coins': 'coins',
@@ -688,13 +563,6 @@ SOCIALS = {
     'HYPIXEL': 'hypixel_forums',
 }
 
-STATUS = {
-    'online': 'online',
-    'gameType': 'game_type',
-    'mode': 'mode',
-    'map': 'map',
-}
-
 TKR = {
     'coins': 'coins',
     'laps_completed': 'laps',
@@ -706,6 +574,10 @@ TKR = {
     'banana_hits_received': 'bananas_received',
     # 'box_pickups': 'powerups',
     'wins': 'wins',
+}
+
+TNT_GAMES = {
+    'coins': 'coins',
 }
 
 UHC = {
@@ -740,18 +612,36 @@ UHC_BRAWL = {
     'ultimates_crafted_brawl': 'ultimates_crafted',
 }
 
-UHC_SOLO_BRAWL = {
-    'wins_solo brawl': 'wins',
-    'kills_solo brawl': 'kills',
-    'deaths_solo brawl': 'deaths',
-    'heads_eaten_solo brawl': 'heads_eaten',
-    'ultimates_crafted_solo brawl': 'ultimates_crafted',
+# UHC_SOLO_BRAWL = {
+#     'wins_solo brawl': 'wins',
+#     'kills_solo brawl': 'kills',
+#     'deaths_solo brawl': 'deaths',
+#     'heads_eaten_solo brawl': 'heads_eaten',
+#     'ultimates_crafted_solo brawl': 'ultimates_crafted',
+# }
+
+# UHC_DUO_BRAWL = {
+#     'wins_duo brawl': 'wins',
+#     'kills_duo brawl': 'kills',
+#     'deaths_duo brawl': 'deaths',
+#     'heads_eaten_duo brawl': 'heads_eaten',
+#     'ultimates_crafted_duo brawl': 'ultimates_crafted',
+# }
+
+WOOL_GAMES = {
+    '_data': '_data',
+    'level': 'level',
+    'coins': 'coins',
+    'experience': 'exp'
 }
 
-UHC_DUO_BRAWL = {
-    'wins_duo brawl': 'wins',
-    'kills_duo brawl': 'kills',
-    'deaths_duo brawl': 'deaths',
-    'heads_eaten_duo brawl': 'heads_eaten',
-    'ultimates_crafted_duo brawl': 'ultimates_crafted',
+WOOL_GAMES_WOOL_WARS = {
+    'kills': 'kills',
+    'deaths': 'deaths',
+    'assists': 'assists',
+    'wins': 'wins',
+    'games_played': 'games',
+    'blocks_broken': 'blocks_broken',
+    'wool_placed': 'wool_placed',
+    'selected_class': 'selected_class',
 }

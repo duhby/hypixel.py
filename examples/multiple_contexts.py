@@ -1,4 +1,5 @@
-"""A simple example that shows how to use the same Client instance with multiple contexts."""
+"""A simple example that shows how to use the same Client instance with
+multiple contexts."""
 
 import hypixel
 from hypixel import HypixelException
@@ -9,8 +10,8 @@ async def main():
     async with client:
         "Do stuff here"
 
-    # Opening a new context will open a new aiohttp.ClientSession while keeping your
-    # Client attributes
+    # Opening a new context will open a new aiohttp.ClientSession while
+    # keeping your previous Client attributes
     async with client:
         "Do more stuff here"
 

@@ -1,4 +1,5 @@
-"""A simple example that shows how to convert the default time to other timezones."""
+"""A simple example that shows how to convert the default time to other
+timezones."""
 
 # This example requires an api key
 
@@ -21,9 +22,11 @@ async def main():
             player = await client.player('gamerboy80')
             # Can be None if in game privacy settings are changed
             if player.last_login:
-                # List possible timezones with zoneinfo.available_timezones()
+                # List possible timezones with
+                # zoneinfo.available_timezones()
                 new_york = ZoneInfo('America/New_York')
-                # Convert UTC time to America/New_York time (accounts for daylight savings)
+                # Convert UTC time to America/New_York time
+                # (accounts for daylight savings)
                 print(player.last_login.astimezone(new_york))
         except HypixelException as error:
             print(error)

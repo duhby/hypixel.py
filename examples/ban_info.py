@@ -1,4 +1,5 @@
-"""A simple example that shows how to get watchdog and staff ban info."""
+"""A simple example that shows how to get watchdog and staff ban
+info."""
 
 # This example requires an api key
 

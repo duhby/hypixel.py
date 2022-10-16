@@ -1,36 +1,18 @@
 """
-The MIT License
-
 Copyright (c) 2021-present duhby
-
-Permission is hereby granted, free of charge, to any person obtaining a
-copy of this software and associated documentation files (the "Software"),
-to deal in the Software without restriction, including without limitation
-the rights to use, copy, modify, merge, publish, distribute, sublicense,
-and/or sell copies of the Software, and to permit persons to whom the
-Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-DEALINGS IN THE SOFTWARE.
+MIT License, see LICENSE for more details.
 """
 
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 
-from ... import utils
+from . import utils
 
-__all__ = (
-    'ParkourLobby',
+__all__ = [
     'Parkour',
-)
+    'ParkourLobby',
+]
+
 
 @dataclass
 class ParkourLobby:
@@ -43,7 +25,6 @@ class ParkourLobby:
             self.completed
         ) + self.time
 
-# Only has the main 14 parkours
 @dataclass
 class Parkour:
     _data: dict = field(repr=False)
@@ -56,7 +37,6 @@ class Parkour:
     main: ParkourLobby = field(init=False)
     mega_walls: ParkourLobby = field(init=False)
     murder_mystery: ParkourLobby = field(init=False)
-    # paintball: ParkourLobby = field(init=False)
     skywars: ParkourLobby = field(init=False)
     smash: ParkourLobby = field(init=False)
     tnt: ParkourLobby = field(init=False)
@@ -64,7 +44,7 @@ class Parkour:
     warlords: ParkourLobby = field(init=False)
 
     def __post_init__(self):
-        self._modes = (
+        self._modes = [
             'arcade',
             'bedwars',
             'blitz',
@@ -74,13 +54,12 @@ class Parkour:
             'main',
             'mega_walls',
             'murder_mystery',
-            # 'paintball',
             'skywars',
             'smash',
             'tnt',
             'uhc',
             'warlords',
-        )
+        ]
         self._len = len(self._modes)
         for mode in self._modes:
             data = self._data.get(mode)

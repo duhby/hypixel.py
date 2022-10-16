@@ -1,4 +1,4 @@
-hypixel.py (alpha)
+hypixel.py (beta)
 ==================
 
 .. .. image:: https://img.shields.io/discord/719949131497603123.svg?color=%237289da&label=discord&logo=discord&style=for-the-badge

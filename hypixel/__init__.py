@@ -1,10 +1,10 @@
 """
 hypixel.py
-~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~
 
 A python wrapper for the Hypixel API
 
-(c) 2021-present duhby
+Copyright (c) 2021-present duhby
 MIT License, see LICENSE for more details.
 """
 
@@ -12,13 +12,14 @@ __title__ = 'hypixel'
 __author__ = 'duhby'
 __license__ = 'MIT'
 __copyright__ = 'Copyright 2021-present duhby'
-__version__ = 'dev'
+__version__ = '0.3.0a'
 
 from .client import *
-from .constants import *
+from .color import *
 from .errors import *
 from .models import *
-from .utils import *
+from .game import *
+from .utils import ExponentialBackoff, HashedDict
 
 from typing import NamedTuple, Literal
 
@@ -30,6 +31,12 @@ class VersionInfo(NamedTuple):
     releaselevel: Literal["alpha", "beta", "candidate", "final"]
     serial: int
 
-version_info: VersionInfo = VersionInfo(major=0, minor=2, micro=1, releaselevel='final', serial=0)
+version_info: VersionInfo = VersionInfo(
+    major=0,
+    minor=3,
+    micro=0,
+    releaselevel='alpha',
+    serial=0,
+)
 
 del NamedTuple, Literal, VersionInfo

@@ -1,45 +1,27 @@
 """
-The MIT License
-
 Copyright (c) 2021-present duhby
-
-Permission is hereby granted, free of charge, to any person obtaining a
-copy of this software and associated documentation files (the "Software"),
-to deal in the Software without restriction, including without limitation
-the rights to use, copy, modify, merge, publish, distribute, sublicense,
-and/or sell copies of the Software, and to permit persons to whom the
-Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-DEALINGS IN THE SOFTWARE.
+MIT License, see LICENSE for more details.
 """
 
-import sys
 import asyncio
-import json
-from uuid import UUID
 from collections import namedtuple
+import json
 from operator import attrgetter
-
+import sys
 from typing import Dict
 from typing import List
 from typing import Optional
 from typing import Union
+from uuid import UUID
 
 import aiohttp
 
-from . import utils
 from .errors import *
 from .models import *
-from .utils import ExponentialBackoff, HashedDict
+# Required for sphinx references for some reason
+from .utils import ExponentialBackoff
+
+from . import utils
 
 try:
     import ujson
@@ -47,9 +29,10 @@ try:
 except ImportError:
     JSON_DECODER = json.loads
 
-__all__ = (
+__all__ = [
     'Client',
-)
+]
+
 
 class Client:
     """Class for interacting with both the Mojang and Hypixel APIs.
@@ -61,41 +44,55 @@ class Client:
 
         .. warning::
 
-            :exc:`KeyRequired` will be raised if a method is called that requires an API
-            key and none were passed or added with :meth:`add_key`.
+            :exc:`KeyRequired` will be raised if a method is called that
+            requires an API key and none were passed or added with
+            :meth:`add_key`.
+
+        .. warning::
+
+            Please note that using multiple keys is disallowed by
+            Hypixel: "You may not use methods such as multiple accounts
+            to bypass the API limits." Refer to
+            (https://github.com/HypixelDev/PublicAPI/issues/229) and
+            (https://api.hypixel.net/#section/Introduction/Rules) for
+            more information.
     loop: :class:`asyncio.AbstractEventLoop`
         The loop the client will use for asynchronous operations.
-        Defaults to ``None`` in which case the event loop is created using
-        :func:`asyncio.get_event_loop()`.
+        Defaults to ``None`` in which case the event loop is created
+        using :func:`asyncio.get_event_loop()`.
     autoverify: :class:`bool`
         Runs :meth:`validate_keys` on client initialization.
         Defaults to ``False``.
     cache: :class:`bool`
-        Whether or not API calls are cached. If ``True``, new requests won't be made for
-        the same calls to request methods if the response for the passed arguments is
-        still stored.
+        Whether or not API calls are cached. If ``True``, new requests
+        won't be made for the same calls to request methods if the
+        response for the passed arguments is still stored.
         Defaults to ``False``.
 
         .. note::
 
-            Cached items will be stored either until the size limit is reached
-            (``self.cache_size``), or the cached data expires (``self.cache_time``).
+            Cached items will be stored either until the size limit is
+            reached (``self.cache_size``), or the cached data expires
+            (``self.cache_time``).
 
         .. note::
 
-            The cache uses an async, time-invalidating, least recently used
-            implementation. This means it works on asynchronous functions, can invalidate
-            items that have been in the cache for x amount of time, and can remove least
-            recently used items if the size limit is reached.
+            The cache uses an async, time-invalidating, least recently
+            used implementation. This means it works on asynchronous
+            functions, can invalidate items that have been in the cache
+            for x amount of time, and can remove least recently used
+            items if the size limit is reached.
 
         .. admonition:: Limitations
 
-            When a cached item is time-invalidated, it does not get removed from the
-            cache and can inflate the cache size with multiple of the same item if they
-            were called far enough apart from each other and ``self.cache_time`` is not
-            ``None``. ``self.cache_time`` is based on the time from when it's first added
-            to the cache, and not refreshed on the last access to that cached item. This
-            could also be considered a feature and is therefore a design decision.
+            When a cached item is time-invalidated, it does not get
+            removed from the cache and can inflate the cache size with
+            multiple of the same item if they were called far enough
+            apart from each other and ``self.cache_time`` is not
+            ``None``. ``self.cache_time`` is based on the time from when
+            it's first added to the cache, and not refreshed on the last
+            access to that cached item. This could also be considered a
+            feature and is therefore a design decision.
     cache_h: :class:`bool`
         Whether or not to cache Hypixel API calls.
         Refer to ``self.cache`` for more information.
@@ -105,7 +102,8 @@ class Client:
         Refer to ``self.cache`` for more information.
         Defaults to ``self.cache``.
     cache_size: :class:`int`
-        The amount of cached items that are stored before deleting the oldest items.
+        The amount of cached items that are stored before deleting the
+        oldest items.
         If ``None`` (the default), then there is no limit.
     cache_size_h: :class:`int`
         Cache size for the Hypixel API.
@@ -116,22 +114,25 @@ class Client:
         Refer to ``self.cache_size`` for more information.
         Defaults to ``self.cache_size``.
     cache_time: :class:`int`
-        The amount of time (in seconds) cached items can be stored before getting
-        invalidated.
+        The amount of time (in seconds) cached items can be stored
+        before getting invalidated.
         Defaults to ``60``.
 
         .. note::
 
-            The timestamp of a cached item is stored when the function is called, not when
-            it is returned. So, the time the API takes to get the request counts towards
-            the time invalidation. That's why it's recommended to have a value of at least
-            10, but for the average use case it should be at least 60 if you want to get
-            any cache hits.
+            The timestamp of a cached item is stored when the function
+            is called, not when it is returned. So, the time the API
+            takes to get the request counts towards the time
+            invalidation. That's why it's recommended to have a value of
+            at least 10, but for the average use case it should be at
+            least 60 to get any cache hits.
     cache_time_h: :class:`int`
-        Cache time for the Hypixel API. Refer to ``self.cache_time`` for more information.
+        Cache time for the Hypixel API. Refer to ``self.cache_time`` for
+        more information.
         Defaults to ``self.cache_time``.
     cache_time_m: :class:`int`
-        Cache time for the Mojang API. Refer to ``self.cache_time`` for more information.
+        Cache time for the Mojang API. Refer to ``self.cache_time`` for
+        more information.
         Defaults to ``self.cache_time``.
     rate_limit: :class:`bool`
         Whether or not to handle rate limits.
@@ -139,16 +140,18 @@ class Client:
 
         .. note::
 
-            For the Hypixel API, this will wait for the 'Retry-After' header amount of
-            time either until a non-429 status is returned, or 'Retry-After' exceeds
-            ``self.timeout``.
+            For the Hypixel API, this will wait for the 'Retry-After'
+            header's amount of time either until a non-429 status is
+            returned, or 'Retry-After' exceeds ``self.timeout``.
 
         .. note::
 
-            For the Mojang API, this will wait for :func:`ExponentialBackoff.delay`
-            amount of time either until a non-429 status is returned, or the time from
-            the last invocation exceeds ``self.timeout`` in which case :exc:`TimeoutError`
-            is raised. The delay time is reset on every new Mojang method call.
+            For the Mojang API, this will wait for
+            :func:`ExponentialBackoff.delay` amount of time either until
+            a non-429 status is returned, or the time from the last
+            invocation exceeds ``self.timeout`` in which case
+            :exc:`TimeoutError` is raised. The delay time is reset on
+            every new Mojang method call.
     rate_limit_h: :class:`bool`
         Whether or not to handle Hypixel API rate limits.
         See ``self.rate_limit`` for more information.
@@ -159,21 +162,23 @@ class Client:
         Defaults to ``self.rate_limit``.
     timeout: :class:`int`
         The maximum amount of time (in seconds) to wait for a request.
-        This includes both waiting for a request to return, and waiting for rate limit
-        retry times if ``self.rate_limit`` is ``True``.
+        This includes both waiting for a request to return, and waiting
+        for rate limit retry times if ``self.rate_limit`` is ``True``.
         Defaults to ``10``.
 
         .. warning::
 
-            ``None`` *is* a valid argument; however, it is highly advised against using
-            because there's no fallback without a timeout, and there are chances you
-            might end up waiting a very long time.
+            ``None`` *is* a valid argument; however, it is advised
+            against using because there's no fallback without a timeout,
+            and there are chances you might end up waiting a very long
+            time.
 
         .. warning::
 
-            If ``self.rate_limit`` is ``True`` (default), then for Mojang API requests, if
-            a 429 response is received and the interval is greater than ``self.timeout``,
-            then it will raise a :exc:`TimeoutError`.
+            If ``self.rate_limit`` is ``True`` (default), then for
+            Mojang API requests, if a 429 response is received and the
+            interval is greater than ``self.timeout``, then it will
+            raise a :exc:`TimeoutError`.
 
     Raises
     ------
@@ -184,15 +189,15 @@ class Client:
     """
     def __init__(self, keys=None, *, loop=None, **options):
         self.loop = asyncio.get_event_loop() if loop is None else loop
+        version = sys.version_info[:3]
         try:
             if (
                 isinstance(
                     asyncio.get_event_loop_policy(),
                     asyncio.DefaultEventLoopPolicy,
                 )
-                and sys.version_info[0] == 3
-                and sys.version_info[1] >= 8
                 and sys.platform.startswith('win')
+                and (3, 8, 0) <= version < (3, 10, 8) # Fixed in 3.10.8
             ):
                 raise LoopPolicyError
         except AttributeError:
@@ -258,8 +263,8 @@ class Client:
 
     @property
     def keys(self) -> List[str]:
-        """List[:class:`str`]: A list of Hypixel API key(s) that were passed or added
-        to the client.
+        """List[:class:`str`]: A list of Hypixel API key(s) that were
+        passed or added to the client.
 
         Can also be ``None``.
         """
@@ -267,12 +272,13 @@ class Client:
 
     @property
     def hypixel_cache_info(self) -> Optional[namedtuple]:
-        """:class:`type`: A named tuple that represents cache information for all Hypixel
-        API related methods.
+        """:class:`type`: A named tuple that represents cache
+        information for all Hypixel API related methods.
 
         This is the same as ``functools.lru_cache.cache_info()``.
-        Fields are ``hits``, ``misses``, ``maxsize``, and ``currsize``. All of which are
-        an :class:`int` except ``maxsize`` which can also be ``None``.
+        Fields are ``hits``, ``misses``, ``maxsize``, and ``currsize``.
+        All of which are an :class:`int` except ``maxsize`` which can
+        also be ``None``.
         """
         if self.cache is None:
             return None
@@ -280,12 +286,13 @@ class Client:
 
     @property
     def mojang_cache_info(self) -> Optional[namedtuple]:
-        """:class:`type`: A named tuple that represents cache information for all Mojang
-        related methods.
+        """:class:`type`: A named tuple that represents cache
+        information for all Mojang related methods.
 
         This is the same as ``functools.lru_cache.cache_info()``.
-        Fields are ``hits``, ``misses``, ``maxsize``, and ``currsize``. All of which are
-        an :class:`int` except ``maxsize`` which can also be ``None``.
+        Fields are ``hits``, ``misses``, ``maxsize``, and ``currsize``.
+        All of which are an :class:`int` except ``maxsize`` which can
+        also be ``None``.
         """
         if self.cache is None:
             return None
@@ -301,9 +308,6 @@ class Client:
         # Await but don't return
         # If a truthy value is returned, it suppresses exceptions
         await self._session.close()
-
-    # def _run(self, future):
-    #     return self.loop.run_until_complete(future)
 
     def _next_key(self):
         if not self._keys:
@@ -333,7 +337,7 @@ class Client:
                 raise RateLimitError(retry_after, 'mojang', response)
             else:
                 while response.status == 429:
-                    backoff = ExponentialBackoff(self.timeout)
+                    backoff = utils.ExponentialBackoff(self.timeout)
                     retry = backoff.delay()
                     await asyncio.sleep(retry)
                     response = await self._get_uuid_helper(name)
@@ -370,7 +374,7 @@ class Client:
                 raise RateLimitError(retry_after, 'mojang', response)
             else:
                 while response.status == 429:
-                    backoff = ExponentialBackoff(self.timeout)
+                    backoff = utils.ExponentialBackoff(self.timeout)
                     retry = backoff.delay()
                     await asyncio.sleep(retry)
                     response = await self._get_name_helper(uuid)
@@ -400,7 +404,7 @@ class Client:
         path: str,
         *,
         # Hashed to allow caching
-        params: Optional[HashedDict] = None,
+        params: Optional[utils.HashedDict] = None,
         key_required: Optional[bool] = True,
         key: Optional[str] = None,
     ) -> dict:
@@ -410,7 +414,7 @@ class Client:
         ----------
         path: str
             The API path to request from.
-        params: Optional[:class:`HashedDict`]
+        params: Optional[:class:`~utils.HashedDict`]
             Parameters to give the API.
         key_required: Optional[bool]
             If an API key is required to process the request.
@@ -419,16 +423,23 @@ class Client:
 
         Raises
         ------
-        :exc:`KeyRequired`
-            Raised if no keys were passed and ``key_required=True``
-        :exc:`RateLimitError`.
-            Raised if ``self.rate_limit_h`` is ``False`` and the rate limit was reached.
-        :exc:`InvalidApiKey`
-            .
-        :exc:`ApiError`
-            .
-        :exc:`ClosedSession`
-            .
+        ApiError
+            An unexpected error occurred with the Hypixel API.
+        ClosedSession
+            ``self.ClientSession`` is closed.
+        InvalidApiKey
+            The API key used is invalid.
+        KeyRequired
+            No keys were passed into the client or the method and
+            ``key_required`` is ``True``.
+        RateLimitError
+            The rate limit is exceeded and ``self.rate_limit_m`` is
+            ``False``.
+
+        Returns
+        -------
+        :class:`dict`
+            The Hypixel API response.
         """
         if self._session.closed:
             raise ClosedSession
@@ -489,20 +500,22 @@ class Client:
 
         .. note::
 
-            This is here for if you want to handle the closing of the
-            ``self.ClientSession`` by yourself if you are done using the Client. You can
-            also use the Client with an asynchronous context manager (``async with``) if
-            you want to handle session cleanup automatically.
+            This is here to handle the closing of the
+            ``self.ClientSession`` by yourself if you are done using the
+            Client. You can also use the Client with an asynchronous
+            context manager (``async with``) if you want to handle
+            session cleanup automatically.
 
         .. warning::
 
-            Make sure this is awaited before the program ends if you aren't using a
-            context manager.
+            Make sure this is awaited before the program ends if you
+            aren't using a context manager.
 
         .. warning::
 
-            Calling a client method that requires an open aiohttp session after this is
-            called will raise a :exc:`ClosedSession` exception.
+            Calling a client method that requires an open aiohttp
+            session after this is called will raise a
+            :exc:`ClosedSession` exception.
         """
         await self._session.close()
 
@@ -511,13 +524,21 @@ class Client:
 
         .. note::
 
-            This first checks for malformed UUIDs, and then requests key objects from the
-            API to check if the keys are valid.
+            This first checks for malformed UUIDs, and then requests key
+            objects from the API to check if the keys are valid.
 
         .. note::
 
-            An error is raised when the first invalid key is found, so this is not
-            viable for testing all of your keys at once if more than one is invalid.
+            An error is raised when the first invalid key is found, so
+            this is not viable for testing all of your keys at once if
+            more than one is invalid.
+
+        Raises
+        ------
+        InvalidApiKey
+            The API key used is invalid.
+        MalformedApiKey
+            Raised when an invalidly formed API key is passed.
         """
         for key in self._keys:
             try:
@@ -528,7 +549,7 @@ class Client:
             await self._get('key', key=key)
 
     def add_key(self, key: str) -> None:
-        """Add a key to ``self.keys`` and update internal attributes.
+        """Add a key to :attr:`keys` and update internal attributes.
 
         Parameters
         ----------
@@ -542,7 +563,8 @@ class Client:
             raise MalformedApiKey(key)
 
     def remove_key(self, key: str) -> None:
-        """Remove a key from ``self.keys`` and update internal attributes.
+        """Remove a key from :attr:`keys` and update internal
+        attributes.
 
         Parameters
         ----------
@@ -558,14 +580,12 @@ class Client:
         else:
             raise MalformedApiKey(key)
 
-    # Cache
-
     def clear_cache(self) -> None:
         """Clear hypixel and mojang caches."""
-        if self.cache_m:
-            self.clear_mojang_cache()
         if self.cache_h:
             self.clear_hypixel_cache()
+        if self.cache_m:
+            self.clear_mojang_cache()
 
     def clear_mojang_cache(self) -> None:
         """Clear mojang cache."""
@@ -598,10 +618,11 @@ class Client:
         PlayerNotFound
             The passed player name does not exist.
         RateLimitError
-            The rate limit is exceeded and ``self.rate_limit_m`` is ``False``.
+            The rate limit is exceeded and ``self.rate_limit_m`` is
+            ``False``.
         TimeoutError
-            The request took longer than ``self.timeout``, or the retry delay time is
-            longer than ``self.timeout``.
+            The request took longer than ``self.timeout``, or the retry
+            delay time is longer than ``self.timeout``.
 
         Returns
         -------
@@ -631,10 +652,11 @@ class Client:
         PlayerNotFound
             The passed player uuid does not exist.
         RateLimitError
-            The rate limit is exceeded and ``self.rate_limit_m`` is ``False``.
+            The rate limit is exceeded and ``self.rate_limit_m`` is
+            ``False``.
         TimeoutError
-            The request took longer than ``self.timeout``, or the retry delay time is
-            longer than ``self.timeout``.
+            The request took longer than ``self.timeout``, or the retry
+            delay time is longer than ``self.timeout``.
 
         Returns
         -------
@@ -649,10 +671,17 @@ class Client:
 
     @utils.convert_id
     async def player(self, id_: str) -> Player:
-        """Create a player model from the API response from the player id.
+        """Create a player model from an API response.
+
+        .. note::
+
+            If a username is passed instead of a uuid, then API errors
+            can also apply to Mojang's API since it will be called to
+            get the uuid.
 
         Parameters
         ----------
+        .. \ is there so sphinx-autodoc recognizes the underscore.
         id\_: :class:`str`
             The username or uuid of a player.
 
@@ -667,19 +696,21 @@ class Client:
         KeyRequired
             The client does not have any keys.
         PlayerNotFound
-            The passed player id does not exist in Mojang's or Hypixel's databases.
+            The passed player id does not exist in Mojang's or Hypixel's
+            databases.
         RateLimitError
-            The rate limit is exceeded and ``self.rate_limit_h`` is ``False``.
+            The rate limit is exceeded and ``self.rate_limit_h`` is
+            ``False``.
         TimeoutError
-            The request took longer than ``self.timeout``, or the retry delay time is
-            longer than ``self.timeout``.
+            The request took longer than ``self.timeout``, or the retry 
+            delay time is longer than ``self.timeout``.
 
         Returns
         -------
-        Player
+        :class:`Player`
             The player model used to abstract data.
         """
-        params = HashedDict(
+        params = utils.HashedDict(
             uuid=id_['uuid']
         )
         response = await self._get('player', params=params)
@@ -696,13 +727,66 @@ class Client:
         return Player(**data)
 
     async def player_count(self) -> int:
-        """Get the number of players online."""
+        """Get the number of players connected to Hypixel.
+
+        Raises
+        ------
+        ApiError
+            An unexpected error occurred with the Hypixel API.
+        ClosedSession
+            ``self.ClientSession`` is closed.
+        InvalidApiKey
+            The API key used is invalid.
+        KeyRequired
+            The client does not have any keys.
+        RateLimitError
+            The rate limit is exceeded and ``self.rate_limit_h`` is
+            ``False``.
+        TimeoutError
+            The request took longer than ``self.timeout``, or the retry
+            delay time is longer than ``self.timeout``.
+
+        Returns
+        -------
+        :class:`int`
+            The number of players connected to Hypixel.
+        """
         response = await self._get('playerCount')
 
         return int(response['playerCount'])
 
     async def key(self, key: str) -> Key:
-        """Get the data of a key."""
+        """Create a key model from an API response.
+
+        Parameters
+        ----------
+        key: :class:`str`
+            The Hypixel API key the model will be made for.
+
+            .. note::
+
+                Can be passed with or without dashes.
+
+        Raises
+        ------
+        ApiError
+            An unexpected error occurred with the Hypixel API.
+        ClosedSession
+            ``self.ClientSession`` is closed.
+        InvalidApiKey
+            The API key used is invalid.
+        RateLimitError
+            The rate limit is exceeded and ``self.rate_limit_h`` is
+            ``False``.
+        TimeoutError
+            The request took longer than ``self.timeout``, or the retry
+            delay time is longer than ``self.timeout``.
+
+        Returns
+        -------
+        :class:`Key`
+            The key model used to abstract data.
+        """
         if not isinstance(key, str):
             raise ArgumentError(
                 f"Given key '{key}' is not a string."
@@ -712,7 +796,7 @@ class Client:
         except ValueError:
             raise MalformedApiKey(key)
 
-        response = await self._get('key', key=key)
+        response = await self._get('key', key_required=False, key=key)
 
         if not response.get('record'):
             raise KeyNotFound(key)
@@ -738,7 +822,7 @@ class Client:
     @utils.convert_id
     async def player_friends(self, id_: str, sort=False) -> List[Friend]:
         """Get a list of a player's friends."""
-        params = HashedDict(
+        params = utils.HashedDict(
             uuid=id_['uuid']
         )
         response = await self._get('friends', params=params)
@@ -759,7 +843,7 @@ class Client:
             data.update(clean_data)
             friends.append(Friend(**data))
 
-        if sorted:
+        if sort:
             # Faster than lambda
             friends = sorted(friends, key=attrgetter('started'))
         return friends
@@ -767,7 +851,7 @@ class Client:
     @utils.convert_id
     async def player_status(self, id_: str) -> Status:
         """Get the status of a player."""
-        params = HashedDict(
+        params = utils.HashedDict(
             uuid=id_['uuid']
         )
         response = await self._get('status', params=params)
@@ -784,9 +868,9 @@ class Client:
         data.update(clean_data)
         return Status(**data)
 
-    async def guild_by_id(self, id_: str) -> Guild:
+    async def guild_from_id(self, id_: str) -> Guild:
         """Get a guild from the id."""
-        params = HashedDict(
+        params = utils.HashedDict(
             id=id_
         )
         response = await self._get('guild', params=params)
@@ -795,16 +879,16 @@ class Client:
             raise GuildNotFound(id_)
 
         data = {
-            'raw': response,
+            # 'raw': response,
         }
         clean_data = utils._clean(response['guild'], mode='GUILD')
         data.update(clean_data)
         return Guild(**data)
 
     @utils.convert_id
-    async def guild_by_player(self, id_: str) -> Guild:
+    async def guild_from_player(self, id_: str) -> Guild:
         """Get a guild from a player."""
-        params = HashedDict(
+        params = utils.HashedDict(
             player=id_['uuid']
         )
         response = await self._get('guild', params=params)
@@ -813,15 +897,15 @@ class Client:
             raise GuildNotFound(id_['orig'])
 
         data = {
-            'raw': response,
+            # 'raw': response,
         }
         clean_data = utils._clean(response['guild'], mode='GUILD')
         data.update(clean_data)
         return Guild(**data)
 
-    async def guild_by_name(self, name: str) -> Guild:
+    async def guild_from_name(self, name: str) -> Guild:
         """Get a guild from the name."""
-        params = HashedDict(
+        params = utils.HashedDict(
             name=name
         )
         response = await self._get('guild', params=params)
@@ -830,7 +914,7 @@ class Client:
             raise GuildNotFound(name)
 
         data = {
-            'raw': response,
+            # 'raw': response,
         }
         clean_data = utils._clean(response['guild'], mode='GUILD')
         data.update(clean_data)
