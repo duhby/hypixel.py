@@ -1,29 +1,20 @@
 """
-The MIT License
-
 Copyright (c) 2021-present duhby
-
-Permission is hereby granted, free of charge, to any person obtaining a
-copy of this software and associated documentation files (the "Software"),
-to deal in the Software without restriction, including without limitation
-the rights to use, copy, modify, merge, publish, distribute, sublicense,
-and/or sell copies of the Software, and to permit persons to whom the
-Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-DEALINGS IN THE SOFTWARE.
+MIT License, see LICENSE for more details.
 """
 
-from dataclasses import dataclass, fields, field
-from ... import utils
+from dataclasses import dataclass, field
+
+from . import utils
+
+__all__ = [
+    'Arcade',
+    'CaptureTheWool',
+    'HypixelSays',
+    'MiniWalls',
+    'PartyGames',
+]
+
 
 @dataclass
 class CaptureTheWool:
@@ -35,8 +26,7 @@ class HypixelSays:
     rounds: int = 0
     wins: int = 0
     losses: int = rounds - wins
-    # Handled later
-    wlr: float = None
+    wlr: float = field(init=False)
 
     def __post_init__(self):
         self.wlr = utils.safe_div(self.wins, self.losses)
@@ -51,8 +41,7 @@ class MiniWalls:
     wither_damage: int = 0
     arrows_hit: int = 0
     arrows_shot: int = 0
-    # Handled later
-    kdr: float = None
+    kdr: float = field(init=False)
 
     def __post_init__(self):
         self.kdr = utils.safe_div(self.kills, self.deaths)
@@ -63,8 +52,7 @@ class PartyGames:
     # legacy
     wins_2: int = 0
     wins_3: int = 0
-    # Handled later
-    total_wins: int = None
+    total_wins: int = field(init=False)
 
     def __post_init__(self):
         self.total_wins = self.wins + self.wins_2 + self.wins_3

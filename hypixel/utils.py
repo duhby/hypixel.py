@@ -1,112 +1,37 @@
 """
-The MIT License
-
 Copyright (c) 2021-present duhby
-
-Permission is hereby granted, free of charge, to any person obtaining a
-copy of this software and associated documentation files (the "Software"),
-to deal in the Software without restriction, including without limitation
-the rights to use, copy, modify, merge, publish, distribute, sublicense,
-and/or sell copies of the Software, and to permit persons to whom the
-Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-DEALINGS IN THE SOFTWARE.
+MIT License, see LICENSE for more details.
 """
 
-import functools
 import asyncio
+import functools
+import random
+from string import Formatter
 import time
 from uuid import UUID
-from typing import Optional
-from datetime import datetime, timezone
 
-from .models import GameType, ColorType, GuildRank
-from .constants.aliases import *
-from .constants import GAME_TYPES, COLOR_TYPES
-from .errors import *
+from .aliases import *
+from .errors import InvalidPlayerId, TimeoutError
+from .game import Game
 
-# @functools.lru_cache
-# def get_game(database_name) -> Optional[GameType]:
-#     data = next((
-#         item for item in GAME_TYPES if item['database_name'] == database_name
-#     ), None)
-#     if not data:
-#         return None
-#     return GameType(**data)
 
-@functools.lru_cache
-def get_game_type(type_name) -> Optional[GameType]:
-    data = next((
-        item for item in GAME_TYPES if item['type_name'] == type_name
-    ), None)
-    if not data:
-        return None
-    return GameType(**data)
-
-REQUIRE_COPY = (
-    'ARCADE',
-    'HYPIXEL_SAYS',
-    'MINI_WALLS',
-    'PARTY_GAMES',
-)
 def _clean(data: dict, mode: str, extra=None) -> dict:
     alias = globals()[mode]
-    if mode in REQUIRE_COPY:
-        _data = data.copy()
 
-    if mode in ('ARCADE', 'HYPIXEL_SAYS', 'MINI_WALLS', 'PARTY_GAMES'):
-        data = data.get('stats', {}).get('Arcade', {})
-
-    elif mode == 'CTW':
-        data = data.get('achievement_stats', {})
-
-    elif mode == 'PLAYER':
+    if mode == 'PLAYER':
         # avoid name conflicts
         data['achievement_stats'] = data.pop('achievements', {})
 
-    elif mode == 'TKR':
-        data = data.get('stats', {}).get('GingerBread', {})
-
-    elif mode == 'BEDWARS':
-        level = data.get('achievement_stats', {}).get('bedwars_level', 1)
-        data = data.get('stats', {}).get('Bedwars', {})
-        data['bedwars_level'] = level
-        # copy here instead of before and after because BedwarsMode classes
-        # need stats.Bedwars specific data
-        data['_data'] = data.copy()
-
-    elif mode == 'DUELS':
-        data = data.get('stats', {}).get('Duels', {})
-        # copy here instead of before and after because DuelsMode classes
-        # need stats.Duels specific data
-        data['_data'] = data.copy()
-
-    elif mode == 'PAINTBALL':
-        data = data.get('stats', {}).get('Paintball', {})
-
-    elif mode == 'SOCIALS':
-        data = data.get('socialMedia', {}).get('links', {})
-
     elif mode == 'FRIEND':
         # Sender and receiver could be either the player or the friend
-        # as the api stores the sender and receiver of the specific friend
+        # as the api stores the sender and receiver of the actual friend
         # request.
         # Extra is the player's uuid.
         if data['uuidReceiver'] == extra:
             data['uuidReceiver'] = data['uuidSender']
 
     elif mode == 'STATUS':
-        # convert game_type to GameType
-        data['gameType'] = get_game_type(data.get('gameType'))
+        data['gameType'] = Game.from_type(data.get('gameType'))
 
     elif mode == 'GUILD':
         achievements = data.get('achievements', {})
@@ -114,85 +39,14 @@ def _clean(data: dict, mode: str, extra=None) -> dict:
         data['experience_kings'] = achievements.get('EXPERIENCE_KINGS')
         data['most_online_players'] = achievements.get('ONLINE_PLAYERS')
 
-    elif mode == 'GUILD_MEMBER':
-        # Extra is the guild's ranks.
-        rank = next((
-            rank for rank in extra if rank.name == data['rank']
-        ), None)
-        if rank is not None:
-            data['rank'] = extra
-        else:
-            # TODO: get a list of legacy ranks like Guild Master and Officer
-            data['rank'] = GuildRank(name=data['rank'])
-
-    if mode in REQUIRE_COPY:
-        data['_data'] = _data
-
-    # replace keys in data with their formatted alias
-    replaced_data = {alias.get(k, k): v for k, v in data.items()}
-    # remove unused/unsupported items
-    return {key: replaced_data[key] for key in replaced_data if key in alias.values()}
-
-def get_level(network_exp: int) -> float:
-    return round(1 + (-8750.0 + (8750 ** 2 + 5000 * network_exp) ** 0.5) / 2500, 2)
-
-def safe_div(a: int, b: int) -> float:
-    if not b:
-        return a
-    else:
-        return round(a / b, 2)
-
-colors = ('§0', '§1', '§2', '§3', '§4', '§5', '§6', '§7', '§8', '§9', '§a', '§b', '§c', '§d', '§e', '§f')
-def clean_rank_prefix(string: str) -> str:
-    for color in colors:
-        string = string.replace(color, '')
-    string = string.replace('[', '').replace(']', '')
-    return string
-
-# values past 10 aren't needed
-# value = (100, 90, 50, 40, 10, 9, 5, 4, 1)
-# symbol = ('C', 'XC', 'L', 'XL', 'X', 'IX', 'V', 'IV', 'I')
-value = (10, 9, 5, 4, 1)
-symbol = ('X', 'IX', 'V', 'IV', 'I')
-def romanize(number: int) -> str:
-    roman = ''
-    i = 0
-    while number > 0:
-        for _ in range(number // value[i]):
-            roman += symbol[i]
-            number -= value[i]
-        i += 1
-    return roman
-
-divisions = {
-    'rookie': 'Rookie',
-    'iron': 'Iron',
-    'gold': 'Gold',
-    'diamond': 'Diamond',
-    'master': 'Master',
-    'legend': 'Legend',
-    'grandmaster': 'Grandmaster',
-    'godlike': 'Godlike',
-    'world_elite': 'WORLD ELITE',
-    'world_master': 'WORLD MASTER',
-    'worlds_best': 'WORLD\'S BEST',
-}
-def get_title(data: dict, mode: str) -> str:
-    title = 'Rookie I'
-    for key, value in divisions.items():
-        prestige = data.get(f'{mode}_{key}_title_prestige')
-        if prestige:
-            # Doesn't return instantly because
-            # past division keys are still stored.
-            # Return the last (current/highest) one.
-            title = f'{value} {romanize(prestige)}'
-    return title
+    # Replace keys in data with formatted alias
+    # Remove items that are not in the alias dictionary
+    return {alias.get(k, k): v for k, v in data.items() if k in alias.keys()}
 
 def async_timed_cache(function, max_age: int, max_size: int, typed=False):
     """Lru cache decorator with time-based cache invalidation and async
-    implementation.
-    """
-    # _time_hash forces functools to provide a time to live.
+    implementation."""
+    # _time_hash forces functools to provide a ttl.
     @functools.lru_cache(maxsize=max_size, typed=typed)
     def _new_timed(*args, _time_hash, **kwargs):
         return asyncio.ensure_future(function(*args, **kwargs))
@@ -222,8 +76,8 @@ class HashedDict(dict):
         fs = frozenset(self.items())
         return hash(fs)
 
-# Only works on asynchronous instance methods where the first non-self
-# parameter is the id.
+# For asynchronous instance methods whose first non-self parameter is a
+# player id (string of uuid or username).
 def convert_id(function):
     @functools.wraps(function)
     async def _wrapped(obj, id_, *args, **kwargs):
@@ -242,94 +96,124 @@ def convert_id(function):
         
     return _wrapped
 
-def get_rank(raw):
-    """Return the rank of the player."""
-    display_rank = None
-    pr = raw.get('player', {}).get('newPackageRank')
-    mpr = raw.get('player', {}).get('monthlyPackageRank')
-    prefix = raw.get('player', {}).get('prefix')
-    rank = raw.get('player', {}).get('rank')
-    if prefix:
-        return clean_rank_prefix(prefix)
-    elif rank:
-        if rank == 'YOUTUBER':
-            return 'YOUTUBE'
-        if rank == 'NORMAL': # some accounts have this lol (ex. notch)
-            return None
-        return rank.replace('_', ' ')
-    elif mpr != 'SUPERSTAR':
-        if not pr or pr == 'NONE':
-            return None
-        else:
-            display_rank = pr
-    else:
-        return 'MVP++'
-    return display_rank.replace('_', '').replace('PLUS', '+')
+# By MarredCheese and tomatoeshift on StackOverflow
+def strfdelta(tdelta, fmt='{M:02}:{S:02.0f}.{mS}', inputtype='timedelta'):
+    """Convert a datetime.timedelta object or a regular number to a
+    custom-formatted string, just like the stftime() method does for
+    datetime.datetime objects.
+
+    The fmt argument allows custom formatting to be specified. Fields
+    can include seconds, minutes, hours, days, and weeks. Each field is
+    optional.
+
+    Some examples (first being the default):
+        '{D:02}d {H:02}h {M:02}m {S:02.0f}s' --> '05d 08h 04m 02s'
+        '{W}w {D}d {H}:{M:02}:{S:02.0f}'     --> '4w 5d 8:04:02'
+        '{D:2}d {H:2}:{M:02}:{S:02.0f}'      --> ' 5d  8:04:02'
+        '{H}h {S:.0f}s'                      --> '72h 800s'
+
+    The inputtype argument allows tdelta to be a regular number instead
+    of the default, which is a datetime.timedelta object. Valid
+    inputtype strings:
+        's', 'seconds',
+        'm', 'minutes',
+        'h', 'hours',
+        'd', 'days',
+        'w', 'weeks',
+    """
+
+    # Convert tdelta to integer seconds.
+    if inputtype == 'timedelta':
+        remainder = tdelta.total_seconds()
+    elif inputtype in ['s', 'seconds']:
+        remainder = float(tdelta)
+    elif inputtype in ['m', 'minutes']:
+        remainder = float(tdelta)*60
+    elif inputtype in ['h', 'hours']:
+        remainder = float(tdelta)*3600
+    elif inputtype in ['d', 'days']:
+        remainder = float(tdelta)*86400
+    elif inputtype in ['w', 'weeks']:
+        remainder = float(tdelta)*604800
+
+    f = Formatter()
+    desired_fields = [field_tuple[1] for field_tuple in f.parse(fmt)]
+    possible_fields = ('Y','m','W', 'D', 'H', 'M', 'S', 'mS', 'µS')
+    constants = {
+        'Y': 86400*365.24,
+        'm': 86400*30.44,
+        'W': 604800,
+        'D': 86400,
+        'H': 3600,
+        'M': 60,
+        'S': 1,
+        'mS': 1/pow(10,3),
+        'µS': 1/pow(10,6),
+    }
+    values = {}
+    for field in possible_fields:
+        if field in desired_fields and field in constants:
+            Quotient, remainder = divmod(remainder, constants[field])
+            values[field] = int(Quotient) if field != 'S' else Quotient + remainder
+    return f.format(fmt, **values)
 
 
 """
-MIT License
+The MIT License
 
-Copyright (c) 2018 The Slothpixel Project
+Copyright (c) 2015-present Rapptz
 """
 
-# length 15
-EXP_NEEDED = (
-    100000,
-    150000,
-    250000,
-    500000,
-    750000,
-    1000000,
-    1250000,
-    1500000,
-    2000000,
-    2500000,
-    2500000,
-    2500000,
-    2500000,
-    2500000,
-    3000000,
-)
-MAX_LEVEL = 1000
-def get_guild_level(exp: int) -> float:
-    level = 0
-    for i in range(MAX_LEVEL + 1):
-        # required exp to get to the next level
-        need = 0
-        if i >= 15:
-            need = EXP_NEEDED[-1]
-        else:
-            need = EXP_NEEDED[i]
+class ExponentialBackoff:
+    """An implementation of the exponential backoff algorithm.
 
-        # return the current level plus progress towards the next (unused)
-        # if the required exp is met, otherwise increment the level and
-        # subtract the used exp
-        if exp - need < 0:
-            return round((level + (exp / need)) * 100) / 100
-        level += 1
-        exp -= need
-    return MAX_LEVEL
+    Provides a convenient interface to implement an exponential backoff
+    for reconnecting or retrying transmissions.
 
-@functools.lru_cache
-def get_color_type(type_name) -> Optional[ColorType]:
-    data = next((
-        item for item in COLOR_TYPES if item['type_name'] == type_name
-    ), None)
-    if not data:
-        return None
-    return ColorType(**data)
+    Once instantiated, the delay method will return the next interval to
+    wait for when retrying a connection or transmission. The maximum
+    delay increases exponentially with each retry up to a maximum of
+    2^10 * base.
 
-UTC = timezone.utc
-def _add_tzinfo(dt, tzinfo=UTC) -> datetime:
-    # Add timezone info for easier manipulation with timezones.
-    return dt.replace(tzinfo=tzinfo)
+    Raises
+    ------
+    :exc:`TimeoutError`
+        Raised when the difference of time from the last request is
+        greater than the client's timeout.
+    """
 
-def convert_to_datetime(decimal, add_tzinfo=True) -> datetime:
-    # Float division is cheaper than integer division.
-    # Precision is a non-issue as decimals go only to the thousandth place.
-    seconds = decimal / 1e3
-    dt = datetime.fromtimestamp(seconds)
-    if add_tzinfo:
-        return _add_tzinfo(dt)
-    return dt
+    def __init__(self, timeout: int = 2**11):
+        self._base: int = 2
+        self._exp: int = 0
+        self._max: int = 10
+        self._timeout: int = timeout
+        self._last_invocation: float = time.monotonic()
+
+        # Use our own random instance to avoid messing with global one.
+        rand = random.Random()
+        rand.seed()
+
+        # self._randfunc = rand.randrange
+        self._randfunc = rand.uniform
+
+    def delay(self) -> float:
+        """Compute the next delay.
+
+        Returns the next delay to wait according to the exponential
+        backoff algorithm.  This is a value between 0 and base * 2^exp
+        where exponent starts off at 1 and is incremented at every
+        invocation of this method up to a maximum of 10.
+
+        If a period of more than base * 2^11 has passed since the last
+        retry, the exponent is reset to 1.
+        """
+        invocation = time.monotonic()
+        interval = invocation - self._last_invocation
+        self._last_invocation = invocation
+
+        if self._timeout is not None and interval > self._timeout:
+            raise TimeoutError('mojang')
+            # self._exp = 0
+
+        self._exp = min(self._exp + 1, self._max)
+        return self._randfunc(0, self._base * 2**self._exp)

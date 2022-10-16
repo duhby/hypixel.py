@@ -1,13 +1,9 @@
-hypixel.py (alpha)
+hypixel.py (beta)
 ==================
 
-A modern, asynchronous, feature-rich, Hypixel API wrapper for Python.
----------------------------------------------------------------------
-
-..
-   .. image:: https://img.shields.io/discord/719949131497603123.svg?color=%237289da&label=discord&logo=discord&style=for-the-badge
-      :target: https://discord.gg/PtsBc4b/
-      :alt: Discord
+.. .. image:: https://img.shields.io/discord/719949131497603123.svg?color=%237289da&label=discord&logo=discord&style=for-the-badge
+..    :target: https://discord.gg/PtsBc4b/
+..    :alt: Discord
 .. image:: https://img.shields.io/pypi/dm/hypixel.py?color=blueviolet&style=for-the-badge
    :target: https://pypi.python.org/pypi/hypixel.py/
    :alt: PyPI downloads
@@ -17,44 +13,32 @@ A modern, asynchronous, feature-rich, Hypixel API wrapper for Python.
 .. image:: https://img.shields.io/github/license/duhby/hypixel.py?style=for-the-badge&color=bright-green
    :target: https://github.com/duhby/hypixel.py/blob/master/LICENSE/
    :alt: License
+.. image:: https://img.shields.io/readthedocs/hypixelpy/dev?style=for-the-badge
+    :target: https://docs.dubs.rip/en/dev/
+    :alt: Documentation Status
 
-Why hypixel.py?
----------------
 
-Blazing fast.
-^^^^^^^^^^^^^
+.. start_doc
 
-Hypixel.py is fast and lightweight, using built in libraries to achieve async timed lru caching,
-fast nested dataclass json sterilization, modern sane rate limit handling, and more.
+Hypixel.py is a modern, asynchronous, feature-rich, Hypixel API wrapper for Python.
 
-Fully asynchronous.
-^^^^^^^^^^^^^^^^^^^
+It aims to make the process of writing scripts that deal with the Hypixel API easier
+to prevent frustration due to the complexity and inapplicability of the API in its current state.
 
-Hypixel.py is fully asynchronous and uses modern ``async`` and ``await`` python syntax.
-This means your program won't have to wait for your api requests to finish before running any more code.
+* **Fast AF (for python)** --- Fast and lightweight by using built in libraries to achieve async timed lru caching, fast nested dataclass json sterilization, modern sane rate limit handling, etc.
+* **More asynchronous than online learning** --- Has full asynchronicity and uses modern pythonic ``async`` and ``await`` syntax.
+* **Cleaner than your room** --- Uses object oriented pythonic dot syntax for all of its models, so you can easily access any data point without worrying about dictionaries, strings, and any random inconsistencies you may encounter using the raw API.
+* **S Tier Docs** --- Highly maintained documentation with an ample amount of examples to get you started. It also has the highest player model coverage and documentation.
 
-Minimal depdencies.
-^^^^^^^^^^^^^^^^^^^
+.. end_doc
 
-Hypixel.py uses built in libraries for everything possible so you don't need to worry about relying on more libraries than necessary.
-
-Marvelously clean syntax.
-^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Hypixel.py uses object oriented pythonic dot syntax for all of its models,
-so you can easily access any data point without worrying about dictionaries and strings.
-
-Highly maintained documentation.
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Hypixel.py's documentation is highly maintained and provides a plentiful amount of examples to get you started.
 
 Getting Started
 ---------------
 
-**Check out the** `examples <https://github.com/duhby/hypixel.py/tree/master/examples>`_ **and** `documentation <#>`_!
+**Check out the** `examples <https://docs.dubs.rip/en/dev/examples.html>`_ **and** `documentation <https://docs.dubs.rip/en/dev/>`_!
 
-**Python 3.7+ is required (3.9+ recommended)**
+**Python 3.8+ is required (3.10.8+ recommended)**
 
 Installation
 ^^^^^^^^^^^^
@@ -66,6 +50,7 @@ To install hypixel.py, simply install it from pypi under the name ``hypixel.py``
    pip install hypixel.py --upgrade
 
 You can also append ``[speed]`` to install optional packages (see below) to enhance aiohttp and json performance automatically.
+**Warning:** cchardet does not support python 3.10+ and subsequently will not be installed using [speed] if you're on 3.10 or higher.
 
 .. code:: sh
 

@@ -1,29 +1,17 @@
 """
-The MIT License
-
 Copyright (c) 2021-present duhby
-
-Permission is hereby granted, free of charge, to any person obtaining a
-copy of this software and associated documentation files (the "Software"),
-to deal in the Software without restriction, including without limitation
-the rights to use, copy, modify, merge, publish, distribute, sublicense,
-and/or sell copies of the Software, and to permit persons to whom the
-Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-DEALINGS IN THE SOFTWARE.
+MIT License, see LICENSE for more details.
 """
 
 from dataclasses import dataclass, field
-from ... import utils
+
+from . import utils
+
+__all__ = [
+    'Duels',
+    'DuelsMode',
+]
+
 
 @dataclass
 class DuelsMode:
@@ -37,11 +25,10 @@ class DuelsMode:
     melee_swings: int = 0
     arrows_hit: int = 0
     arrows_shot: int = 0
-    # Handled later
-    wlr: float = None
-    mr: float = None # will be 0 if it doesn't have hits
-    ar: float = None # will be 0 if it doesn't have bows
-    title: str = None
+    wlr: float = field(init=False) # More accurate than kdr
+    mr: float = field(init=False) # will be 0 if it doesn't have hits
+    ar: float = field(init=False) # will be 0 if it doesn't have bows
+    title: str = field(init=False)
 
     def __post_init__(self):
         self.wlr = utils.safe_div(self.wins, self.losses)
@@ -65,11 +52,10 @@ class Duels:
     melee_swings: int = 0
     arrows_hit: int = 0
     arrows_shot: int = 0
-    # Handled later
-    wlr: float = None
-    mr: float = None
-    ar: float = None
-    title: str = None
+    wlr: float = field(init=False)
+    mr: float = field(init=False)
+    ar: float = field(init=False)
+    title: str = field(init=False)
     blitz: DuelsMode = field(init=False)
     bow: DuelsMode = field(init=False)
     boxing: DuelsMode = field(init=False)
@@ -95,7 +81,7 @@ class Duels:
         )
         self.title = utils.get_title(self._data, 'all_modes')
 
-        modes = (
+        modes = [
             'blitz',
             'bow',
             'boxing',
@@ -110,7 +96,7 @@ class Duels:
             'sumo',
             'tnt_games',
             'uhc',
-        )
+        ]
         for mode in modes:
             data = utils._clean(self._data, mode=f'{mode.upper()}_DUELS')
             data['_data'] = self._data

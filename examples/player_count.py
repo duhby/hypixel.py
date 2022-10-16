@@ -1,10 +1,11 @@
+"""A simple example that shows how to get the current number of
+players."""
+
 # This exmaple requies an api key
 
 import hypixel
 from hypixel import HypixelException
 import asyncio
-
-__doc__ = """A simple example that shows how to get the current number of players."""
 
 async def main():
     client = hypixel.Client('api-key')

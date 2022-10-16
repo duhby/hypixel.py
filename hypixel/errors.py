@@ -1,37 +1,16 @@
 """
-The MIT License
-
 Copyright (c) 2021-present duhby
-
-Permission is hereby granted, free of charge, to any person obtaining a
-copy of this software and associated documentation files (the "Software"),
-to deal in the Software without restriction, including without limitation
-the rights to use, copy, modify, merge, publish, distribute, sublicense,
-and/or sell copies of the Software, and to permit persons to whom the
-Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-DEALINGS IN THE SOFTWARE.
+MIT License, see LICENSE for more details.
 """
 
-from __future__ import annotations
-from typing import Any
-
-__all__ = (
+__all__ = [
     'HypixelException',
-    'BadArgument',
+    'ArgumentError',
     'InvalidPlayerId',
     'PlayerNotFound',
     'KeyNotFound',
     'ApiError',
+    'TimeoutError',
     'RateLimitError',
     'InvalidApiKey',
     'MalformedApiKey',
@@ -39,15 +18,17 @@ __all__ = (
     'ClosedSession',
     'LoopPolicyError',
     'GuildNotFound',
-)
+]
+
 
 class HypixelException(Exception):
     """Base exception for hypixel.py
 
-    Theoretically, this can be used to catch all errors from this library.
+    Theoretically, this can be used to catch all errors from this
+    library.
     """
 
-class BadArgument(HypixelException):
+class ArgumentError(HypixelException):
     """Raised when a passed argument is faulty.
 
     Inherits from :exc:`HypixelException`
@@ -61,10 +42,10 @@ class BadArgument(HypixelException):
         self.text = message
         super().__init__(self.text)
 
-class InvalidPlayerId(BadArgument):
-    """Raised when a passed player id does not have a string value.
+class InvalidPlayerId(ArgumentError):
+    """Raised when a passed player id is not a string.
 
-    Inherits from :exc:`BadArgument`
+    Inherits from :exc:`ArgumentError`
 
     Attributes
     ----------
@@ -76,10 +57,10 @@ class InvalidPlayerId(BadArgument):
         self.text = f"Passed player id '{self.id}' is not a string"
         super().__init__(self.text)
 
-class PlayerNotFound(BadArgument):
+class PlayerNotFound(ArgumentError):
     """Raised when a requested player does not exist.
 
-    Inherits from :exc:`BadArgument`
+    Inherits from :exc:`ArgumentError`
 
     Attributes
     ----------
@@ -91,10 +72,10 @@ class PlayerNotFound(BadArgument):
         self.text = f"Player '{self.player}' did not yield a response"
         super().__init__(self.text)
 
-class KeyNotFound(BadArgument):
+class KeyNotFound(ArgumentError):
     """Raised when a requested key does not exist.
 
-    Inherits from :exc:`BadArgument`
+    Inherits from :exc:`ArgumentError`
 
     Attributes
     ----------
@@ -126,6 +107,22 @@ class ApiError(HypixelException):
         self.response = response
         super().__init__(self.text)
 
+class TimeoutError(ApiError):
+    """Raised when the client did not receive a response within the
+    required time.
+
+    Inherits from :exc:`ApiError`
+
+    Attributes
+    ----------
+    api: str
+        The API that caused the error.
+    """
+    def __init__(self, api):
+        self.api = api
+        self.text = f"API timeout {api}"
+        super().__init__(response=None, api=self.api, message=self.text)
+
 class RateLimitError(ApiError):
     """Raised when the rate limit is reached.
 
@@ -148,14 +145,14 @@ class RateLimitError(ApiError):
         else:
             self.text = (
                 "You are being rate limited, "
-                f"try again at {self.retry_after.strftime('%H:%M:%S')}"
+                f"try again in {retry_after} seconds"
             )
         super().__init__(response, api, message=self.text)
 
-class InvalidApiKey(BadArgument):
+class InvalidApiKey(ArgumentError):
     """Base exception for invalid API key exceptions.
 
-    Inherits from :exc:`BadArgument`
+    Inherits from :exc:`ArgumentError`
 
     .. note::
 
@@ -166,12 +163,12 @@ class InvalidApiKey(BadArgument):
 
         For simplicity, if multiple API keys are invalid, only the first
         one will be included, even if :meth:`Client.validate_keys` is
-        called multiple times with the same keys.
+        called multiple times.
 
     Attributes
     ----------
     key: str
-        The key that caused the error to be raised.
+        The key that caused the error.
     """
     def __init__(self, key, message=None):
         if message is None:
@@ -189,7 +186,7 @@ class MalformedApiKey(InvalidApiKey, ValueError):
     Attributes
     ----------
     key: str
-        The key that caused the error to be raised. See
+        The key that caused the error. See
         :exc:`InvalidApiKey` for details.
     """
     def __init__(self, key):
@@ -220,9 +217,9 @@ class ClosedSession(HypixelException, RuntimeError):
 
     .. note::
 
-        If :attr:`Client.cache` is ``True`` and the response is stored in
-        cache, :exc:`ClosedSession` won't be raised and the function will
-        return normally.
+        If :attr:`Client.cache` is ``True`` and the response is stored
+        in cache, :exc:`ClosedSession` won't be raised and the function
+        will return normally.
     """
     def __init__(self):
         self.text = 'Session is closed'
@@ -240,10 +237,10 @@ class LoopPolicyError(HypixelException, RuntimeError):
         )
         super().__init__(self.text)
 
-class GuildNotFound(BadArgument):
+class GuildNotFound(ArgumentError):
     """Raised when a requested guild does not exist.
 
-    Inherits from :exc:`BadArgument`
+    Inherits from :exc:`ArgumentError`
 
     Attributes
     ----------

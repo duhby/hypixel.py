@@ -1,71 +1,81 @@
 """
-The MIT License
-
 Copyright (c) 2021-present duhby
-
-Permission is hereby granted, free of charge, to any person obtaining a
-copy of this software and associated documentation files (the "Software"),
-to deal in the Software without restriction, including without limitation
-the rights to use, copy, modify, merge, publish, distribute, sublicense,
-and/or sell copies of the Software, and to permit persons to whom the
-Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-DEALINGS IN THE SOFTWARE.
+MIT License, see LICENSE for more details.
 """
 
-from typing import Literal
+from __future__ import annotations
+from dataclasses import dataclass
+import functools
 
-__all__ = (
-    'GAME_TYPES',
-    'GameTypes',
-)
-
-GameTypes = Literal[
-    'QUAKECRAFT',
-    'WALLS',
-    'PAINTBALL',
-    'SURVIVAL_GAMES',
-    'TNTGAMES',
-    'VAMPIREZ',
-    'WALLS3',
-    'ARCADE',
-    'ARENA',
-    'UHC',
-    'MCGO',
-    'BATTLEGROUND',
-    'SUPER_SMASH',
-    'GINGERBREAD',
-    'HOUSING',
-    'SKYWARS',
-    'TRUE_COMBAT',
-    'SPEED_UHC',
-    'SKYCLASH',
-    'LEGACY',
-    'PROTOTYPE',
-    'BEDWARS',
-    'MURDER_MYSTERY',
-    'BUILD_BATTLE',
-    'DUELS',
-    'SKYBLOCK',
-    'PIT',
-    'REPLAY',
-    'SMP',
+__all__ = [
+    'Game',
 ]
 
-"""
-MIT License
 
-Copyright (c) 2017 The OpenDota Project, The Slothpixel Project
-"""
+@dataclass
+class Game:
+    """Represents a Hypixel game.
+
+    Attributes
+    ----------
+    id: :class:`int`
+        The id of the game.
+
+        .. note::
+
+            Although there are ids ranging from 2-68, there aren't 66
+            game types as some are skipped for whatever reason.
+    type_name: :class:`str`
+        The type name used in Hypixel API attributes.
+    database_name: :class:`str`
+        The key value used in the Hypixel API.
+    clean_name: :class:`str`
+        The game name in Title Case
+    standard_name: :class:`str`
+        Sometimes shorter than ``self.clean_name``.
+    legacy: :class:`bool`
+        Whether or not the game is a legacy game.
+    """
+    id: int
+    type_name: str
+    database_name: str
+    clean_name: str
+    standard_name: str
+    legacy: bool = False
+
+    @classmethod
+    @functools.lru_cache()
+    def from_type(cls, type_name: str) -> Game:
+        """Constructs a :class:`Game` from its type name.
+
+        Parameters
+        ----------
+        type_name: :class:`str`
+            The type name used in Hypixel API attributes.
+        """
+        data = next((
+            item for item in GAME_TYPES if item['type_name'] == type_name
+        ), None)
+        if not data:
+            return None
+        return cls(**data)
+
+    @classmethod
+    @functools.lru_cache()
+    def from_id(cls, id_: int) -> Game:
+        """Constructs a :class:`Game` from its id.
+
+        Parameters
+        ----------
+        id: :class:`int`
+            The id number of the game.
+        """
+        data = next((
+            item for item in GAME_TYPES if item['id'] == id_
+        ), None)
+        if not data:
+            return None
+        return cls(**data)
 
 GAME_TYPES = [
   {
@@ -96,7 +106,6 @@ GAME_TYPES = [
     'id': 5,
     'type_name': 'SURVIVAL_GAMES',
     'database_name': 'HungerGames',
-    'lobby_name': 'blitz',
     'clean_name': 'Blitz Survival Games',
     'standard_name': 'Blitz',
   },
@@ -104,7 +113,6 @@ GAME_TYPES = [
     'id': 6,
     'type_name': 'TNTGAMES',
     'database_name': 'TNTGames',
-    'lobby_name': 'tnt',
     'clean_name': 'TNT Games',
     'standard_name': 'TNT',
   },
@@ -120,7 +128,6 @@ GAME_TYPES = [
     'id': 13,
     'type_name': 'WALLS3',
     'database_name': 'Walls3',
-    'lobby_name': 'megawalls',
     'clean_name': 'Mega Walls',
     'standard_name': 'MegaWalls',
   },
@@ -128,7 +135,6 @@ GAME_TYPES = [
     'id': 14,
     'type_name': 'ARCADE',
     'database_name': 'Arcade',
-    'lobby_name': 'arcade',
     'clean_name': 'Arcade',
     'standard_name': 'Arcade',
   },
@@ -144,7 +150,6 @@ GAME_TYPES = [
     'id': 20,
     'type_name': 'UHC',
     'database_name': 'UHC',
-    'lobby_name': 'uhc',
     'clean_name': 'UHC Champions',
     'standard_name': 'UHC',
   },
@@ -152,7 +157,6 @@ GAME_TYPES = [
     'id': 21,
     'type_name': 'MCGO',
     'database_name': 'MCGO',
-    'lobby_name': 'mcgo',
     'clean_name': 'Cops and Crims',
     'standard_name': 'CvC',
   },
@@ -160,7 +164,6 @@ GAME_TYPES = [
     'id': 23,
     'type_name': 'BATTLEGROUND',
     'database_name': 'Battleground',
-    'lobby_name': 'bg',
     'clean_name': 'Warlords',
     'standard_name': 'Warlords',
   },
@@ -168,7 +171,6 @@ GAME_TYPES = [
     'id': 24,
     'type_name': 'SUPER_SMASH',
     'database_name': 'SuperSmash',
-    'lobby_name': 'smash',
     'clean_name': 'Smash Heroes',
     'standard_name': 'Smash',
   },
@@ -191,7 +193,6 @@ GAME_TYPES = [
     'id': 51,
     'type_name': 'SKYWARS',
     'database_name': 'SkyWars',
-    'lobby_name': 'sw',
     'clean_name': 'SkyWars',
     'standard_name': 'SkyWars',
   },
@@ -199,7 +200,6 @@ GAME_TYPES = [
     'id': 52,
     'type_name': 'TRUE_COMBAT',
     'database_name': 'TrueCombat',
-    'lobby_name': 'Truepvp',
     'clean_name': 'Crazy Walls',
     'standard_name': 'CrazyWalls',
   },
@@ -207,7 +207,6 @@ GAME_TYPES = [
     'id': 54,
     'type_name': 'SPEED_UHC',
     'database_name': 'SpeedUHC',
-    'lobby_name': 'speeduhc',
     'clean_name': 'Speed UHC',
     'standard_name': 'SpeedUHC',
   },
@@ -215,7 +214,6 @@ GAME_TYPES = [
     'id': 55,
     'type_name': 'SKYCLASH',
     'database_name': 'SkyClash',
-    'lobby_name': 'skyclash',
     'clean_name': 'SkyClash',
     'standard_name': 'SkyClash',
   },
@@ -223,7 +221,6 @@ GAME_TYPES = [
     'id': 56,
     'type_name': 'LEGACY',
     'database_name': 'Legacy',
-    'lobby_name': 'legacy',
     'clean_name': 'Classic Games',
     'standard_name': 'Classic',
     'legacy': True,
@@ -232,7 +229,6 @@ GAME_TYPES = [
     'id': 57,
     'type_name': 'PROTOTYPE',
     'database_name': 'Prototype',
-    'lobby_name': 'prototype',
     'clean_name': 'Prototype',
     'standard_name': 'Prototype',
   },
@@ -240,15 +236,13 @@ GAME_TYPES = [
     'id': 58,
     'type_name': 'BEDWARS',
     'database_name': 'Bedwars',
-    'lobby_name': 'bedwars',
     'clean_name': 'Bed Wars',
-    'standard_name': 'BedWars',
+    'standard_name': 'Bed Wars',
   },
   {
     'id': 59,
     'type_name': 'MURDER_MYSTERY',
     'database_name': 'MurderMystery',
-    'lobby_name': 'mm',
     'clean_name': 'Murder Mystery',
     'standard_name': 'MurderMystery',
   },
@@ -256,7 +250,6 @@ GAME_TYPES = [
     'id': 60,
     'type_name': 'BUILD_BATTLE',
     'database_name': 'BuildBattle',
-    'lobby_name': 'bb',
     'clean_name': 'Build Battle',
     'standard_name': 'BuildBattle',
   },
@@ -264,7 +257,6 @@ GAME_TYPES = [
     'id': 61,
     'type_name': 'DUELS',
     'database_name': 'Duels',
-    'lobby_name': 'duels',
     'clean_name': 'Duels',
     'standard_name': 'Duels',
   },
@@ -295,5 +287,12 @@ GAME_TYPES = [
     'database_name': 'SMP',
     'clean_name': 'SMP',
     'standard_name': 'SMP',
+  },
+  {
+    'id': 68,
+    'type_name': 'WOOL_GAMES',
+    'database_name': 'WoolGames',
+    'clean_name': 'Wool Games',
+    'standard_name': 'Wool Games',
   },
 ]
