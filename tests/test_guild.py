@@ -10,10 +10,10 @@ def _test_guild(guild, id_):
     assert guild.id == id_
     assert guild.name == 'jakeygoat'
     assert guild.exp == 306224961
-    # assert guild.created == datetime(
-    #     2017, 9, 20, 17, 15, 16, 134000,
-    #     tzinfo=timezone.utc,
-    # )
+    assert guild.created == datetime(
+        2017, 9, 20, 23, 15, 16, 134000,
+        tzinfo=timezone.utc,
+    )
     assert guild.level == 109.41
     assert guild.legacy_rank == 440
 
@@ -23,37 +23,37 @@ def _test_guild(guild, id_):
     rank3 = guild.ranks[3]
     assert rank0.name == 'OFFICER'
     assert rank0.default == False
-    # assert rank0.created == datetime(
-    #     2018, 10, 1, 20, 15, 9, 56000,
-    #     tzinfo=timezone.utc,
-    # )
+    assert rank0.created == datetime(
+        2018, 10, 2, 2, 15, 9, 56000,
+        tzinfo=timezone.utc,
+    )
     assert rank0.priority == 4
     assert rank0.tag == None
 
     assert rank1.name == 'Member'
     assert rank1.default == False
-    # assert rank1.created == datetime(
-    #     2018, 10, 1, 20, 15, 9, 407000,
-    #     tzinfo=timezone.utc,
-    # )
+    assert rank1.created == datetime(
+        2018, 10, 2, 2, 15, 9, 407000,
+        tzinfo=timezone.utc,
+    )
     assert rank1.priority == 3
     assert rank1.tag == None
 
     assert rank2.name == 'altsXD'
     assert rank2.default == False
-    # assert rank2.created == datetime(
-    #     2018, 10, 1, 20, 15, 9, 804000,
-    #     tzinfo=timezone.utc,
-    # )
+    assert rank2.created == datetime(
+        2018, 10, 2, 2, 15, 9, 804000,
+        tzinfo=timezone.utc,
+    )
     assert rank2.priority == 1
     assert rank2.tag == None
 
     assert rank3.name == 'Co Owner'
     assert rank3.default == False
-    # assert rank3.created == datetime(
-    #     2018, 12, 23, 11, 55, 14, 276000,
-    #     tzinfo=timezone.utc,
-    # )
+    assert rank3.created == datetime(
+        2018, 12, 23, 18, 55, 14, 276000,
+        tzinfo=timezone.utc,
+    )
     assert rank3.priority == 4
     assert rank3.tag == None
 
@@ -87,52 +87,52 @@ def _test_guild(guild, id_):
     member2 = guild.members[2]
     assert member0.uuid == '24c182c6716b47c68f60a1be9045c449'
     assert member0.rank.name == 'Guild Master'
-    # assert member0.joined == datetime(
-    #     2018, 8, 27, 20, 0, 19, 161000,
-    #     tzinfo=timezone.utc,
-    # )
-    # assert member0.exp_history[
-    #     datetime(
-    #         2022, 10, 15, 0, 0,
-    #         tzinfo=timezone.utc,
-    #     )
-    # ] == 0
-    # assert member0.exp_history[
-    #     datetime(
-    #         2022, 10, 14, 0, 0,
-    #         tzinfo=timezone.utc,
-    #     )
-    # ] == 13047
+    assert member0.joined == datetime(
+        2018, 8, 28, 2, 0, 19, 161000,
+        tzinfo=timezone.utc,
+    )
+    assert member0.exp_history[
+        datetime(
+            2022, 10, 15, 0, 0,
+            tzinfo=timezone.utc,
+        )
+    ] == 0
+    assert member0.exp_history[
+        datetime(
+            2022, 10, 14, 0, 0,
+            tzinfo=timezone.utc,
+        )
+    ] == 13047
     assert member0.quest_participation == 4396
     assert member0.name == None
 
     assert member1.uuid == '369d8ab8cded461091d1189acd3b44d2'
     assert member1.rank == rank1
-    # assert member1.joined == datetime(
-    #     2018, 9, 10, 20, 19, 24, 312000,
-    #     tzinfo=timezone.utc,
-    # )
-    # assert member1.exp_history[
-    #     datetime(
-    #         2022, 10, 15, 0, 0,
-    #         tzinfo=timezone.utc,
-    #     )
-    # ] == 0
+    assert member1.joined == datetime(
+        2018, 9, 11, 2, 19, 24, 312000,
+        tzinfo=timezone.utc
+    )
+    assert member1.exp_history[
+        datetime(
+            2022, 10, 15, 0, 0,
+            tzinfo=timezone.utc,
+        )
+    ] == 0
     assert member1.quest_participation == 43
     assert member1.name == None
 
     assert member2.uuid == 'cc7fbd331def4e67a02254df4ef05a4f'
     assert member2.rank == rank0
-    # assert member2.joined == datetime(
-    #     2019, 2, 10, 21, 18, 40, 233000,
-    #     tzinfo=timezone.utc,
-    # )
-    # assert member2.exp_history[
-    #     datetime(
-    #         2022, 10, 15, 0, 0,
-    #         tzinfo=timezone.utc,
-    #     )
-    # ] == 0
+    assert member2.joined == datetime(
+        2019, 2, 11, 4, 18, 40, 233000,
+        tzinfo=timezone.utc
+    )
+    assert member2.exp_history[
+        datetime(
+            2022, 10, 15, 0, 0,
+            tzinfo=timezone.utc,
+        )
+    ] == 0
     assert member2.quest_participation == 782
     assert member2.name == None
 

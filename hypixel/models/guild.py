@@ -5,7 +5,7 @@ MIT License, see LICENSE for more details.
 
 from __future__ import annotations
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict, List, Optional, Tuple
 
 from ..color import Color
@@ -55,7 +55,7 @@ class GuildMember:
         self.joined = utils.convert_to_datetime(self.joined)
 
         self.exp_history = {
-            utils._add_tzinfo(datetime.fromisoformat(time)): value
+            datetime.fromisoformat(time).replace(tzinfo=timezone.utc): value
             for time, value in self.exp_history.items()
         }
 
