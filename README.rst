@@ -72,7 +72,8 @@ To enhance json decoding (up to 4x faster):
 Warning
 ^^^^^^^
 
-If you are running python version 3.8 or higher on Windows, then you must add the following code before you start an event loop (asyncio.run):
+If you are running a python version lower than 3.10.8 on Windows, then
+you must add the following code before (and if) you use asyncio.run:
 
 .. code:: python
 

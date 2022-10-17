@@ -12,7 +12,7 @@ __title__ = 'hypixel'
 __author__ = 'duhby'
 __license__ = 'MIT'
 __copyright__ = 'Copyright 2021-present duhby'
-__version__ = '0.3.0'
+__version__ = '0.3.1'
 
 from .client import *
 from .color import *
@@ -34,7 +34,7 @@ class VersionInfo(NamedTuple):
 version_info: VersionInfo = VersionInfo(
     major=0,
     minor=3,
-    micro=0,
+    micro=1,
     releaselevel='final',
     serial=0,
 )

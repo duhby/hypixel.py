@@ -28,17 +28,12 @@ def _clean(data: dict, mode: str, extra=None) -> dict:
     # Remove items that are not in the alias dictionary
     return {alias.get(k, k): v for k, v in data.items() if k in alias.keys()}
 
-def _add_tzinfo(dt, tzinfo=timezone.utc) -> datetime:
-    return dt.replace(tzinfo=tzinfo)
-
-def convert_to_datetime(decimal, add_tzinfo=True) -> datetime:
+def convert_to_datetime(decimal: int) -> datetime:
     # Float division is cheaper than integer division.
     # Precision is a non-issue as decimals go only to the thousandth
     # place.
     seconds = decimal / 1e3
-    dt = datetime.fromtimestamp(seconds)
-    if add_tzinfo:
-        return _add_tzinfo(dt)
+    dt = datetime.fromtimestamp(seconds, tz=timezone.utc)
     return dt
 
 # Length 15
