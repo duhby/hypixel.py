@@ -47,7 +47,7 @@ class Player:
         The first login time represented as a datetime in the UTC
         timezone.
     name: :class:`str`
-        The username of the player with the correct capitalization.
+        The username of the player with correct capitalization.
 
         .. note::
 
@@ -73,18 +73,6 @@ class Player:
         The player's current network experience points.
     karma: :class:`int`
         The player's current karma.
-    version: :class:`str`
-        The most recent minecraft version the player joined Hypixel
-        with.
-
-        .. note::
-
-            This attribute is highly unstable, and the API often returns
-            inaccurate info or nothing at all.
-
-        .. deprecated:: 1.0
-
-            It seems as though Hypixel has deprecated this already.
     achievement_points: :class:`int`
         The player's achievement points.
     current_gadget: :class:`str`
@@ -100,9 +88,9 @@ class Player:
         A string representation of the player's rank if it exists;
         otherwise ``None``.
 
-        Possible values are 'VIP', 'VIP+', 'MVP', 'MVP+', 'MVP++',
-        'YOUTUBE', 'PIG+++', 'MOJANG', 'GAME MASTER', 'ADMIN', and
-        'OWNER'.
+        Possible values are ``'VIP'``, ``'VIP+'``, ``'MVP'``,
+        ``'MVP+'``, ``'MVP++'``, ``'YOUTUBE'``, ``'PIG+++'``,
+        ``'MOJANG'``, ``'GAME MASTER'``, ``'ADMIN'``, and ``'OWNER'``.
     plus_color: Optional[:class:`~hypixel.Color`]
         The player's plus color if their rank has a plus in it;
         otherwise ``None``.
@@ -152,7 +140,6 @@ class Player:
     achievements: list = field(default_factory=list, repr=False)
     network_exp: int = 0
     karma: int = 0
-    version: str = None
     achievement_points: int = 0
     current_gadget: str = None
     channel: str = None
@@ -182,6 +169,11 @@ class Player:
             dt = utils.convert_to_datetime(value)
             setattr(self, date, dt)
         self.network_exp = int(self.network_exp)
+
+        # Some achievement items can be blank, non-string objects.
+        for achievement in self.achievements:
+            if not isinstance(achievement, str):
+                self.achievements.remove(achievement)
 
         self.level = utils.get_network_level(self.network_exp)
         self.rank = utils.get_rank(self.raw)

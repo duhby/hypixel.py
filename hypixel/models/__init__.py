@@ -9,7 +9,7 @@ MIT License, see LICENSE for more details.
 """
 
 from .bans import *
-from .friend import *
+# from .friend import *
 from .games import *
 from .guild import *
 from .key import *

@@ -112,15 +112,6 @@ def convert_to_datetime(decimal: int) -> datetime:
     dt = datetime.fromtimestamp(seconds, tz=timezone.utc)
     return dt
 
-colors = ('§0', '§1', '§2', '§3', '§4', '§5', '§6', '§7',
-          '§8', '§9', '§a', '§b', '§c', '§d', '§e', '§f')
-def clean_rank_prefix(string: str) -> str:
-    # .replace is faster than re.sub
-    for color in colors:
-        string = string.replace(color, '')
-    string = string.replace('[', '').replace(']', '')
-    return string
-
 def get_network_level(network_exp: int) -> float:
     return round(1 + (-8750.0 + (8750 ** 2 + 5000 * network_exp) ** 0.5) / 2500, 2)
 
@@ -194,6 +185,15 @@ def get_title(data: dict, mode: str) -> str:
             # Return the last (current/highest) one.
             title = f'{value} {romanize(prestige)}'
     return title
+
+colors = ('§0', '§1', '§2', '§3', '§4', '§5', '§6', '§7',
+          '§8', '§9', '§a', '§b', '§c', '§d', '§e', '§f')
+def clean_rank_prefix(string: str) -> str:
+    # .replace is faster than re.sub
+    for color in colors:
+        string = string.replace(color, '')
+    string = string.replace('[', '').replace(']', '')
+    return string
 
 def get_rank(raw):
     """Return the rank of the player."""

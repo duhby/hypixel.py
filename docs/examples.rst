@@ -3,6 +3,16 @@
 Examples
 ========
 
+Achievements
+------------
+
+.. include:: ../examples/achievements.py
+    :start-after: """
+    :end-before: """
+
+.. literalinclude:: ../examples/achievements.py
+    :lines: 3-
+
 Ban Info
 --------
 

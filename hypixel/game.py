@@ -6,6 +6,7 @@ MIT License, see LICENSE for more details.
 from __future__ import annotations
 from dataclasses import dataclass
 import functools
+from typing import Optional
 
 __all__ = [
     'Game',
@@ -30,7 +31,7 @@ class Game:
     database_name: :class:`str`
         The key value used in the Hypixel API.
     clean_name: :class:`str`
-        The game name in Title Case
+        The game name in Title Case.
     standard_name: :class:`str`
         Sometimes shorter than ``self.clean_name``.
     legacy: :class:`bool`
@@ -45,13 +46,19 @@ class Game:
 
     @classmethod
     @functools.lru_cache()
-    def from_type(cls, type_name: str) -> Game:
+    def from_type(cls, type_name: str) -> Optional[Game]:
         """Constructs a :class:`Game` from its type name.
 
         Parameters
         ----------
         type_name: :class:`str`
             The type name used in Hypixel API attributes.
+
+        Returns
+        -------
+        Optional[:class:`Game`]
+            The constructed game object, or ``None`` if the type name
+            is invalid.
         """
         data = next((
             item for item in GAME_TYPES if item['type_name'] == type_name
@@ -62,13 +69,19 @@ class Game:
 
     @classmethod
     @functools.lru_cache()
-    def from_id(cls, id_: int) -> Game:
+    def from_id(cls, id_: int) -> Optional[Game]:
         """Constructs a :class:`Game` from its id.
 
         Parameters
         ----------
         id: :class:`int`
             The id number of the game.
+
+        Returns
+        -------
+        Optional[:class:`Game`]
+            The constructed game object, or ``None`` if the id is
+            invalid.
         """
         data = next((
             item for item in GAME_TYPES if item['id'] == id_

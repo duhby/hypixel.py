@@ -1,0 +1,135 @@
+{
+    "success": true,
+    "guild": {
+        "_id": "59c2f6840cf25823b02a7141",
+        "name": "jakeygoat",
+        "coins": 3587650,
+        "coinsEver": 6047650,
+        "created": 1505949316134,
+        "members": [
+            {
+                "uuid": "24c182c6716b47c68f60a1be9045c449",
+                "rank": "Guild Master",
+                "joined": 1535421619161,
+                "questParticipation": 4396,
+                "expHistory": {
+                    "2022-10-15": 0,
+                    "2022-10-14": 13047,
+                    "2022-10-13": 0,
+                    "2022-10-12": 0,
+                    "2022-10-11": 0,
+                    "2022-10-10": 0,
+                    "2022-10-09": 2840
+                }
+            },
+            {
+                "uuid": "369d8ab8cded461091d1189acd3b44d2",
+                "rank": "Member",
+                "joined": 1536632364312,
+                "questParticipation": 43,
+                "expHistory": {
+                    "2022-10-15": 0,
+                    "2022-10-14": 0,
+                    "2022-10-13": 0,
+                    "2022-10-12": 0,
+                    "2022-10-11": 0,
+                    "2022-10-10": 0,
+                    "2022-10-09": 0
+                }
+            },
+            {
+                "uuid": "cc7fbd331def4e67a02254df4ef05a4f",
+                "rank": "OFFICER",
+                "joined": 1549858720233,
+                "questParticipation": 782,
+                "mutedTill": 0,
+                "expHistory": {
+                    "2022-10-15": 0,
+                    "2022-10-14": 0,
+                    "2022-10-13": 0,
+                    "2022-10-12": 0,
+                    "2022-10-11": 0,
+                    "2022-10-10": 0,
+                    "2022-10-09": 0
+                }
+            }
+        ],
+        "tagColor": "DARK_GREEN",
+        "joinable": false,
+        "achievements": {
+            "WINNERS": 2409,
+            "EXPERIENCE_KINGS": 485494,
+            "ONLINE_PLAYERS": 23
+        },
+        "exp": 306224961,
+        "legacyRanking": 440,
+        "ranks": [
+            {
+                "name": "OFFICER",
+                "default": false,
+                "tag": null,
+                "created": 1538446509056,
+                "priority": 4
+            },
+            {
+                "name": "Member",
+                "default": false,
+                "tag": null,
+                "created": 1538446509407,
+                "priority": 3
+            },
+            {
+                "name": "altsXD",
+                "default": false,
+                "tag": null,
+                "created": 1538446509804,
+                "priority": 1
+            },
+            {
+                "name": "Co Owner",
+                "default": false,
+                "tag": null,
+                "created": 1545591314276,
+                "priority": 4
+            }
+        ],
+        "chatMute": 0,
+        "preferredGames": [
+            "BEDWARS",
+            "ARCADE"
+        ],
+        "description": "big chungus",
+        "name_lower": "jakeygoat",
+        "publiclyListed": false,
+        "tag": "NOLIFE",
+        "guildExpByGameType": {
+            "GINGERBREAD": 429213,
+            "REPLAY": 0,
+            "BUILD_BATTLE": 4011088,
+            "QUAKECRAFT": 529012,
+            "DUELS": 11996349,
+            "BATTLEGROUND": 342072,
+            "BEDWARS": 215976511,
+            "VAMPIREZ": 1125871,
+            "SMP": 0,
+            "WOOL_GAMES": 6537,
+            "PIT": 113552,
+            "SKYBLOCK": 0,
+            "UHC": 16448783,
+            "SURVIVAL_GAMES": 7475284,
+            "HOUSING": 873819,
+            "PAINTBALL": 895464,
+            "WALLS": 5085827,
+            "SUPER_SMASH": 1093066,
+            "LEGACY": 0,
+            "MURDER_MYSTERY": 3110164,
+            "MCGO": 660821,
+            "ARCADE": 5988996,
+            "ARENA": 60744,
+            "SPEED_UHC": 281946,
+            "WALLS3": 140261,
+            "PROTOTYPE": 29368551,
+            "SKYWARS": 26774440
+        }
+    }
+}

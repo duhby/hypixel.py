@@ -1,5 +1,5 @@
 hypixel.py (beta)
-==================
+=================
 
 .. .. image:: https://img.shields.io/discord/719949131497603123.svg?color=%237289da&label=discord&logo=discord&style=for-the-badge
 ..    :target: https://discord.gg/PtsBc4b/
@@ -22,13 +22,12 @@ hypixel.py (beta)
 
 Hypixel.py is a modern, asynchronous, feature-rich, Hypixel API wrapper for Python.
 
-It aims to make the process of writing scripts that deal with the Hypixel API easier
-to prevent frustration due to the complexity and inapplicability of the API in its current state.
+The purpose of this project is to simplify the task of writing scripts that interact with the Hypixel API by converting responses into organized python models and abstracting requests into asynchronous functions, while also offering customization options and useful features.
 
-* **Fast AF (for python)** --- Fast and lightweight by using built in libraries to achieve async timed lru caching, fast nested dataclass json sterilization, modern sane rate limit handling, etc.
+* **Fast AF (for python)** --- Prioritizes speed and efficiency by using built in libraries to achieve asynchronous timed caching, quick nested dataclass sterilization, and modern rate limit handling.
 * **More asynchronous than online learning** --- Has full asynchronicity and uses modern pythonic ``async`` and ``await`` syntax.
 * **Cleaner than your room** --- Uses object oriented pythonic dot syntax for all of its models, so you can easily access any data point without worrying about dictionaries, strings, and any random inconsistencies you may encounter using the raw API.
-* **S Tier Docs** --- Highly maintained documentation with an ample amount of examples to get you started. It also has the highest player model coverage and documentation.
+* **S Tier Docs** --- Highly maintained documentation with an ample amount of examples to get you started. It also has the highest player model and coverage documentation.
 
 .. end_doc
 
@@ -43,14 +42,17 @@ Getting Started
 Installation
 ^^^^^^^^^^^^
 
-To install hypixel.py, simply install it from pypi under the name ``hypixel.py`` with pip or your favorite package manager.
+To install hypixel.py, install it from pypi under the name
+``hypixel.py`` with pip or your favorite package manager.
 
 .. code:: sh
 
    pip install hypixel.py --upgrade
 
-You can also append ``[speed]`` to install optional packages (see below) to enhance aiohttp and json performance automatically.
-**Warning:** cchardet does not support python 3.10+ and subsequently will not be installed using [speed] if you're on 3.10 or higher.
+You can append ``[speed]`` to install optional packages (see below) to
+improve the performance of aiohttp and json.
+**Warning:** cchardet does not support python 3.10+ and subsequently
+will not be installed using [speed] if you're on 3.10 or higher.
 
 .. code:: sh
 
@@ -72,11 +74,13 @@ To enhance json decoding (up to 4x faster):
 Warning
 ^^^^^^^
 
-If you are running a python version lower than 3.10.8 on Windows, then
-you must add the following code before (and if) you use asyncio.run:
+If you are running a Python version older than 3.10.8 on Windows, you
+must run the following code before calling asyncio.run:
 
 .. code:: python
 
+   # This is because of a bug in the Windows Proactor Event Loop Policy
+   # which is the default on Windows.
    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
 Quick Example
@@ -100,12 +104,4 @@ Quick Example
    if __name__ == '__main__':
        asyncio.run(main())
 
-**You can find more examples** `here <https://github.com/duhby/hypixel.py/tree/master/examples>`_
-
-..
-   Links
-   -----
-
-..
-   `Documentation <#>`_
-   `Discord Server <#>`_
+**You can find more examples** `in the documentation <https://docs.dubs.rip/en/latest/examples.html>`_

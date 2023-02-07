@@ -6,6 +6,7 @@ MIT License, see LICENSE for more details.
 from datetime import datetime, timezone
 
 from .aliases import *
+# Requires a file above guild.py to import this file.
 from .guild import GuildRank
 
 

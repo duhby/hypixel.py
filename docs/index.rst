@@ -43,20 +43,27 @@ If you replace ``api-key`` with a valid api key, you'll get something like this 
 ..         Content 2
 
 
-Getting Started
----------------
+Table of Contents
+-----------------
 
 .. toctree::
+    :caption: Guide
     :maxdepth: 1
 
     quickstart
     intro
     examples
 
-API Reference
--------------
-
 .. toctree::
+    :caption: Hypixel.py
     :maxdepth: 1
 
     api
+    changelog
+
+.. toctree::
+    :caption: Links
+    :hidden:
+
+    GitHub <https://github.com/duhby/hypixel.py>
+    PyPI <https://pypi.org/project/hypixel.py>

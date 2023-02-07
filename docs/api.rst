@@ -8,19 +8,10 @@ This section outlines the API of hypixel.py.
 Version Info
 ------------
 
-There are two ways to query version information about the library.
-
 .. data:: __version__
 
     A string representation of the version. E.g. ``'1.0.0rc1'``. Based off of
     :pep:`440`.
-
-.. data:: version_info
-
-    A named tuple that is similar to :obj:`py:sys.version_info`.
-
-    Just like :obj:`py:sys.version_info` the valid values for ``releaselevel``
-    are 'alpha', 'beta', 'candidate' and 'final'.
 
 Client
 ------
@@ -54,14 +45,14 @@ Bans
     :members:
     :undoc-members:
 
-Friend
-~~~~~~
+.. Friend
+.. ~~~~~~
 
-.. attributetable:: Friend
+.. .. attributetable:: Friend
 
-.. autoclass:: Friend()
-    :members:
-    :undoc-members:
+.. .. autoclass:: Friend()
+..     :members:
+..     :undoc-members:
 
 .. Games
 .. ~~~~~
@@ -293,6 +284,14 @@ These classes are data containers.
 
 They hold metadata for what would otherwise be arbitrary strings returned by the
 API.
+
+Achievement
+~~~~~~~~~~~
+
+.. attributetable:: Achievement
+
+.. autoclass:: Achievement()
+    :members:
 
 Color
 ~~~~~

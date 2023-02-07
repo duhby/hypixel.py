@@ -6,6 +6,7 @@ MIT License, see LICENSE for more details.
 from __future__ import annotations
 from dataclasses import dataclass
 import functools
+from typing import Optional
 
 __all__ = [
     'Color',
@@ -34,13 +35,19 @@ class Color:
 
     @classmethod
     @functools.lru_cache()
-    def from_type(cls, type_name: str) -> Color:
+    def from_type(cls, type_name: str) -> Optional[Color]:
         """Constructs a :class:`Color` from its type name.
 
         Parameters
         ----------
         type_name: :class:`str`
             The type name used in Hypixel API attributes.
+
+        Returns
+        -------
+        Optional[:class:`Color`]
+            The constructed color object, or ``None`` if the type name
+            is invalid.
         """
         data = next((
             item for item in COLOR_TYPES if item['type_name'] == type_name

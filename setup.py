@@ -17,15 +17,19 @@ with open('requirements.txt') as f:
 
 extras_require = {
     'speed': [
-        'aiodns==3.0.0',
-        'brotlipy==0.7.0',
-        'cchardet==2.1.7; python_version < "3.10"',
-        'ujson==5.5.0',
+        'aiodns>=3.0.0',
+        'brotlipy>=0.7.0',
+        'cchardet>=2.1.7; python_version < "3.10"',
+        'ujson>=5.5.0',
+    ],
+    'data': [
+        'hypixel.py-data==1.0.2',
     ],
     'docs': [
+        'furo==2022.9.15',
+        'm2r2==0.3.3',
         'sphinx==5.1.1',
         'sphinxcontrib_trio==1.1.2',
-        'furo==2022.9.15',
         'sphinx_copybutton==0.5.0',
         'sphinx_design==0.3.0',
     ],

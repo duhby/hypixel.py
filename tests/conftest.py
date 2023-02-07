@@ -1,9 +1,23 @@
 import asyncio
+import json
 import sys
 import uuid
 
 import hypixel
 import pytest
+
+
+class Utils:
+    @staticmethod
+    def response(path: str) -> dict:
+        with open(f'tests/responses/{path}.json', 'r') as file:
+            response = json.load(file)
+        return response
+
+
+@pytest.fixture
+def utils():
+    return Utils
 
 
 @pytest.fixture

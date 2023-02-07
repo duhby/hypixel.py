@@ -18,7 +18,7 @@ import aiohttp
 
 from .errors import *
 from .models import *
-# Required for sphinx references for some reason
+# Required for sphinx references
 from .utils import ExponentialBackoff
 
 from . import utils
@@ -390,7 +390,6 @@ class Client:
             raise PlayerNotFound(uuid)
 
         else:
-            print(response.status)
             raise ApiError(response, 'mojang')
 
     async def _get_helper(self, path, params):
@@ -408,7 +407,7 @@ class Client:
         key_required: Optional[bool] = True,
         key: Optional[str] = None,
     ) -> dict:
-        """Retrieve raw data from hypixel.
+        """Retrieves raw data from hypixel.
 
         Parameters
         ----------
@@ -496,7 +495,7 @@ class Client:
     # Public
 
     async def close(self) -> None:
-        """Safely close the aiohttp session.
+        """Safely closes the aiohttp session.
 
         .. note::
 
@@ -520,7 +519,9 @@ class Client:
         await self._session.close()
 
     async def validate_keys(self) -> None:
-        """Validate the keys passed into the client.
+        """Validates the keys passed into the client.
+
+        |hypixel|
 
         .. note::
 
@@ -549,7 +550,7 @@ class Client:
             await self._get('key', key=key)
 
     def add_key(self, key: str) -> None:
-        """Add a key to :attr:`keys` and update internal attributes.
+        """Adds a key to :attr:`keys` and update internal attributes.
 
         Parameters
         ----------
@@ -563,7 +564,7 @@ class Client:
             raise MalformedApiKey(key)
 
     def remove_key(self, key: str) -> None:
-        """Remove a key from :attr:`keys` and update internal
+        """Removes a key from :attr:`keys` and update internal
         attributes.
 
         Parameters
@@ -600,7 +601,9 @@ class Client:
     # API (Mojang)
 
     async def get_uuid(self, name: str) -> str:
-        """Get the uuid of a player from their username.
+        """Returns the uuid of a player from their username.
+
+        |mojang|
 
         Parameters
         ----------
@@ -634,7 +637,9 @@ class Client:
         return await self._get_uuid(name)
 
     async def get_name(self, uuid: str) -> str:
-        """Get the username of a player from their uuid.
+        """Returns the username of a player from their uuid.
+
+        |mojang|
 
         Parameters
         ----------
@@ -671,7 +676,9 @@ class Client:
 
     @utils.convert_id
     async def player(self, id_: str) -> Player:
-        """Create a player model from an API response.
+        """Returns player info.
+
+        |hypixel|
 
         .. note::
 
@@ -681,14 +688,13 @@ class Client:
 
         Parameters
         ----------
-        .. \ is there so sphinx-autodoc recognizes the underscore.
         id\_: :class:`str`
             The username or uuid of a player.
 
         Raises
         ------
         ApiError
-            An unexpected error occurred with the Hypixel API.
+            An unexpected error occurred with the Hypixel or Mojang API.
         ClosedSession
             ``self.ClientSession`` is closed.
         InvalidApiKey
@@ -707,8 +713,8 @@ class Client:
 
         Returns
         -------
-        :class:`Player`
-            The player model used to abstract data.
+        :class:`~hypixel.models.player.Player`
+            A player model used to abstract data.
         """
         params = utils.HashedDict(
             uuid=id_['uuid']
@@ -727,7 +733,9 @@ class Client:
         return Player(**data)
 
     async def player_count(self) -> int:
-        """Get the number of players connected to Hypixel.
+        """Returns the number of players connected to Hypixel.
+
+        |hypixel|
 
         Raises
         ------
@@ -753,10 +761,17 @@ class Client:
         """
         response = await self._get('playerCount')
 
-        return int(response['playerCount'])
+        try:
+            player_count = int(response['playerCount'])
+        except (KeyError, ValueError):
+            raise ApiError(response, 'hypixel')
+
+        return player_count
 
     async def key(self, key: str) -> Key:
-        """Create a key model from an API response.
+        """Returns key info.
+
+        |hypixel|
 
         Parameters
         ----------
@@ -784,8 +799,8 @@ class Client:
 
         Returns
         -------
-        :class:`Key`
-            The key model used to abstract data.
+        :class:`~hypixel.Key`
+            A key model used to abstract data.
         """
         if not isinstance(key, str):
             raise ArgumentError(
@@ -809,7 +824,32 @@ class Client:
         return Key(**data)
 
     async def bans(self) -> Bans:
-        """Get staff and watchdog ban info."""
+        """Returns staff and watchdog ban info.
+
+        |hypixel|
+
+        Raises
+        ------
+        ApiError
+            An unexpected error occurred with the Hypixel API.
+        ClosedSession
+            ``self.ClientSession`` is closed.
+        InvalidApiKey
+            The API key used is invalid.
+        KeyRequired
+            The client does not have any keys.
+        RateLimitError
+            The rate limit is exceeded and ``self.rate_limit_h`` is
+            ``False``.
+        TimeoutError
+            The request took longer than ``self.timeout``, or the retry 
+            delay time is longer than ``self.timeout``.
+
+        Returns
+        -------
+        :class:`~hypixel.Bans`
+            A ban model used to abstract data.
+        """
         response = await self._get('watchdogstats')
 
         data = {
@@ -819,34 +859,77 @@ class Client:
         data.update(clean_data)
         return Bans(**data)
 
-    @utils.convert_id
-    async def player_friends(self, id_: str, sort=False) -> List[Friend]:
-        """Get a list of a player's friends."""
-        params = utils.HashedDict(
-            uuid=id_['uuid']
-        )
-        response = await self._get('friends', params=params)
+    # @utils.convert_id
+    # async def player_friends(self, id_: str, sort=False) -> List[Friend]:
+    #     """Returns player friend info.
 
-        if not response.get('records'): # probably has no friends
-            raise PlayerNotFound(id_['orig'])
+    #     |hypixel|
 
-        records = response['records']
+    #     .. note::
 
-        raw = {
-            'raw': response,
-        }
+    #         If a username is passed instead of a uuid, then API errors
+    #         can also apply to Mojang's API since it will be called to
+    #         get the uuid.
 
-        friends = []
-        for friend in records:
-            clean_data = utils._clean(friend, mode='FRIEND', extra=id_['uuid'])
-            data = raw.copy()
-            data.update(clean_data)
-            friends.append(Friend(**data))
+    #     Parameters
+    #     ----------
+    #     id\_: :class:`str`
+    #         The username or uuid of a player.
+    #     sort: :class:`bool`
+    #         Whether or not to ensure sorting by
+    #         :attr:`hypixel.Friend.started` from earliest to latest.
+    #         Defaults to ``False``.
 
-        if sort:
-            # Faster than lambda
-            friends = sorted(friends, key=attrgetter('started'))
-        return friends
+    #     Raises
+    #     ------
+    #     ApiError
+    #         An unexpected error occurred with the Hypixel or Mojang API.
+    #     ClosedSession
+    #         ``self.ClientSession`` is closed.
+    #     InvalidApiKey
+    #         The API key used is invalid.
+    #     KeyRequired
+    #         The client does not have any keys.
+    #     PlayerNotFound
+    #         The passed player id does not exist in Mojang's or Hypixel's
+    #         databases.
+    #     RateLimitError
+    #         The rate limit is exceeded and ``self.rate_limit_h`` is
+    #         ``False``.
+    #     TimeoutError
+    #         The request took longer than ``self.timeout``, or the retry 
+    #         delay time is longer than ``self.timeout``.
+
+    #     Returns
+    #     -------
+    #     List[:class:`~hypixel.Friend`]
+    #         A list of Friend models used to abstract data.
+    #     """
+    #     params = utils.HashedDict(
+    #         uuid=id_['uuid']
+    #     )
+    #     response = await self._get('friends', params=params)
+
+    #     if not response.get('records'): # probably has no friends
+    #         raise PlayerNotFound(id_['orig'])
+
+    #     records = response['records']
+
+    #     raw = {
+    #         'raw': response,
+    #     }
+
+    #     friends = []
+    #     for friend in records:
+    #         clean_data = utils._clean(friend, mode='FRIEND', extra=id_['uuid'])
+    #         data = raw.copy()
+    #         data.update(clean_data)
+    #         friends.append(Friend(**data))
+
+    #     if sort:
+    #         # Faster than lambda
+    #         friends = sorted(friends, key=attrgetter('started'))
+    #     return friends
 
     @utils.convert_id
     async def player_status(self, id_: str) -> Status:

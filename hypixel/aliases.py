@@ -5,6 +5,7 @@ MIT License, see LICENSE for more details.
 
 # Sorted alphabetically by category
 __all__ = [
+    'ACHIEVEMENT',
     'BANS',
     'FRIEND',
     'GUILD',
@@ -19,6 +20,16 @@ __all__ = [
 # values that don't have a key in the dictionary are skipped. All
 # dataclasses should use an alias dictionary even if no modification is
 # needed because if more variables are added to the API it will break.
+
+ACHIEVEMENT = {
+    'type_name': 'type_name',
+    'points': 'points',
+    'name': 'name',
+    'description': 'description',
+    'globalPercentUnlocked': 'global_unlocked',
+    'gamePercentUnlocked': 'game_unlocked',
+    'legacy': 'legacy',
+}
 
 BANS = {
     'staff_rollingDaily': 'staff_day',
@@ -86,7 +97,7 @@ PLAYER = {
     'achievementPoints': 'achievement_points',
     'networkExp': 'network_exp',
     'karma': 'karma',
-    # 'mcVersionRp': 'version', # deprecated
+    # 'mcVersionRp': 'version', # deprecated by Hypixel
     # 'rank': 'rank_',
     # 'newPackageRank': 'package_rank',
     # 'rankPlusColor': 'rank_color',
@@ -109,7 +120,7 @@ PLAYER = {
 
 STATUS = {
     'online': 'online',
-    'gameType': 'game_type',
+    'gameType': 'game',
     'mode': 'mode',
     'map': 'map',
 }

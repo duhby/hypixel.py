@@ -17,6 +17,6 @@ __all__ = [
 class Status:
     raw: dict = field(repr=False)
     online: bool = False # False if the player has status disabled
-    game_type: Optional[Game] = None
+    game: Optional[Game] = None
     mode: Optional[str] = None # TODO: make this a type
     map: Optional[str] = None # TODO: make this a type

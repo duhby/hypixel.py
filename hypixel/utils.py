@@ -14,12 +14,18 @@ from .aliases import *
 from .errors import InvalidPlayerId, TimeoutError
 from .game import Game
 
+__all__ = [
+    'ExponentialBackoff',
+    'HashedDict',
+    'strfdelta',
+]
+
 
 def _clean(data: dict, mode: str, extra=None) -> dict:
     alias = globals()[mode]
 
     if mode == 'PLAYER':
-        # avoid name conflicts
+        # Avoid name conflicts
         data['achievement_stats'] = data.pop('achievements', {})
 
     elif mode == 'FRIEND':
