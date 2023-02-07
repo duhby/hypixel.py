@@ -58,6 +58,7 @@ intersphinx_mapping = {
 rst_prolog = """
 .. |hypixel| replace:: This function requests data from Hypixel.
 .. |mojang| replace:: This function requests data from Mojang.
+.. |data| replace:: This function requires the ``hypixel.py-data`` package.
 """
 
 # Add any paths that contain templates here, relative to this directory.

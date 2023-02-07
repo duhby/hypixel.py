@@ -67,16 +67,13 @@ class Achievement:
     def from_type(cls, type_name: str) -> Optional[Achievement]:
         """Constructs a :class:`Achievement` from its type name.
 
+        |data|
+
         .. warning::
 
             Some achievements that come from the Hypixel API will return
             ``None``. This is because the API does not provide the data
             for some older achievements.
-
-        .. warning::
-
-            If the module ``hypixel.py-data`` is not installed, this
-            method will always return ``None``.
 
         Parameters
         ----------
