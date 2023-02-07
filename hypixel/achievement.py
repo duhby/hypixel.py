@@ -34,7 +34,7 @@ class Achievement:
         Amount of achievement points the achievement is worth.
     name: :class:`str`
         The name of the achievement.
-    description: :class`str`
+    description: :class:`str`
         The description of the achievement.
     global_unlocked: Optional[:class:`float`]
         The percentage of players who have unlocked the achievement.
