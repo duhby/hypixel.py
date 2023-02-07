@@ -30,6 +30,9 @@ docs = [
     "sphinx_copybutton==0.5.0",
     "sphinx_design==0.3.0",
 ]
+data = [
+    'hypixel.py-data==1.0.2',
+]
 speed = [
     "aiodns>=3",
     "brotlipy>=0.7,<1",
