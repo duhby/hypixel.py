@@ -68,7 +68,7 @@ version = {attr = "hypixel.__version__"}
 github_url = "https://github.com/duhby/hypixel.py/"
 
 [tool.tbump.version]
-current = "0.3.2a0"
+current = "0.4.0"
 regex = '''
   (?P<major>\d+)
   \.
