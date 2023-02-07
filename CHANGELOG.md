@@ -7,14 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.4.1] - 2022-2-6
-
 ### Fixed
 
-- Remote tests.
-- PyPI intended audience.
+- Examples documentation.
 
-## [0.4.0] - 2022-2-6
+## [0.4.1] - 2022-2-6
 
 ### Added
 
@@ -43,6 +40,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Version locking in setup.py.
 - Circular import bug.
 - Readthedocs config formatting.
+- Remote tests.
+- PyPI intended audience.
 
 ### Breaking Changes
 
@@ -62,5 +61,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 [Unreleased]: https://github.com/duhby/hypixel.py/compare/v0.4.1...master
 [0.4.1]: https://github.com/duhby/hypixel.py/releases/tag/v0.4.1
-[0.4.0]: https://github.com/duhby/hypixel.py/releases/tag/v0.4.0
 [0.3.1]: https://github.com/duhby/hypixel.py/releases/tag/v0.3.1
