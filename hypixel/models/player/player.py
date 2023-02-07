@@ -65,10 +65,10 @@ class Player:
     achievements: List[:class:`str`]
         A list of achievement name strings.
 
-        .. warning::
+        .. tip::
 
-            This will most likely be changed to List[Achievement] before
-            the 1.0 release.
+            You can use :meth:`hypixel.Achievement.from_type` to get
+            the achievement object from a name string.
     network_exp: :class:`int`
         The player's current network experience points.
     karma: :class:`int`
