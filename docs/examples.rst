@@ -71,7 +71,7 @@ Friends
     :end-before: """
 
 .. literalinclude:: ../examples/friends.py
-    :lines: 8-
+    :lines: 11-
 
 Guild Member
 ------------
