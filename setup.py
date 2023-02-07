@@ -53,7 +53,6 @@ classifiers = [
     #   5 - Production/Stable
     'Development Status :: 4 - Beta',
     'Natural Language :: English',
-    'Intended Audience :: Developers',
     'Operating System :: OS Independent',
     'Programming Language :: Python :: 3.8',
     'License :: OSI Approved :: MIT License',
