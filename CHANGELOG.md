@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.1] - 2022-2-6
+
 ### Fixed
 
 - Remote tests
@@ -57,6 +59,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Player.version always returns ``None`` and will be removed in a later release.
 
-[Unreleased]: https://github.com/duhby/hypixel.py/compare/v0.4.0...master
+[Unreleased]: https://github.com/duhby/hypixel.py/compare/v0.4.1...master
+[0.4.1]: https://github.com/duhby/hypixel.py/releases/tag/v0.4.1
 [0.4.0]: https://github.com/duhby/hypixel.py/releases/tag/v0.4.0
 [0.3.1]: https://github.com/duhby/hypixel.py/releases/tag/v0.3.1
