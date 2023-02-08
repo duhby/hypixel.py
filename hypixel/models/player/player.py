@@ -7,6 +7,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Literal, List, Optional
 
+from ...achievement import Achievement
 from ...color import Color
 from ...game import Game
 
@@ -38,7 +39,7 @@ class Player:
     .. tip::
 
         You can use the ``==`` operator to compare two
-        :class:`hypixel.models.player.Player` classes.
+        :class:`~hypixel.models.player.Player` classes.
 
     Attributes
     ----------
@@ -102,35 +103,37 @@ class Player:
     level: :class:`float`
         The player's Hypixel level.
     most_recent_game: Optional[:class:`~hypixel.Game`]
+        The player's most recent game they played.
+
         .. note::
 
             Will be ``None`` if the player's ``Recent Games`` API
             setting is disabled.
-    arcade: :class:`~models.player.Arcade`
+    arcade: :class:`~hypixel.models.player.Arcade`
         A model for abstracting arcade data.
-    bedwars: :class:`~models.player.Bedwars`
+    bedwars: :class:`~hypixel.models.player.Bedwars`
         A model for abstracting bedwars data.
-    blitz: :class:`~models.player.Blitz`
+    blitz: :class:`~hypixel.models.player.Blitz`
         A model for abstracting blitz data.
-    duels: :class:`~models.player.Duels`
+    duels: :class:`~hypixel.models.player.Duels`
         A model for abstracting duels data.
-    murder_mystery: :class:`~models.player.MurderMystery`
+    murder_mystery: :class:`~hypixel.models.player.MurderMystery`
         A model for abstracting murder mystery data.
-    paintball: :class:`~models.player.Paintball`
+    paintball: :class:`~hypixel.models.player.Paintball`
         A model for abstracting paintball data.
-    parkour: :class:`~models.player.Parkour`
+    parkour: :class:`~hypixel.models.player.Parkour`
         A model for abstracting parkour data.
-    skywars: :class:`~models.player.Skywars`
+    skywars: :class:`~hypixel.models.player.Skywars`
         A model for abstracting skywars data.
-    socials: :class:`~models.player.Socials`
+    socials: :class:`~hypixel.models.player.Socials`
         A model for abstracting socials data.
-    tkr: :class:`~models.player.TurboKartRacers`
+    tkr: :class:`~hypixel.models.player.TurboKartRacers`
         A model for abstracting tkr data.
-    tnt_games: :class:`~models.player.TntGames`
+    tnt_games: :class:`~hypixel.models.player.TntGames`
         A model for abstracting tnt games data.
-    uhc: :class:`~models.player.Uhc`
+    uhc: :class:`~hypixel.models.player.Uhc`
         A model for abstracting uhc data.
-    wool_games: :class:`~models.player.WoolGames`
+    wool_games: :class:`~hypixel.models.player.WoolGames`
         A model for abstracting wool games data.
     """
     _data: dict = field(repr=False)
@@ -205,6 +208,23 @@ class Player:
         for mode, model in modes.items():
             data = utils._clean(self._data, mode=mode.upper())
             setattr(self, mode, model(**data))
+
+    def build_achievements(self):
+        """Converts the achievements in :attr:`achievements` to
+        List[:class:`~hypixel.Achievement`].
+
+        .. warning::
+
+            If the package ``hypixel.py-data`` is not installed, this
+            will convert :attr:`achievements` to a list of ``None``
+            types.
+        """
+        built_achievements = []
+        for achievement in self.achievements:
+            achievement = Achievement.from_type(achievement)
+            if achievement:
+                built_achievements.append(achievement)
+        self.achievements = built_achievements
 
     def __eq__(self, other: object):
         if isinstance(other, Player):
