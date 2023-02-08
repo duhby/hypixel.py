@@ -30,7 +30,7 @@ jobs:
 
       - name: Build distributions
         run: |
-          python ./setup.py sdist bdist_wheel
+          python -m build
 
       - name: Install package
         run: |
