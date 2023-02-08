@@ -12,10 +12,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - publish.sh that's run after tbump pushes to github.
 - Player.build_achievements method.
 
-### Changed
-
-- build github action to build-docs to be more descriptive.
-
 ### Removed
 
 - setup.py.
