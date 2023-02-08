@@ -65,7 +65,7 @@ class Achievement:
     @classmethod
     @functools.lru_cache()
     def from_type(cls, type_name: str) -> Optional[Achievement]:
-        """Constructs a :class:`Achievement` from its type name.
+        """Constructs an :class:`Achievement` from its type name.
 
         |data|
 
