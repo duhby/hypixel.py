@@ -98,8 +98,6 @@ search = "release = '{current_version}'"
 name = "check changelog"
 cmd = "git grep -q {new_version} CHANGELOG.md"
 
-# Or run some commands after the git tag and the branch
-# have been pushed:
-#  [[tool.tbump.after_push]]
-#  name = "publish"
-#  cmd = "./publish.sh"
+[[tool.tbump.after_push]]
+name = "publish"
+cmd = "./publish.sh"
