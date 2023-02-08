@@ -35,6 +35,11 @@ __all__ = [
 class Player:
     """Player model object.
 
+    .. tip::
+
+        You can use the ``==`` operator to compare two
+        :class:`hypixel.models.player.Player` classes.
+
     Attributes
     ----------
     raw: :class:`dict`
@@ -101,31 +106,31 @@ class Player:
 
             Will be ``None`` if the player's ``Recent Games`` API
             setting is disabled.
-    arcade: :class:`~models.playerdata.Arcade`
+    arcade: :class:`~models.player.Arcade`
         A model for abstracting arcade data.
-    bedwars: :class:`~models.playerdata.Bedwars`
+    bedwars: :class:`~models.player.Bedwars`
         A model for abstracting bedwars data.
-    blitz: :class:`~models.playerdata.Blitz`
+    blitz: :class:`~models.player.Blitz`
         A model for abstracting blitz data.
-    duels: :class:`~models.playerdata.Duels`
+    duels: :class:`~models.player.Duels`
         A model for abstracting duels data.
-    murder_mystery: :class:`~models.playerdata.MurderMystery`
+    murder_mystery: :class:`~models.player.MurderMystery`
         A model for abstracting murder mystery data.
-    paintball: :class:`~models.playerdata.Paintball`
+    paintball: :class:`~models.player.Paintball`
         A model for abstracting paintball data.
-    parkour: :class:`~models.playerdata.Parkour`
+    parkour: :class:`~models.player.Parkour`
         A model for abstracting parkour data.
-    skywars: :class:`~models.playerdata.Skywars`
+    skywars: :class:`~models.player.Skywars`
         A model for abstracting skywars data.
-    socials: :class:`~models.playerdata.Socials`
+    socials: :class:`~models.player.Socials`
         A model for abstracting socials data.
-    tkr: :class:`~models.playerdata.TurboKartRacers`
+    tkr: :class:`~models.player.TurboKartRacers`
         A model for abstracting tkr data.
-    tnt_games: :class:`~models.playerdata.TntGames`
+    tnt_games: :class:`~models.player.TntGames`
         A model for abstracting tnt games data.
-    uhc: :class:`~models.playerdata.Uhc`
+    uhc: :class:`~models.player.Uhc`
         A model for abstracting uhc data.
-    wool_games: :class:`~models.playerdata.WoolGames`
+    wool_games: :class:`~models.player.WoolGames`
         A model for abstracting wool games data.
     """
     _data: dict = field(repr=False)
@@ -182,7 +187,6 @@ class Player:
         )
         self.plus_color = Color.from_type(self._data.get('rankPlusColor'))
 
-        # playerdata
         modes = {
             'arcade': Arcade,
             'bedwars': Bedwars,
