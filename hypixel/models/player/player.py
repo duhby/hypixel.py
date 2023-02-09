@@ -65,9 +65,6 @@ class Player:
     last_logout: :class:`datetime.datetime`
         The last logout time represented as a datetime in the UTC
         timezone.
-    known_aliases: List[:class:`str`]
-        A list of previous usernames the account has logged onto Hypixel
-        with.
     achievements: List[:class:`str`]
         A list of achievement name strings.
 
@@ -146,7 +143,6 @@ class Player:
     name: str = None
     last_login: datetime = None
     last_logout: datetime = None
-    known_aliases: list = None
     achievements: list = field(default_factory=list, repr=False)
     network_exp: int = 0
     karma: int = 0

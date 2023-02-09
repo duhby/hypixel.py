@@ -90,7 +90,7 @@ PLAYER = {
     # 'playername': 'name', # lowercase version of displayname
     'lastLogin': 'last_login',
     'lastLogout': 'last_logout',
-    'knownAliases': 'known_aliases',
+    # 'knownAliases': 'known_aliases', # deprecated by Hypixel
     # 'knownAliasesLower'
     'achievementsOneTime': 'achievements',
     # 'achievement_stats': 'achievement_stats',
