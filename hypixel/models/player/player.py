@@ -74,7 +74,9 @@ class Player:
         .. tip::
 
             You can use :meth:`hypixel.Achievement.from_type` to get
-            the achievement object from a name string.
+            the achievement object from its type name string. You can
+            also use :meth:`build_achievements` to build a list of
+            :class:`~hypixel.Achievement` objects.
     network_exp: :class:`int`
         The player's current network experience points.
     karma: :class:`int`
@@ -216,8 +218,7 @@ class Player:
         .. warning::
 
             If the package ``hypixel.py-data`` is not installed, this
-            will convert :attr:`achievements` to a list of ``None``
-            types.
+            will convert :attr:`achievements` to an empty list.
         """
         built_achievements = []
         for achievement in self.achievements:

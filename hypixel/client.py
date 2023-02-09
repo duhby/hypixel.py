@@ -71,7 +71,7 @@ class Client:
 
         .. note::
 
-            Cached items will be stored either until the size limit is
+            Cached items will be accessible either until the size limit is
             reached (``self.cache_size``), or the cached data expires
             (``self.cache_time``).
 
@@ -89,7 +89,7 @@ class Client:
             removed from the cache and can inflate the cache size with
             multiple of the same item if they were called far enough
             apart from each other and ``self.cache_time`` is not
-            ``None``. ``self.cache_time`` is based on the time from when
+            ``None``. Also, ``self.cache_time`` is based on the time from when
             it's first added to the cache, and not refreshed on the last
             access to that cached item. This could also be considered a
             feature and is therefore a design decision.
