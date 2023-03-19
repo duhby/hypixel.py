@@ -133,5 +133,4 @@ dmypy.json
 .vscode
 
 # Testing files
-player.json
 testing.py
