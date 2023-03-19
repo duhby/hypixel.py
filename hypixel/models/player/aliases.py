@@ -372,6 +372,7 @@ UHC_DUELS = {
 HYPIXEL_SAYS = {
     'rounds_simon_says': 'rounds',
     'wins_simon_says': 'wins',
+    'top_score_simon_says': 'top_score',
 }
 
 MINI_WALLS = {

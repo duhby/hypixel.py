@@ -25,10 +25,12 @@ class CaptureTheWool:
 class HypixelSays:
     rounds: int = 0
     wins: int = 0
-    losses: int = rounds - wins
+    top_score: int = 0
+    losses: int = field(init=False)
     wlr: float = field(init=False)
 
     def __post_init__(self):
+        self.losses = self.rounds - self.wins
         self.wlr = utils.safe_div(self.wins, self.losses)
 
 @dataclass
@@ -67,6 +69,7 @@ class Arcade:
     party_games: PartyGames = field(init=False)
 
     def __post_init__(self):
+        self.coins = int(self.coins) # Normally float
         modes = {
             'ctw': CaptureTheWool,
             'hypixel_says': HypixelSays,
