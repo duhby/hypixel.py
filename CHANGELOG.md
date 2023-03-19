@@ -11,17 +11,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - publish.sh that's run after tbump pushes to github.
 - Player.build_achievements method.
+- Clarifying comments.
+
+### Changed
+
+- Documentation wording.
 
 ### Removed
 
 - setup.py.
 - publish-to-pypi github action.
+- Player.known_aliases.
+- Logo in documentation sidebar.
+- Unused "Friend" code.
 
 ### Fixed
 
 - Start line in player_friend example documentation.
 - Documentation typos.
 - Player documentation attribute hyperlinks.
+- PlayerNotFound for Mojang API calls.
 
 ## [0.4.1] - 2022-2-6
 
