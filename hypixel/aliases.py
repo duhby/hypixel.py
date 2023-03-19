@@ -7,7 +7,7 @@ MIT License, see LICENSE for more details.
 __all__ = [
     'ACHIEVEMENT',
     'BANS',
-    'FRIEND',
+    # 'FRIEND',
     'GUILD',
     'KEY',
     'LB',
@@ -39,11 +39,12 @@ BANS = {
     'watchdog_total': 'watchdog_total',
 }
 
-FRIEND = {
-    '_id': 'id',
-    'uuidReceiver': 'uuid',
-    'started': 'started',
-}
+# Deprecated by Hypixel
+# FRIEND = {
+#     '_id': 'id',
+#     'uuidReceiver': 'uuid',
+#     'started': 'started',
+# }
 
 GUILD = {
     '_id': 'id',
@@ -87,22 +88,20 @@ PLAYER = {
     'uuid': 'uuid',
     'firstLogin': 'first_login',
     'displayname': 'name',
-    # 'playername': 'name', # lowercase version of displayname
+    # Lowercase version of displayname, so basically useless
+    # 'playername'
     'lastLogin': 'last_login',
     'lastLogout': 'last_logout',
-    # 'knownAliases': 'known_aliases', # deprecated by Hypixel
-    # 'knownAliasesLower'
     'achievementsOneTime': 'achievements',
-    # 'achievement_stats': 'achievement_stats',
+    # 'achievement_stats'
     'achievementPoints': 'achievement_points',
     'networkExp': 'network_exp',
     'karma': 'karma',
-    # 'mcVersionRp': 'version', # deprecated by Hypixel
-    # 'rank': 'rank_',
-    # 'newPackageRank': 'package_rank',
-    # 'rankPlusColor': 'rank_color',
-    # 'monthlyPackageRank': 'monthly_package_rank',
-    # 'monthlyRankColor': 'monthly_rank_color',
+    'currentGadget': 'current_gadget',
+    'channel': 'channel',
+    # 'rankPlusColor'
+    # 'monthlyPackageRank'
+    # 'monthlyRankColor'
     # 'lastAdsenseGenerateTime'
     # 'lastClaimedReward'
     # 'totalRewards'
@@ -110,12 +109,18 @@ PLAYER = {
     # 'rewardStreak'
     # 'rewardScore'
     # 'rewardHighScore'
-    # 'friendRequestsUuid': 'friend_requests_uuid'
+    # 'friendRequestsUuid'
     # 'achievementTracking'
-    'currentGadget': 'current_gadget',
-    'channel': 'channel',
+
     # Handled in Player class instead
-    # 'mostRecentGameType': 'most_recent_game',
+    # 'mostRecentGameType'
+    # 'rank'
+    # 'newPackageRank'
+
+    # Deprecated by hypixel
+    # 'knownAliases'
+    # 'knownAliasesLower'
+    # 'mcVersionRp'
 }
 
 STATUS = {

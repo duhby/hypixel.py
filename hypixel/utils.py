@@ -28,13 +28,14 @@ def _clean(data: dict, mode: str, extra=None) -> dict:
         # Avoid name conflicts
         data['achievement_stats'] = data.pop('achievements', {})
 
-    elif mode == 'FRIEND':
-        # Sender and receiver could be either the player or the friend
-        # as the api stores the sender and receiver of the actual friend
-        # request.
-        # Extra is the player's uuid.
-        if data['uuidReceiver'] == extra:
-            data['uuidReceiver'] = data['uuidSender']
+    # Deprecated by Hypixel
+    # elif mode == 'FRIEND':
+    #     # Sender and receiver could be either the player or the friend
+    #     # as the api stores the sender and receiver of the actual friend
+    #     # request.
+    #     # Extra is the player's uuid.
+    #     if data['uuidReceiver'] == extra:
+    #         data['uuidReceiver'] = data['uuidSender']
 
     elif mode == 'STATUS':
         data['gameType'] = Game.from_type(data.get('gameType'))

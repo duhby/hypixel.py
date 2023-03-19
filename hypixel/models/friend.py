@@ -3,7 +3,7 @@ Copyright (c) 2021-present duhby
 MIT License, see LICENSE for more details.
 """
 
-# Deprecated by Hypixel.
+# Deprecated by Hypixel
 
 
 # from dataclasses import dataclass, field
