@@ -55,7 +55,8 @@ class Client:
             to bypass the API limits." Refer to
             (https://github.com/HypixelDev/PublicAPI/issues/229) and
             (https://api.hypixel.net/#section/Introduction/Rules) for
-            more information.
+            more information. Hypixel.py does not encourage the use of
+            multiple keys.
     loop: :class:`asyncio.AbstractEventLoop`
         The loop the client will use for asynchronous operations.
         Defaults to ``None`` in which case the event loop is created
@@ -349,7 +350,7 @@ class Client:
                 raise PlayerNotFound(name)
             return uuid
 
-        elif response.status == 204:
+        elif response.status == 404:
             raise PlayerNotFound(name)
 
         else:
@@ -386,7 +387,7 @@ class Client:
                 raise PlayerNotFound(uuid)
             return name
 
-        elif response.status == 204:
+        elif response.status == 404:
             raise PlayerNotFound(uuid)
 
         else:
