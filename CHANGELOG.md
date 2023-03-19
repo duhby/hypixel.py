@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - publish.sh that's run after tbump pushes to github.
 - Player.build_achievements method.
 - Clarifying comments.
+- HypixelSays.top_score.
 
 ### Changed
 
@@ -31,6 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Documentation typos.
 - Player documentation attribute hyperlinks.
 - PlayerNotFound for Mojang API calls.
+- HypixelSays.losses.
 
 ## [0.4.1] - 2022-2-6
 
