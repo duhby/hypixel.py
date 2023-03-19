@@ -80,7 +80,7 @@ must run the following code before calling asyncio.run:
 .. code:: python
 
    # This is because of a bug in the Windows Proactor Event Loop Policy
-   # which is the default on Windows.
+   # which is the default on Windows systems.
    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
 Quick Example
