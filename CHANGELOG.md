@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Player.build_achievements method.
 - Clarifying comments.
 - HypixelSays.top_score.
+- Typing metadata (PEP 561 compliant).
 
 ### Changed
 
