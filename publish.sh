@@ -5,7 +5,7 @@ set -e
 # Import secrets
 source secrets.sh
 
-# Check if we're on a tagged commit
+# Exit if not on tagged commit
 if [[ "$(git describe)" == *-* ]]; then
     echo "Error:" 1>&2
     echo "  Can't package a non-tagged commit." 1>&2
@@ -25,4 +25,4 @@ rm -rfv dist build hypixel.py.egg-info
 # Build package
 python -m build
 # Publish package
-twine upload dist/* -u$PYPI_USERNAME -p$PYPI_TOKEN
+twine upload dist/*
