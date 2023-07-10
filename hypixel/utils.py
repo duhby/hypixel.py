@@ -21,7 +21,7 @@ __all__ = [
 ]
 
 
-def _clean(data: dict, mode: str, extra=None) -> dict:
+def _clean(data: dict, mode: str) -> dict:
     alias = globals()[mode]
 
     if mode == 'PLAYER':
