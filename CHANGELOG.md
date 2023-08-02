@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Documentation wording.
+- Documentation logo.
 
 ### Removed
 
@@ -26,6 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Player.known_aliases.
 - Logo in documentation sidebar.
 - Unused "Friend" code.
+- Unused imports.
 
 ### Fixed
 
