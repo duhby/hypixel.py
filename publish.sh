@@ -25,4 +25,4 @@ rm -rfv dist build hypixel.py.egg-info
 # Build package
 python -m build
 # Publish package
-twine upload dist/*
+twine upload dist/* -u $TWINE_USERNAME -p $TWINE_PASSWORD
