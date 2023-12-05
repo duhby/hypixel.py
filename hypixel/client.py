@@ -300,7 +300,6 @@ class Client:
         return self._get_uuid.cache_info()
 
     async def __aenter__(self):
-        # Open a new session if it has been closed
         if self._session.closed:
             self._session = aiohttp.ClientSession(loop=self.loop)
         return self
@@ -689,7 +688,7 @@ class Client:
 
         Parameters
         ----------
-        id\_: :class:`str`
+        id\\_: :class:`str`
             The username or uuid of a player.
 
         Raises
