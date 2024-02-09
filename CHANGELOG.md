@@ -13,10 +13,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Player.build_achievements method.
 - Clarifying comments.
 - HypixelSays.top_score.
+- Duels docstring.
 
 ### Changed
 
 - Documentation wording.
+- Readme wording.
 
 ### Removed
 
@@ -33,6 +35,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Player documentation attribute hyperlinks.
 - PlayerNotFound for Mojang API calls.
 - HypixelSays.losses.
+- Mojang API URL change.
 
 ## [0.4.1] - 2022-2-6
 
