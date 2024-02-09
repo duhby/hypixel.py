@@ -24,7 +24,7 @@ Hypixel.py is a modern, asynchronous, feature-rich, Hypixel API wrapper for Pyth
 
 The purpose of this project is to simplify the task of writing scripts that interact with the Hypixel API by converting responses into organized python models and abstracting requests into asynchronous functions, while also offering customization options and useful features.
 
-* **Fast AF (for python)** --- Prioritizes speed and efficiency by using built in libraries to achieve asynchronous timed caching, quick nested dataclass sterilization, and modern rate limit handling.
+* **Blazing fast (for python)** --- Prioritizes speed and efficiency by using built in libraries to achieve asynchronous timed caching, quick nested dataclass sterilization, and modern rate limit handling.
 * **More asynchronous than online learning** --- Has full asynchronicity and uses modern pythonic ``async`` and ``await`` syntax.
 * **Cleaner than your room** --- Uses object oriented pythonic dot syntax for all of its models, so you can easily access any data point without worrying about dictionaries, strings, and any random inconsistencies you may encounter using the raw API.
 * **S Tier Docs** --- Highly maintained documentation with an ample amount of examples to get you started. It also has the highest player model and coverage documentation.

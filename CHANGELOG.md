@@ -9,16 +9,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Color.drop_shadow.
+
+### Fixed
+
+- publish.sh twine command.
+
+## [0.4.2] - 2023-8-1
+
+### Added
+
 - publish.sh that's run after tbump pushes to github.
 - Player.build_achievements method.
 - Clarifying comments.
 - HypixelSays.top_score.
 - Duels docstring.
+- Typing metadata (PEP 561 compliant).
 
 ### Changed
 
 - Documentation wording.
-- Readme wording.
 
 ### Removed
 
@@ -27,6 +37,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Player.known_aliases.
 - Logo in documentation sidebar.
 - Unused "Friend" code.
+- Unused imports.
 
 ### Fixed
 
@@ -37,7 +48,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - HypixelSays.losses.
 - Mojang API URL change.
 
-## [0.4.1] - 2022-2-6
+## [0.4.1] - 2023-2-6
 
 ### Added
 
@@ -85,6 +96,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Player.version always returns ``None`` and will be removed in a later release.
 
-[Unreleased]: https://github.com/duhby/hypixel.py/compare/v0.4.1...master
+[Unreleased]: https://github.com/duhby/hypixel.py/compare/v0.4.2...master
+[0.4.2]: https://github.com/duhby/hypixel.py/releases/tag/v0.4.2
 [0.4.1]: https://github.com/duhby/hypixel.py/releases/tag/v0.4.1
 [0.3.1]: https://github.com/duhby/hypixel.py/releases/tag/v0.3.1

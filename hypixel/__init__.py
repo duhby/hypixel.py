@@ -12,7 +12,7 @@ __title__ = 'hypixel'
 __author__ = 'duhby'
 __license__ = 'MIT'
 __copyright__ = 'Copyright 2021-present duhby'
-__version__ = '0.4.1'
+__version__ = '0.4.2'
 
 from .achievement import *
 from .client import *

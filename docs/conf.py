@@ -10,7 +10,6 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-import re
 import os
 import sys
 sys.path.insert(0, os.path.abspath('..'))
@@ -25,7 +24,7 @@ author = 'duhby'
 
 
 # The full version, including alpha/beta/rc tags
-release = '0.4.1'
+release = '0.4.2'
 
 
 # -- General configuration ---------------------------------------------------
@@ -99,7 +98,7 @@ html_theme_options = {
 html_favicon = './images/icon.png'
 
 # The logo to be used in the documentation
-# html_logo = './images/icon.png'
+html_logo = './images/icon.png'
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,

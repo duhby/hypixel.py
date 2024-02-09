@@ -18,6 +18,7 @@ import aiohttp
 
 from .errors import *
 from .models import *
+
 # Required for sphinx references
 from .utils import ExponentialBackoff
 
@@ -25,12 +26,13 @@ from . import utils
 
 try:
     import ujson
+
     JSON_DECODER = ujson.loads
 except ImportError:
     JSON_DECODER = json.loads
 
 __all__ = [
-    'Client',
+    "Client",
 ]
 
 
@@ -188,6 +190,7 @@ class Client:
     MalformedApiKey
         Raised when an invalidly formed API key is passed.
     """
+
     def __init__(self, keys=None, *, loop=None, **options):
         self.loop = asyncio.get_event_loop() if loop is None else loop
         version = sys.version_info[:3]
@@ -197,8 +200,8 @@ class Client:
                     asyncio.get_event_loop_policy(),
                     asyncio.DefaultEventLoopPolicy,
                 )
-                and sys.platform.startswith('win')
-                and (3, 8, 0) <= version < (3, 10, 8) # Fixed in 3.10.8
+                and sys.platform.startswith("win")
+                and (3, 8, 0) <= version < (3, 10, 8)  # Fixed in 3.10.8
             ):
                 raise LoopPolicyError
         except AttributeError:
@@ -214,24 +217,24 @@ class Client:
         else:
             self._itr = None
 
-        self.autoverify = options.get('autoverify', False)
-        self.timeout = options.get('timeout', 10)
+        self.autoverify = options.get("autoverify", False)
+        self.timeout = options.get("timeout", 10)
 
-        self.cache = options.get('cache', False)
-        self.cache_h = options.get('cache_h', self.cache)
-        self.cache_m = options.get('cache_m', self.cache)
+        self.cache = options.get("cache", False)
+        self.cache_h = options.get("cache_h", self.cache)
+        self.cache_m = options.get("cache_m", self.cache)
 
-        self.cache_size = options.get('cache_size', None)
-        self.cache_size_h = options.get('cache_size_h', self.cache_size)
-        self.cache_size_m = options.get('cache_size_m', self.cache_size)
+        self.cache_size = options.get("cache_size", None)
+        self.cache_size_h = options.get("cache_size_h", self.cache_size)
+        self.cache_size_m = options.get("cache_size_m", self.cache_size)
 
-        self.cache_time = options.get('cache_time', 60)
-        self.cache_time_h = options.get('cache_time_h', self.cache_time)
-        self.cache_time_m = options.get('cache_time_m', self.cache_time)
+        self.cache_time = options.get("cache_time", 60)
+        self.cache_time_h = options.get("cache_time_h", self.cache_time)
+        self.cache_time_m = options.get("cache_time_m", self.cache_time)
 
-        self.rate_limit = options.get('rate_limit', True)
-        self.rate_limit_h = options.get('rate_limit_h', self.rate_limit)
-        self.rate_limit_m = options.get('rate_limit_m', self.rate_limit)
+        self.rate_limit = options.get("rate_limit", True)
+        self.rate_limit_h = options.get("rate_limit_h", self.rate_limit)
+        self.rate_limit_m = options.get("rate_limit_m", self.rate_limit)
 
         # self._session = options.get('session', None)
         # if self._session is None:
@@ -320,7 +323,7 @@ class Client:
 
     async def _get_uuid_helper(self, name):
         return await self._session.get(
-            f'https://api.mojang.com/users/profiles/minecraft/{name}'
+            f"https://api.mojang.com/users/profiles/minecraft/{name}"
         )
 
     async def _get_uuid(self, name: str) -> str:
@@ -329,12 +332,12 @@ class Client:
         try:
             response = await self._get_uuid_helper(name)
         except asyncio.TimeoutError:
-            raise TimeoutError('mojang')
+            raise TimeoutError("mojang")
 
         if response.status == 429:
             if not self.rate_limit_m:
                 retry_after = None
-                raise RateLimitError(retry_after, 'mojang', response)
+                raise RateLimitError(retry_after, "mojang", response)
             else:
                 while response.status == 429:
                     backoff = utils.ExponentialBackoff(self.timeout)
@@ -344,7 +347,7 @@ class Client:
 
         if response.status == 200:
             data = await response.json(loads=JSON_DECODER)
-            uuid = data.get('id')
+            uuid = data.get("id")
             if not uuid:
                 raise PlayerNotFound(name)
             return uuid
@@ -353,7 +356,7 @@ class Client:
             raise PlayerNotFound(name)
 
         else:
-            raise ApiError(response, 'mojang')
+            raise ApiError(response, "mojang")
 
     async def _get_name_helper(self, uuid):
         return await self._session.get(
@@ -366,12 +369,12 @@ class Client:
         try:
             response = await self._get_name_helper(uuid)
         except asyncio.TimeoutError:
-            raise TimeoutError('mojang')
+            raise TimeoutError("mojang")
 
         if response.status == 429:
             if not self.rate_limit_m:
                 retry_after = None
-                raise RateLimitError(retry_after, 'mojang', response)
+                raise RateLimitError(retry_after, "mojang", response)
             else:
                 while response.status == 429:
                     backoff = utils.ExponentialBackoff(self.timeout)
@@ -381,7 +384,7 @@ class Client:
 
         if response.status == 200:
             data = await response.json(loads=JSON_DECODER)
-            name = data.get('name')
+            name = data.get("name")
             if not name:
                 raise PlayerNotFound(uuid)
             return name
@@ -390,11 +393,11 @@ class Client:
             raise PlayerNotFound(uuid)
 
         else:
-            raise ApiError(response, 'mojang')
+            raise ApiError(response, "mojang")
 
     async def _get_helper(self, path, params):
         return await self._session.get(
-            f'https://api.hypixel.net/{path}',
+            f"https://api.hypixel.net/{path}",
             params=params,
         )
 
@@ -444,33 +447,33 @@ class Client:
             raise ClosedSession
         if params is None:
             params = {}
-        params = dict(params) # Allow mutations
+        params = dict(params)  # Allow mutations
 
         if key:
-            params['key'] = key
+            params["key"] = key
         elif key_required:
             if self._keys is None:
                 raise KeyRequired(path)
-            params['key'] = self._next_key()
+            params["key"] = self._next_key()
 
         try:
             response = await self._get_helper(path, params)
         except asyncio.TimeoutError:
-            raise TimeoutError('hypixel')
+            raise TimeoutError("hypixel")
 
         if response.status == 429:
             if not self.rate_limit_h:
                 # Initially <class 'str'>
-                retry_after = int(response.headers['Retry-After'])
-                raise RateLimitError(retry_after, 'hypixel', response)
+                retry_after = int(response.headers["Retry-After"])
+                raise RateLimitError(retry_after, "hypixel", response)
             else:
                 while response.status == 429:
                     # Retrying exactly after the amount of seconds can
                     # cause spamming the API while still being limited
                     # because the time is restricted to int precision.
-                    retry = int(response.headers['Retry-After']) + 1
+                    retry = int(response.headers["Retry-After"]) + 1
                     if self.timeout is not None and retry > self.timeout:
-                        raise TimeoutError('hypixel')
+                        raise TimeoutError("hypixel")
                     await asyncio.sleep(retry)
                     response = await self._get_helper(path, params)
 
@@ -478,19 +481,19 @@ class Client:
             return await response.json(loads=JSON_DECODER)
 
         elif response.status == 403:
-            if params.get('key') is None:
+            if params.get("key") is None:
                 raise KeyRequired(path)
-            raise InvalidApiKey(params['key'])
+            raise InvalidApiKey(params["key"])
 
         else:
             try:
                 text = await response.json(loads=JSON_DECODER)
-                text = text.get('cause')
+                text = text.get("cause")
             except Exception:
-                raise ApiError(response, 'hypixel')
+                raise ApiError(response, "hypixel")
             else:
-                text = f'An unexpected error occurred with the hypixel API: {text}'
-                raise ApiError(response, 'hypixel', text)
+                text = f"An unexpected error occurred with the hypixel API: {text}"
+                raise ApiError(response, "hypixel", text)
 
     # Public
 
@@ -547,7 +550,7 @@ class Client:
             except ValueError:
                 raise MalformedApiKey(key)
         for key in self._keys:
-            await self._get('key', key=key)
+            await self._get("key", key=key)
 
     def add_key(self, key: str) -> None:
         """Adds a key to :attr:`keys` and update internal attributes.
@@ -708,7 +711,7 @@ class Client:
             The rate limit is exceeded and ``self.rate_limit_h`` is
             ``False``.
         TimeoutError
-            The request took longer than ``self.timeout``, or the retry 
+            The request took longer than ``self.timeout``, or the retry
             delay time is longer than ``self.timeout``.
 
         Returns
@@ -716,19 +719,17 @@ class Client:
         :class:`~hypixel.models.player.Player`
             A player model used to abstract data.
         """
-        params = utils.HashedDict(
-            uuid=id_['uuid']
-        )
-        response = await self._get('player', params=params)
+        params = utils.HashedDict(uuid=id_["uuid"])
+        response = await self._get("player", params=params)
 
-        if not response.get('player'):
-            raise PlayerNotFound(id_['orig'])
+        if not response.get("player"):
+            raise PlayerNotFound(id_["orig"])
 
         data = {
-            'raw': response,
-            '_data': response['player'],
+            "raw": response,
+            "_data": response["player"],
         }
-        clean_data = utils._clean(response['player'], mode='PLAYER')
+        clean_data = utils._clean(response["player"], mode="PLAYER")
         data.update(clean_data)
         return Player(**data)
 
@@ -759,12 +760,12 @@ class Client:
         :class:`int`
             The number of players connected to Hypixel.
         """
-        response = await self._get('playerCount')
+        response = await self._get("playerCount")
 
         try:
-            player_count = int(response['playerCount'])
+            player_count = int(response["playerCount"])
         except (KeyError, ValueError):
-            raise ApiError(response, 'hypixel')
+            raise ApiError(response, "hypixel")
 
         return player_count
 
@@ -803,23 +804,21 @@ class Client:
             A key model used to abstract data.
         """
         if not isinstance(key, str):
-            raise ArgumentError(
-                f"Given key '{key}' is not a string."
-            )
+            raise ArgumentError(f"Given key '{key}' is not a string.")
         try:
             UUID(key)
         except ValueError:
             raise MalformedApiKey(key)
 
-        response = await self._get('key', key_required=False, key=key)
+        response = await self._get("key", key_required=False, key=key)
 
-        if not response.get('record'):
+        if not response.get("record"):
             raise KeyNotFound(key)
 
         data = {
-            'raw': response,
+            "raw": response,
         }
-        clean_data = utils._clean(response['record'], mode='KEY')
+        clean_data = utils._clean(response["record"], mode="KEY")
         data.update(clean_data)
         return Key(**data)
 
@@ -842,7 +841,7 @@ class Client:
             The rate limit is exceeded and ``self.rate_limit_h`` is
             ``False``.
         TimeoutError
-            The request took longer than ``self.timeout``, or the retry 
+            The request took longer than ``self.timeout``, or the retry
             delay time is longer than ``self.timeout``.
 
         Returns
@@ -850,12 +849,12 @@ class Client:
         :class:`~hypixel.Bans`
             A ban model used to abstract data.
         """
-        response = await self._get('watchdogstats')
+        response = await self._get("watchdogstats")
 
         data = {
-            'raw': response,
+            "raw": response,
         }
-        clean_data = utils._clean(response, mode='BANS')
+        clean_data = utils._clean(response, mode="BANS")
         data.update(clean_data)
         return Bans(**data)
 
@@ -897,7 +896,7 @@ class Client:
     #         The rate limit is exceeded and ``self.rate_limit_h`` is
     #         ``False``.
     #     TimeoutError
-    #         The request took longer than ``self.timeout``, or the retry 
+    #         The request took longer than ``self.timeout``, or the retry
     #         delay time is longer than ``self.timeout``.
 
     #     Returns
@@ -934,87 +933,79 @@ class Client:
     @utils.convert_id
     async def player_status(self, id_: str) -> Status:
         """Get the status of a player."""
-        params = utils.HashedDict(
-            uuid=id_['uuid']
-        )
-        response = await self._get('status', params=params)
+        params = utils.HashedDict(uuid=id_["uuid"])
+        response = await self._get("status", params=params)
 
-        if not response.get('session'):
-            raise PlayerNotFound(id_['orig'])
+        if not response.get("session"):
+            raise PlayerNotFound(id_["orig"])
 
-        session = response['session']
+        session = response["session"]
 
         data = {
-            'raw': response,
+            "raw": response,
         }
-        clean_data = utils._clean(session, mode='STATUS')
+        clean_data = utils._clean(session, mode="STATUS")
         data.update(clean_data)
         return Status(**data)
 
     async def guild_from_id(self, id_: str) -> Guild:
         """Get a guild from the id."""
-        params = utils.HashedDict(
-            id=id_
-        )
-        response = await self._get('guild', params=params)
+        params = utils.HashedDict(id=id_)
+        response = await self._get("guild", params=params)
 
-        if not response.get('guild'):
+        if not response.get("guild"):
             raise GuildNotFound(id_)
 
         data = {
             # 'raw': response,
         }
-        clean_data = utils._clean(response['guild'], mode='GUILD')
+        clean_data = utils._clean(response["guild"], mode="GUILD")
         data.update(clean_data)
         return Guild(**data)
 
     @utils.convert_id
     async def guild_from_player(self, id_: str) -> Guild:
         """Get a guild from a player."""
-        params = utils.HashedDict(
-            player=id_['uuid']
-        )
-        response = await self._get('guild', params=params)
+        params = utils.HashedDict(player=id_["uuid"])
+        response = await self._get("guild", params=params)
 
-        if not response.get('guild'):
-            raise GuildNotFound(id_['orig'])
+        if not response.get("guild"):
+            raise GuildNotFound(id_["orig"])
 
         data = {
             # 'raw': response,
         }
-        clean_data = utils._clean(response['guild'], mode='GUILD')
+        clean_data = utils._clean(response["guild"], mode="GUILD")
         data.update(clean_data)
         return Guild(**data)
 
     async def guild_from_name(self, name: str) -> Guild:
         """Get a guild from the name."""
-        params = utils.HashedDict(
-            name=name
-        )
-        response = await self._get('guild', params=params)
+        params = utils.HashedDict(name=name)
+        response = await self._get("guild", params=params)
 
-        if not response.get('guild'):
+        if not response.get("guild"):
             raise GuildNotFound(name)
 
         data = {
             # 'raw': response,
         }
-        clean_data = utils._clean(response['guild'], mode='GUILD')
+        clean_data = utils._clean(response["guild"], mode="GUILD")
         data.update(clean_data)
         return Guild(**data)
 
     async def leaderboards(self) -> Dict[str, List[Leaderboard]]:
         """Get the game leaderboards."""
-        response = await self._get('leaderboards')
+        response = await self._get("leaderboards")
 
-        if not response.get('leaderboards'):
-            raise ApiError(response, 'hypixel')
+        if not response.get("leaderboards"):
+            raise ApiError(response, "hypixel")
 
         leaderboards = {}
-        for mode, values in response['leaderboards'].items():
+        for mode, values in response["leaderboards"].items():
             lbs = []
             for lb in values:
-                data = utils._clean(lb, mode='LB')
+                data = utils._clean(lb, mode="LB")
                 lbs.append(Leaderboard(**data))
             leaderboards[mode] = lbs
 
