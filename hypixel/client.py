@@ -357,7 +357,7 @@ class Client:
 
     async def _get_name_helper(self, uuid):
         return await self._session.get(
-            f'https://api.mojang.com/user/profile/{uuid}'
+            f'https://sessionserver.mojang.com/session/minecraft/profile/{uuid}'
         )
 
     async def _get_name(self, uuid: str) -> str:
