@@ -15,6 +15,40 @@ __all__ = [
 
 @dataclass
 class DuelsMode:
+    """Base model for duels gamemode stats.
+
+    .. note::
+
+        Some attributes may be 0 if a given gamemode doesn't use them.
+
+    Attributes
+    ----------
+    kills: :class:`int`
+        Kills.
+    deaths: :class:`int`
+        Deaths.
+    wins: :class:`int`
+        Wins.
+    losses: :class:`int`
+        Losses.
+    melee_hits: :class:`int`
+        Melee hits.
+    melee_swings: :class:`int`
+        Melee swings.
+    arrows_hit: :class:`int`
+        Arrows hit.
+    arrows_shot: :class:`int`
+        Arrows shot.
+    wlr: :class:`float`
+        Win loss ratio; self.wins / self.losses.
+    mr: :class:`float`
+        Melee ratio; self.melee_hits / self.melee_swings.
+    ar: :class:`float`
+        Arrow ratio; self.arrows_hit / self.arrows_shot.
+    title: :class:`str`
+        Duel title. This is the title that is displayed in the duels
+        lobby. Defaults to ``Rookie I``.
+    """
     _data: dict = field(repr=False)
     _mode: str = field(repr=False)
     kills: int = 0
