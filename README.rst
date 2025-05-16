@@ -14,7 +14,7 @@ hypixel.py (beta)
    :target: https://github.com/duhby/hypixel.py/blob/master/LICENSE/
    :alt: License
 .. image:: https://img.shields.io/readthedocs/hypixelpy/latest?style=for-the-badge
-    :target: https://docs.dubs.rip/en/latest/
+    :target: https://hypixelpy.readthedocs.io/en/stable/
     :alt: Documentation Status
 
 
@@ -35,7 +35,7 @@ The purpose of this project is to simplify the task of writing scripts that inte
 Getting Started
 ---------------
 
-**Check out the** `examples <https://docs.dubs.rip/en/latest/examples.html>`_ **and** `documentation <https://docs.dubs.rip/en/latest/>`_!
+**Check out the** `examples <https://hypixelpy.readthedocs.io/en/stable/examples.html>`_ **and** `documentation <https://hypixelpy.readthedocs.io/en/stable/>`_!
 
 **Python 3.8+ is required (3.10.8+ recommended)**
 
@@ -104,4 +104,4 @@ Quick Example
    if __name__ == '__main__':
        asyncio.run(main())
 
-**You can find more examples** `in the documentation <https://docs.dubs.rip/en/latest/examples.html>`_
+**You can find more examples** `in the documentation <https://hypixelpy.readthedocs.io/en/stable/examples.html>`_
