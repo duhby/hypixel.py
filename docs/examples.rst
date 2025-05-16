@@ -63,16 +63,6 @@ First Login
 .. literalinclude:: ../examples/first_login.py
     :lines: 3-
 
-Friends
--------
-
-.. include:: ../examples/friends.py
-    :start-after: """
-    :end-before: """
-
-.. literalinclude:: ../examples/friends.py
-    :lines: 11-
-
 Guild Member
 ------------
 
