@@ -25,7 +25,7 @@ async def test_get_name(generate_client):
     async for client in generate_client:
         with aioresponses() as m:
             m.get(
-                f'https://api.mojang.com/user/profile/{uuid}',
+                f'https://sessionserver.mojang.com/session/minecraft/profile/{uuid}',
                 payload={
                     "id": uuid,
                     "name": name,
