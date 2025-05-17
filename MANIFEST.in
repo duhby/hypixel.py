@@ -1,5 +1,0 @@
-include CHANGELOG.md
-include LICENSE
-include README.rst
-include requirements.txt
-include hypixel/py.typed
